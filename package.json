@@ -1,7 +1,10 @@
 {
   "name": "yumstash",
   "type": "module",
+  "version": "0.1.0",
   "private": true,
+  "description": "A modern web application for storing and managing your favorite recipes",
+  "author": "Citingdude",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
