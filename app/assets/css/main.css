@@ -1,0 +1,52 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@theme {  
+  /* Primary/Accent Color - #cc2936 (Red) */
+  --color-red-50: #fef2f3;
+  --color-red-100: #fde3e5;
+  --color-red-200: #fbccd0;
+  --color-red-300: #f7a7ae;
+  --color-red-400: #f17482;
+  --color-red-500: #e6495a;
+  --color-red-600: #cc2936;
+  --color-red-700: #b01f2d;
+  --color-red-800: #931d29;
+  --color-red-900: #7d1d27;
+  --color-red-950: #450b11;
+
+  /* Warning/Yellow Color - #B8B42D */
+  --color-yellow-50: #fef2f3;
+  --color-yellow-100: #fde3e5;
+  --color-yellow-200: #fbccd0;
+  --color-yellow-300: #f7a7ae;
+  --color-yellow-400: #f17482;
+  --color-yellow-500: #e6495a;
+  --color-yellow-600: #cc2936;
+  --color-yellow-700: #b01f2d;
+  --color-yellow-800: #931d29;
+  --color-yellow-900: #7d1d27;
+  --color-yellow-950: #450b11;
+  
+
+  /* Neutral Colors - Soft Pastel Beige/Stone */
+  --color-stone-50: #faf9f7;
+  --color-stone-100: #f5f3ef;
+  --color-stone-200: #ebe7df;
+  --color-stone-300: #ddd6c9;
+  --color-stone-400: #c9bfad;
+  --color-stone-500: #b8aa95;
+  --color-stone-600: #a89780;
+  --color-stone-700: #8d7e6b;
+  --color-stone-800: #75685a;
+  --color-stone-900: #60574c;
+  --color-stone-950: #332e27;
+
+  /* Font Family - Poppins */
+  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+/* Apply custom font globally */
+body {
+  font-family: var(--font-sans);
+}
