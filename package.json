@@ -16,10 +16,7 @@
     "typecheck": "npx nuxi typecheck",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "db:drop": "drizzle-kit drop",
-    "db:refresh": "drizzle-kit drop && drizzle-kit push",
     "db:seed": "tsx server/db/seed.ts"
   },
   "dependencies": {

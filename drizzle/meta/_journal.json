@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1766395948437,
-      "tag": "0000_cultured_sebastian_shaw",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1766397201596,
-      "tag": "0001_legal_medusa",
+      "when": 1766401446874,
+      "tag": "0000_kind_vertigo",
       "breakpoints": true
     }
   ]

@@ -26,6 +26,15 @@ CREATE TABLE "recipes" (
 	"updatedAt" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE "users" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"name" varchar(255) NOT NULL,
+	"email" varchar(255) NOT NULL,
+	"createdAt" timestamp DEFAULT now() NOT NULL,
+	"updatedAt" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "users_email_unique" UNIQUE("email")
+);
+--> statement-breakpoint
 ALTER TABLE "recipes" ADD CONSTRAINT "recipes_difficultyId_recipe_difficulties_id_fk" FOREIGN KEY ("difficultyId") REFERENCES "public"."recipe_difficulties"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "recipes" ADD CONSTRAINT "recipes_categoryId_recipe_categories_id_fk" FOREIGN KEY ("categoryId") REFERENCES "public"."recipe_categories"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "recipes" ADD CONSTRAINT "recipes_authorId_users_id_fk" FOREIGN KEY ("authorId") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;
