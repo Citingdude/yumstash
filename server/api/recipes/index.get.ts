@@ -1,12 +1,20 @@
 import type { RecipeWithRelations } from '~~/types/recipe'
-import { asc } from 'drizzle-orm'
+import { asc, ilike, or } from 'drizzle-orm'
 import { useDB } from '~~/server/db'
 import { recipesTable } from '~~/server/db/schema/index'
 
-export default defineEventHandler<Promise<RecipeWithRelations[]>>(async () => {
+export default defineEventHandler<Promise<RecipeWithRelations[]>>(async (event) => {
   const db = useDB()
+  const query = getQuery(event)
+  const search = query.search as string | undefined
 
   const dbRecipes = await db.query.recipesTable.findMany({
+    where: search
+      ? or(
+          ilike(recipesTable.name, `%${search}%`),
+          ilike(recipesTable.description, `%${search}%`),
+        )
+      : undefined,
     orderBy: [
       asc(recipesTable.createdAt),
     ],

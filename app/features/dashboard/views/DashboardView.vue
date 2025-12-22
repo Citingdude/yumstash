@@ -1,15 +1,31 @@
 <script setup lang="ts">
+import type { RecipeWithRelations } from '~~/types/recipe'
 import type { RecipeCardProps } from '~/features/recipe/components/card/RecipeCard.vue'
 import type { RecipeCategory } from '~/features/recipe/models/recipeCategory.model'
+import { refDebounced } from '@vueuse/core'
 import StatsCard from '~/components/stats/StatsCard.vue'
 import RecipeCard from '~/features/recipe/components/card/RecipeCard.vue'
 import { recipeCategories } from '~/features/recipe/data/recipeCategories'
 
-const recipeIndexQuery = useAsyncData('recipe-index', () => {
-  return $fetch('/api/recipes')
-})
+const selectedCategory = ref<RecipeCategory>('All')
+const searchQuery = ref<string | undefined>()
+const debouncedSearchQuery = refDebounced(searchQuery, 300)
 
-const recipes = computed(() => {
+const recipeIndexQuery = useAsyncData(
+  'recipe-index',
+  () => {
+    return $fetch('/api/recipes', {
+      query: {
+        search: debouncedSearchQuery.value,
+      },
+    })
+  },
+  {
+    watch: [debouncedSearchQuery],
+  },
+)
+
+const recipes = computed<RecipeWithRelations[]>(() => {
   return recipeIndexQuery.data.value ?? []
 })
 
@@ -26,9 +42,6 @@ const recipeCards = computed<RecipeCardProps[]>(() => {
     }
   })
 })
-
-const selectedCategory = ref<RecipeCategory>('All')
-const searchQuery = ref<string | undefined>()
 </script>
 
 <template>
