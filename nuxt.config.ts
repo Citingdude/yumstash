@@ -37,4 +37,8 @@ export default defineNuxtConfig({
   ui: {
     colorMode: false,
   },
+
+  runtimeConfig: {
+    databaseUrl: process.env.DATABASE_URL,
+  },
 })

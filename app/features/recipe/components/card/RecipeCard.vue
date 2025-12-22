@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { RecipeDifficulty } from '~/features/recipe/models/recipeDifficulty.model'
 
-const props = defineProps<{
+export interface RecipeCardProps {
   emoji: string
   difficulty: RecipeDifficulty
   name: string
@@ -9,7 +9,9 @@ const props = defineProps<{
   time: string
   servings: string
   category: string
-}>()
+}
+
+const props = defineProps<RecipeCardProps>()
 
 const difficultyColor = computed(() => {
   switch (props.difficulty) {
@@ -39,7 +41,7 @@ const difficultyColor = computed(() => {
         </div>
         <UBadge
           :color="difficultyColor"
-          class="absolute top-2 right-2"
+          class="absolute top-2 right-2 capitalize"
         >
           {{ props.difficulty }}
         </UBadge>

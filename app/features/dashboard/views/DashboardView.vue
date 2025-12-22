@@ -1,33 +1,34 @@
 <script setup lang="ts">
-import type { Recipe } from '~/features/recipe/models/recipe.model'
+import type { RecipeCardProps } from '~/features/recipe/components/card/RecipeCard.vue'
 import type { RecipeCategory } from '~/features/recipe/models/recipeCategory.model'
 import StatsCard from '~/components/stats/StatsCard.vue'
 import RecipeCard from '~/features/recipe/components/card/RecipeCard.vue'
 import { recipeCategories } from '~/features/recipe/data/recipeCategories'
-import { recipes } from '~/features/recipe/data/recipes'
+
+const recipeIndexQuery = useAsyncData('recipe-index', () => {
+  return $fetch('/api/recipes')
+})
+
+const recipes = computed(() => {
+  return recipeIndexQuery.data.value ?? []
+})
+
+const recipeCards = computed<RecipeCardProps[]>(() => {
+  return recipes.value.map((recipe) => {
+    return {
+      emoji: recipe.emoji ?? '',
+      difficulty: recipe.difficulty.name,
+      name: recipe.name,
+      description: recipe.description,
+      time: recipe.time,
+      servings: recipe.servings,
+      category: recipe.category.name,
+    }
+  })
+})
 
 const selectedCategory = ref<RecipeCategory>('All')
 const searchQuery = ref<string | undefined>()
-
-const filteredRecipes = computed<Recipe[]>(() => {
-  let filtered = recipes
-
-  // Filter by category
-  if (selectedCategory.value !== 'All') {
-    filtered = filtered.filter(recipe => recipe.category === selectedCategory.value)
-  }
-
-  // Filter by search query
-  if (searchQuery.value && searchQuery.value.trim()) {
-    const query = searchQuery.value.toLowerCase().trim()
-    filtered = filtered.filter(recipe =>
-      recipe.name.toLowerCase().includes(query)
-      || recipe.description.toLowerCase().includes(query),
-    )
-  }
-
-  return filtered
-})
 </script>
 
 <template>
@@ -87,8 +88,8 @@ const filteredRecipes = computed<Recipe[]>(() => {
 
     <UPageGrid as="ul">
       <li
-        v-for="recipe in filteredRecipes"
-        :key="recipe.id"
+        v-for="recipe in recipeCards"
+        :key="recipe.name"
       >
         <RecipeCard
           :emoji="recipe.emoji"
