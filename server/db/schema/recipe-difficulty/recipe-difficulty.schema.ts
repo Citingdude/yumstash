@@ -1,6 +1,5 @@
-import type { z } from 'zod'
+import type { InferSelectModel } from 'drizzle-orm'
 import { pgEnum, pgTable, uuid } from 'drizzle-orm/pg-core'
-import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 
 export const recipeDifficultyEnum = pgEnum('recipe_difficulty', ['easy', 'medium', 'hard'])
 
@@ -9,8 +8,5 @@ export const recipeDifficultiesTable = pgTable('recipe_difficulties', {
   name: recipeDifficultyEnum().notNull().unique(),
 })
 
-export const insertRecipeDifficultySchema = createInsertSchema(recipeDifficultiesTable).omit({ id: true })
-export const selectRecipeDifficultySchema = createSelectSchema(recipeDifficultiesTable)
-
-export type RecipeDifficultyInsert = z.infer<typeof insertRecipeDifficultySchema>
-export type RecipeDifficultySelect = z.infer<typeof selectRecipeDifficultySchema>
+export type RecipeDifficultySelect = InferSelectModel<typeof recipeDifficultiesTable>
+export type RecipeDifficultyInsert = InferSelectModel<typeof recipeDifficultiesTable>

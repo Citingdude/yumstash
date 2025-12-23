@@ -143,6 +143,7 @@ async function onSubmit(event: FormSubmitEvent<CreateRecipeForm>) {
             <USelect
               v-model="state.difficultyId"
               :items="difficultyOptions"
+              placeholder="Select difficulty"
             />
           </UFormField>
         </div>
