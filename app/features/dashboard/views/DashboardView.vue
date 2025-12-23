@@ -1,29 +1,27 @@
 <script setup lang="ts">
-import type { RecipeWithRelations } from '~~/types/recipe'
+import type { RecipeCategoryFilterItem } from '~~/shared/types/recipe-category/recipeCategoryFilterItem.type'
+import type { RecipeCategorySelectItem } from '~~/shared/types/recipe-category/recipeCategorySelectItem.type'
+import type { RecipeWithRelations } from '~~/shared/types/recipe/recipe.type'
 import type { RecipeCardProps } from '~/features/recipe/components/card/RecipeCard.vue'
-import type { RecipeCategory } from '~/features/recipe/models/recipeCategory.model'
 import { refDebounced } from '@vueuse/core'
+
 import StatsCard from '~/components/stats/StatsCard.vue'
 import RecipeCard from '~/features/recipe/components/card/RecipeCard.vue'
-import { recipeCategories } from '~/features/recipe/data/recipeCategories'
+import { useRecipeCategoryIndexQuery } from '~/features/recipe/queries/recipeCategoryIndex.query'
+import { useRecipeIndexQuery } from '~/features/recipe/queries/recipeIndex.query'
 
-const selectedCategory = ref<RecipeCategory>('All')
+const selectedCategory = ref<RecipeCategorySelectItem | undefined>(undefined)
 const searchQuery = ref<string | undefined>()
 const debouncedSearchQuery = refDebounced(searchQuery, 300)
 
-const recipeIndexQuery = useAsyncData(
-  'recipe-index',
-  () => {
-    return $fetch('/api/recipes', {
-      query: {
-        search: debouncedSearchQuery.value,
-      },
-    })
-  },
-  {
-    watch: [debouncedSearchQuery],
-  },
-)
+const categoryId = computed(() => selectedCategory.value?.value)
+
+const recipeIndexQuery = useRecipeIndexQuery(debouncedSearchQuery, categoryId)
+const recipeCategoryIndexQuery = useRecipeCategoryIndexQuery()
+
+const recipeCategoryItems = computed<RecipeCategoryFilterItem[]>(() => {
+  return recipeCategoryIndexQuery.filterItems.value
+})
 
 const recipes = computed<RecipeWithRelations[]>(() => {
   return recipeIndexQuery.data.value ?? []
@@ -92,10 +90,12 @@ const recipeCards = computed<RecipeCardProps[]>(() => {
       </div>
       <USelectMenu
         v-model="selectedCategory"
-        :items="recipeCategories"
-        placeholder="All Categories"
+        :items="recipeCategoryItems"
+        placeholder="Select category"
         size="lg"
         class="w-full sm:w-48"
+        searchable
+        searchable-placeholder="Search categories..."
       />
     </div>
 

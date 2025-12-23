@@ -1,3 +1,13 @@
+<script setup lang="ts">
+const emit = defineEmits<{
+  addRecipe: []
+}>()
+
+function onAddRecipe(): void {
+  emit('addRecipe')
+}
+</script>
+
 <template>
   <header class="bg-white border-b border-stone-200 sticky top-0 z-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -11,7 +21,12 @@
           </h1>
         </div>
         <div class="flex items-center gap-3">
-          <UButton icon="i-heroicons-plus" color="primary" size="lg">
+          <UButton
+            icon="i-heroicons-plus"
+            color="primary"
+            size="lg"
+            @click="onAddRecipe"
+          >
             Add Recipe
           </UButton>
           <UAvatar
