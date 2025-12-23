@@ -7,6 +7,7 @@ import { refDebounced } from '@vueuse/core'
 
 import StatsCard from '~/components/stats/StatsCard.vue'
 import RecipeCard from '~/features/recipe/components/card/RecipeCard.vue'
+import { useRecipeCategoryCountQuery } from '~/features/recipe/queries/recipeCategoryCount.query'
 import { useRecipeCategoryIndexQuery } from '~/features/recipe/queries/recipeCategoryIndex.query'
 import { useRecipeCountQuery } from '~/features/recipe/queries/recipeCount.query'
 import { useRecipeIndexQuery } from '~/features/recipe/queries/recipeIndex.query'
@@ -20,6 +21,7 @@ const categoryId = computed(() => selectedCategory.value?.value)
 const recipeIndexQuery = useRecipeIndexQuery(debouncedSearchQuery, categoryId)
 const recipeCountQuery = useRecipeCountQuery()
 const recipeCategoryIndexQuery = useRecipeCategoryIndexQuery()
+const recipeCategoryCountQuery = useRecipeCategoryCountQuery()
 
 const recipeCategoryItems = computed<RecipeCategoryFilterItem[]>(() => {
   return recipeCategoryIndexQuery.filterItems.value
@@ -30,6 +32,8 @@ const recipes = computed<RecipeWithRelations[]>(() => {
 })
 
 const totalRecipes = computed(() => recipeCountQuery.data.value ?? 0)
+
+const totalCategories = computed(() => recipeCategoryCountQuery.data.value ?? 0)
 
 const recipeCards = computed<RecipeCardProps[]>(() => {
   return recipes.value.map((recipe) => {
@@ -76,7 +80,7 @@ const recipeCards = computed<RecipeCardProps[]>(() => {
         <StatsCard
           emoji="🏷️"
           title="Categories"
-          number="6"
+          :number="totalCategories.toString()"
         />
       </li>
     </ul>
