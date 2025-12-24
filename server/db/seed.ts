@@ -1,3 +1,4 @@
+import type { RecipeInsert } from './schema/recipe/recipe.schema'
 import { drizzle } from 'drizzle-orm/node-postgres'
 import { recipeCategoriesTable } from './schema/recipe-category/recipe-category.schema'
 import { recipeDifficultiesTable } from './schema/recipe-difficulty/recipe-difficulty.schema'
@@ -46,7 +47,7 @@ async function seed() {
 
     const difficultyMap = new Map(createdDifficulties.map(d => [d.name, d.id]))
 
-    const recipes = [
+    const recipes: RecipeInsert[] = [
       {
         name: 'Fluffy Pancakes',
         description: 'Light and airy pancakes perfect for weekend mornings',
