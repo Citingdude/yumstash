@@ -10,6 +10,7 @@ import StatsCard from '~/components/stats/StatsCard.vue'
 import RecipeCard from '~/features/recipe/components/card/RecipeCard.vue'
 import { useRecipeCategoryCountQuery } from '~/features/recipe/queries/recipeCategoryCount.query'
 import { useRecipeCategoryIndexQuery } from '~/features/recipe/queries/recipeCategoryIndex.query'
+import { useRecipeCookedCountQuery } from '~/features/recipe/queries/recipeCookedCount.query'
 import { useRecipeCountQuery } from '~/features/recipe/queries/recipeCount.query'
 import { useRecipeFavoriteCountQuery } from '~/features/recipe/queries/recipeFavoriteCount.query'
 import { useRecipeIndexQuery } from '~/features/recipe/queries/recipeIndex.query'
@@ -27,6 +28,7 @@ const recipeCountQuery = useRecipeCountQuery()
 const recipeCategoryIndexQuery = useRecipeCategoryIndexQuery()
 const recipeCategoryCountQuery = useRecipeCategoryCountQuery()
 const recipeFavoriteCountQuery = useRecipeFavoriteCountQuery()
+const recipeCookedCountQuery = useRecipeCookedCountQuery()
 
 const recipeCategoryItems = computed<RecipeCategoryFilterItem[]>(() => {
   return recipeCategoryIndexQuery.filterItems.value
@@ -42,6 +44,8 @@ const totalCategories = computed(() => recipeCategoryCountQuery.data.value ?? 0)
 
 const totalFavorites = computed(() => recipeFavoriteCountQuery.data.value ?? 0)
 
+const totalCooked = computed(() => recipeCookedCountQuery.data.value ?? 0)
+
 const recipeCards = computed<RecipeCardProps[]>(() => {
   return recipes.value.map((recipe) => {
     return {
@@ -54,6 +58,7 @@ const recipeCards = computed<RecipeCardProps[]>(() => {
       servings: recipe.servings,
       category: recipe.category.name,
       isFavorite: recipe.isFavorite,
+      isCooked: recipe.isCooked,
     }
   })
 })
@@ -89,6 +94,38 @@ async function onFavorite(recipeId: RecipeUuid, isFavorite: boolean): Promise<vo
     })
   }
 }
+
+async function onCooked(recipeId: RecipeUuid, isCooked: boolean): Promise<void> {
+  try {
+    await $fetch(`/api/recipes/${recipeId}/cooked`, {
+      method: 'POST',
+      body: {
+        isCooked,
+      },
+    })
+
+    await Promise.all([
+      refreshNuxtData('recipe-index'),
+      refreshNuxtData('recipe-cooked-count'),
+    ])
+
+    toast.add({
+      title: isCooked ? 'Recipe marked cooked' : 'Cooked status removed',
+      description: isCooked
+        ? 'Recipe added to your cooked list.'
+        : 'Recipe removed from your cooked list.',
+      color: 'success',
+    })
+  }
+  catch (error) {
+    console.error('Failed to update cooked state', error)
+    toast.add({
+      title: 'Error',
+      description: 'Could not update cooked status. Try again later.',
+      color: 'error',
+    })
+  }
+}
 </script>
 
 <template>
@@ -114,7 +151,7 @@ async function onFavorite(recipeId: RecipeUuid, isFavorite: boolean): Promise<vo
         <StatsCard
           emoji="👨‍🍳"
           title="Cooked"
-          number="8"
+          :number="totalCooked.toString()"
         />
       </li>
       <li>
@@ -163,7 +200,9 @@ async function onFavorite(recipeId: RecipeUuid, isFavorite: boolean): Promise<vo
           :servings="recipe.servings"
           :category="recipe.category"
           :is-favorite="recipe.isFavorite"
+          :is-cooked="recipe.isCooked"
           @favorite="(recipeId, isFavorite) => onFavorite(recipeId, isFavorite)"
+          @cooked="(recipeId, isCooked) => onCooked(recipeId, isCooked)"
         />
       </li>
     </UPageGrid>

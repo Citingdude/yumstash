@@ -13,6 +13,7 @@ export const recipesTable = pgTable('recipes', {
   servings: varchar({ length: 50 }).notNull(),
   emoji: varchar({ length: 10 }),
   isFavorite: boolean().default(false).notNull(),
+  isCooked: boolean().default(false).notNull(),
   difficultyId: uuid()
     .notNull()
     .references(() => recipeDifficultiesTable.id),

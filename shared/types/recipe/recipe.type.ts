@@ -12,6 +12,7 @@ export const recipeSchema = z.object({
   servings: z.string(),
   emoji: z.emoji().nullable(),
   isFavorite: z.boolean().default(false),
+  isCooked: z.boolean().default(false),
   difficultyId: z.uuid(),
   categoryId: z.uuid(),
 })

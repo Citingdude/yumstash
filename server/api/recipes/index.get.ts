@@ -64,6 +64,7 @@ export default defineEventHandler<Promise<RecipeWithRelations[]>>(async (event) 
       categoryId: dbRecipe.categoryId,
       difficultyId: dbRecipe.difficultyId,
       isFavorite: dbRecipe.isFavorite,
+      isCooked: dbRecipe.isCooked,
     }
   })
 

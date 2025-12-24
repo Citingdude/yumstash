@@ -63,6 +63,8 @@ export default defineEventHandler(async (event) => {
       time: recipe.time,
       servings: recipe.servings,
       emoji: recipe.emoji,
+      isFavorite: recipe.isFavorite,
+      isCooked: recipe.isCooked,
       difficulty: {
         id: recipe.difficulty.id,
         name: recipe.difficulty.name,

@@ -12,6 +12,7 @@ export interface RecipeCardProps {
   servings: string
   category: string
   isFavorite: boolean
+  isCooked: boolean
 }
 
 const props = defineProps<RecipeCardProps>()
@@ -20,6 +21,10 @@ const emit = defineEmits<{
   favorite: [
     recipeId: RecipeUuid,
     isFavorite: boolean,
+  ]
+  cooked: [
+    recipeId: RecipeUuid,
+    isCooked: boolean,
   ]
 }>()
 
@@ -41,6 +46,10 @@ const difficultyColor = computed(() => {
 
 function onFavorite(): void {
   emit('favorite', props.id, props.isFavorite)
+}
+
+function onCooked(): void {
+  emit('cooked', props.id, props.isCooked)
 }
 </script>
 
@@ -87,15 +96,26 @@ function onFavorite(): void {
         <UBadge color="secondary" variant="solid">
           {{ props.category }}
         </UBadge>
-        <UButton
-          :icon="props.isFavorite ? 'i-heroicons-heart-solid' : 'i-heroicons-heart'"
-          color="error"
-          variant="ghost"
-          size="sm"
-          :aria-pressed="props.isFavorite"
-          aria-label="Toggle favorite"
-          @click="onFavorite"
-        />
+        <div class="flex items-center gap-2">
+          <UButton
+            :icon="props.isCooked ? 'i-mdi-pot-steam-outline' : 'i-mdi-pot-outline'"
+            :color="props.isCooked ? 'success' : 'neutral'"
+            variant="ghost"
+            size="sm"
+            :aria-pressed="props.isCooked"
+            aria-label="Toggle cooked"
+            @click="onCooked"
+          />
+          <UButton
+            :icon="props.isFavorite ? 'i-heroicons-heart-solid' : 'i-heroicons-heart'"
+            color="error"
+            variant="ghost"
+            size="sm"
+            :aria-pressed="props.isFavorite"
+            aria-label="Toggle favorite"
+            @click="onFavorite"
+          />
+        </div>
       </div>
     </div>
   </UCard>
