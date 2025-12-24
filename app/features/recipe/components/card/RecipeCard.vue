@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { RecipeDifficulty } from '~/features/recipe/models/recipeDifficulty.model'
+import type { RecipeDifficultNameEnum } from '~~/shared/types/recipe-difficulty/recipeDifficultyName.enum'
 
 export interface RecipeCardProps {
   emoji: string
-  difficulty: RecipeDifficulty
+  difficulty: RecipeDifficultNameEnum
   name: string
   description: string
   time: string
