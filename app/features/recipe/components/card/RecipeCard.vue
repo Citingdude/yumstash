@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import type { RecipeDifficultNameEnum } from '~~/shared/types/recipe-difficulty/recipeDifficultyName.enum'
+import type { RecipeUuid } from '~~/shared/types/recipe/recipeUuid.type'
 
 export interface RecipeCardProps {
+  id: RecipeUuid
   emoji: string
   difficulty: RecipeDifficultNameEnum
   name: string
@@ -9,9 +11,17 @@ export interface RecipeCardProps {
   time: string
   servings: string
   category: string
+  isFavorite: boolean
 }
 
 const props = defineProps<RecipeCardProps>()
+
+const emit = defineEmits<{
+  favorite: [
+    recipeId: RecipeUuid,
+    isFavorite: boolean,
+  ]
+}>()
 
 const difficultyColor = computed(() => {
   switch (props.difficulty) {
@@ -28,6 +38,10 @@ const difficultyColor = computed(() => {
       return undefined
   }
 })
+
+function onFavorite(): void {
+  emit('favorite', props.id, props.isFavorite)
+}
 </script>
 
 <template>
@@ -74,10 +88,13 @@ const difficultyColor = computed(() => {
           {{ props.category }}
         </UBadge>
         <UButton
-          icon="i-heroicons-heart"
+          :icon="props.isFavorite ? 'i-heroicons-heart-solid' : 'i-heroicons-heart'"
           color="error"
           variant="ghost"
           size="sm"
+          :aria-pressed="props.isFavorite"
+          aria-label="Toggle favorite"
+          @click="onFavorite"
         />
       </div>
     </div>

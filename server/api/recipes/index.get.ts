@@ -1,4 +1,5 @@
 import type { RecipeWithRelations } from '~~/shared/types/recipe/recipe.type'
+import type { RecipeUuid } from '~~/shared/types/recipe/recipeUuid.type'
 import { and, asc, eq, ilike, or } from 'drizzle-orm'
 import { useDB } from '~~/server/db'
 import { recipesTable } from '~~/server/db/schema/index'
@@ -26,7 +27,7 @@ export default defineEventHandler<Promise<RecipeWithRelations[]>>(async (event) 
   const dbRecipes = await db.query.recipesTable.findMany({
     where: conditions.length > 0 ? and(...conditions) : undefined,
     orderBy: [
-      asc(recipesTable.createdAt),
+      asc(recipesTable.name),
     ],
     with: {
       difficulty: true,
@@ -37,7 +38,7 @@ export default defineEventHandler<Promise<RecipeWithRelations[]>>(async (event) 
 
   const recipes: RecipeWithRelations[] = dbRecipes.map((dbRecipe) => {
     return {
-      id: dbRecipe.id,
+      id: dbRecipe.id as RecipeUuid,
       name: dbRecipe.name,
       description: dbRecipe.description,
       time: dbRecipe.time,
@@ -62,6 +63,7 @@ export default defineEventHandler<Promise<RecipeWithRelations[]>>(async (event) 
       authorId: dbRecipe.authorId,
       categoryId: dbRecipe.categoryId,
       difficultyId: dbRecipe.difficultyId,
+      isFavorite: dbRecipe.isFavorite,
     }
   })
 

@@ -1,15 +1,17 @@
 import { z } from 'zod'
+import { recipeUuidSchema } from '~~/shared/types/recipe/recipeUuid.type'
 
 export const recipeSchema = z.object({
-  id: z.uuid(),
+  id: recipeUuidSchema,
   authorId: z.uuid(),
   createdAt: z.iso.datetime().nullable(),
   updatedAt: z.iso.datetime().nullable(),
-  name: z.string().min(3, 'Name must be at least 3 characters').max(255),
-  description: z.string().min(10, 'Description must be at least 10 characters'),
-  time: z.string().min(1).max(50),
-  servings: z.string().min(1).max(50),
+  name: z.string(),
+  description: z.string(),
+  time: z.string(),
+  servings: z.string(),
   emoji: z.emoji().nullable(),
+  isFavorite: z.boolean().default(false),
   difficultyId: z.uuid(),
   categoryId: z.uuid(),
 })
