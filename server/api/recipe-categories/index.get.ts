@@ -1,3 +1,4 @@
+import type { RecipeCategorySelect } from '~~/server/db/schema/index'
 import type { RecipeCategory } from '~~/shared/types/recipe-category/recipeCategory.type'
 import type { RecipeCategoryUuid } from '~~/shared/types/recipe-category/recipeCategoryUuid.type'
 import { asc } from 'drizzle-orm'
@@ -7,7 +8,7 @@ import { recipeCategoriesTable } from '~~/server/db/schema/index'
 export default defineEventHandler<Promise<RecipeCategory[]>>(async () => {
   const db = useDB()
 
-  const dbCategories = await db.query.recipeCategoriesTable.findMany({
+  const dbCategories: RecipeCategorySelect[] = await db.query.recipeCategoriesTable.findMany({
     orderBy: [
       asc(recipeCategoriesTable.name),
     ],

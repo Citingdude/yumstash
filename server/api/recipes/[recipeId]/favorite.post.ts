@@ -8,36 +8,23 @@ const favoriteBodySchema = z.object({
   isFavorite: z.boolean(),
 })
 
+const favoriteParamsSchema = z.object({
+  recipeId: recipeUuidSchema,
+})
+
 export default defineEventHandler(async (event) => {
   const db = useDB()
-  const recipeIdParam = getRouterParam(event, 'recipeId')
-  const parsedRecipeId = recipeUuidSchema.safeParse(recipeIdParam)
 
-  if (!parsedRecipeId.success) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'Invalid recipe id',
-    })
-  }
-
-  const body = await readBody(event)
-  const parsedBody = favoriteBodySchema.safeParse(body)
-
-  if (!parsedBody.success) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'Validation failed',
-      data: z.treeifyError(parsedBody.error),
-    })
-  }
+  const params = await getValidatedRouterParams(event, favoriteParamsSchema.parse)
+  const body = await readValidatedBody(event, favoriteBodySchema.parse)
 
   const [updatedRecipe] = await db
     .update(recipesTable)
     .set({
-      isFavorite: !parsedBody.data.isFavorite,
+      isFavorite: !body.isFavorite,
       updatedAt: new Date(),
     })
-    .where(eq(recipesTable.id, parsedRecipeId.data))
+    .where(eq(recipesTable.id, params.recipeId))
     .returning()
 
   if (!updatedRecipe) {

@@ -2,11 +2,7 @@ import { count, eq } from 'drizzle-orm'
 import { useDB } from '~~/server/db'
 import { recipesTable } from '~~/server/db/schema/index'
 
-interface CookedCountResponse {
-  count: number
-}
-
-export default defineEventHandler<CookedCountResponse>(async () => {
+export default defineEventHandler(async () => {
   const db = useDB()
 
   const [result] = await db

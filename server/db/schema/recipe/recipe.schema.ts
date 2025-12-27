@@ -1,4 +1,5 @@
 import type { InferInsertModel, InferSelectModel } from 'drizzle-orm'
+import type { RecipeDifficultyEnum } from '../recipe-difficulty/recipe-difficulty.schema'
 import { relations } from 'drizzle-orm'
 import { boolean, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core'
 import { recipeCategoriesTable } from '../recipe-category/recipe-category.schema'
@@ -53,3 +54,20 @@ export const recipeCategoriesRelations = relations(recipeCategoriesTable, ({ man
 
 export type RecipeSelect = InferSelectModel<typeof recipesTable>
 export type RecipeInsert = InferInsertModel<typeof recipesTable>
+
+export type RecipeSelectWithRelations = RecipeSelect & {
+  difficulty: {
+    id: string
+    name: RecipeDifficultyEnum
+  }
+  category: {
+    id: string
+    name: string
+    slug: string
+  }
+  author: {
+    id: string
+    name: string
+    email: string
+  }
+}

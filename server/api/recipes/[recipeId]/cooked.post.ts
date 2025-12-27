@@ -8,38 +8,23 @@ const cookedBodySchema = z.object({
   isCooked: z.boolean(),
 })
 
-type CookedRequestBody = z.infer<typeof cookedBodySchema>
+const cookedParamsSchema = z.object({
+  recipeId: recipeUuidSchema,
+})
 
 export default defineEventHandler(async (event) => {
   const db = useDB()
-  const recipeIdParam = getRouterParam(event, 'recipeId')
-  const parsedRecipeId = recipeUuidSchema.safeParse(recipeIdParam)
 
-  if (!parsedRecipeId.success) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'Invalid recipe id',
-    })
-  }
-
-  const body = await readBody<CookedRequestBody>(event)
-  const parsedBody = cookedBodySchema.safeParse(body)
-
-  if (!parsedBody.success) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'Validation failed',
-      data: parsedBody.error.format(),
-    })
-  }
+  const params = await getValidatedRouterParams(event, cookedParamsSchema.parse)
+  const body = await readValidatedBody(event, cookedBodySchema.parse)
 
   const [updatedRecipe] = await db
     .update(recipesTable)
     .set({
-      isCooked: !parsedBody.data.isCooked,
+      isCooked: !body.isCooked,
       updatedAt: new Date(),
     })
-    .where(eq(recipesTable.id, parsedRecipeId.data))
+    .where(eq(recipesTable.id, params.recipeId))
     .returning()
 
   if (!updatedRecipe) {
