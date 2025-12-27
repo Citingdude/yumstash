@@ -1,0 +1,2 @@
+export const DEFAULT_RECIPE_PAGE_SIZE = 12
+export const MAX_RECIPE_PAGE_SIZE = 50

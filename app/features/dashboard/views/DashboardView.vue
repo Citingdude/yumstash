@@ -20,25 +20,42 @@ const toast = useToast()
 const selectedCategory = ref<RecipeCategorySelectItem | undefined>(undefined)
 const searchQuery = ref<string | undefined>()
 const debouncedSearchQuery = refDebounced(searchQuery, 300)
+const page = ref<number>(1)
 
 const categoryId = computed(() => selectedCategory.value?.value)
 
-const recipeIndexQuery = useRecipeIndexQuery(debouncedSearchQuery, categoryId)
+const recipeIndexQuery = useRecipeIndexQuery(debouncedSearchQuery, categoryId, page)
 const recipeCountQuery = useRecipeCountQuery()
 const recipeCategoryIndexQuery = useRecipeCategoryIndexQuery()
 const recipeCategoryCountQuery = useRecipeCategoryCountQuery()
 const recipeFavoriteCountQuery = useRecipeFavoriteCountQuery()
 const recipeCookedCountQuery = useRecipeCookedCountQuery()
 
+watch([debouncedSearchQuery, categoryId], () => {
+  page.value = 1
+})
+
 const recipeCategoryItems = computed<RecipeCategoryFilterItem[]>(() => {
   return recipeCategoryIndexQuery.filterItems.value
 })
 
+const paginatedMeta = computed(() => recipeIndexQuery.data.value?.meta)
+
 const recipes = computed<RecipeWithRelations[]>(() => {
-  return recipeIndexQuery.data.value ?? []
+  return recipeIndexQuery.data.value?.items ?? []
+})
+
+const totalPages = computed(() => paginatedMeta.value?.totalPages ?? 1)
+
+watch(totalPages, (newTotalPages) => {
+  if (page.value > newTotalPages) {
+    page.value = newTotalPages
+  }
 })
 
 const totalRecipes = computed(() => recipeCountQuery.data.value ?? 0)
+
+const totalFilteredRecipes = computed<number>(() => recipeIndexQuery.data.value?.meta?.total ?? 0)
 
 const totalCategories = computed(() => recipeCategoryCountQuery.data.value ?? 0)
 
@@ -185,26 +202,36 @@ async function onCooked(recipeId: RecipeUuid, isCooked: boolean): Promise<void> 
       />
     </div>
 
-    <UPageGrid as="ul">
-      <li
-        v-for="recipe in recipeCards"
-        :key="recipe.name"
-      >
-        <RecipeCard
-          :id="recipe.id"
-          :emoji="recipe.emoji"
-          :difficulty="recipe.difficulty"
-          :name="recipe.name"
-          :description="recipe.description"
-          :time="recipe.time"
-          :servings="recipe.servings"
-          :category="recipe.category"
-          :is-favorite="recipe.isFavorite"
-          :is-cooked="recipe.isCooked"
-          @favorite="(recipeId, isFavorite) => onFavorite(recipeId, isFavorite)"
-          @cooked="(recipeId, isCooked) => onCooked(recipeId, isCooked)"
-        />
-      </li>
-    </UPageGrid>
+    <section class="space-y-8">
+      <UPageGrid as="ul">
+        <li
+          v-for="recipe in recipeCards"
+          :key="recipe.name"
+        >
+          <RecipeCard
+            :id="recipe.id"
+            :emoji="recipe.emoji"
+            :difficulty="recipe.difficulty"
+            :name="recipe.name"
+            :description="recipe.description"
+            :time="recipe.time"
+            :servings="recipe.servings"
+            :category="recipe.category"
+            :is-favorite="recipe.isFavorite"
+            :is-cooked="recipe.isCooked"
+            @favorite="(recipeId, isFavorite) => onFavorite(recipeId, isFavorite)"
+            @cooked="(recipeId, isCooked) => onCooked(recipeId, isCooked)"
+          />
+        </li>
+      </UPageGrid>
+
+      <UPagination
+        v-model:page="page"
+        :ui="{
+          root: 'flex justify-center',
+        }"
+        :total="totalFilteredRecipes"
+      />
+    </section>
   </main>
 </template>
