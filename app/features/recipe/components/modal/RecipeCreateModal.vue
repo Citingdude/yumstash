@@ -51,7 +51,10 @@ async function onSubmit(event: FormSubmitEvent<CreateRecipeForm>) {
       body: event.data,
     })
 
-    await refreshNuxtData('recipe-index')
+    await Promise.all([
+      refreshNuxtData('recipe-index'),
+      refreshNuxtData('recipe-count'),
+    ])
 
     emit('close')
     resetForm()

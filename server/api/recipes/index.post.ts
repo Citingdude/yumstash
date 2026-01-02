@@ -29,7 +29,7 @@ export default defineEventHandler(async (event) => {
         emoji: data.emoji,
         difficultyId: data.difficultyId,
         categoryId: data.categoryId,
-        authorId: '160d5ddd-a48c-4107-917c-2d65ffb82538',
+        authorId: 'fa5642e2-6efa-4e9f-a625-6e5e8a74a076',
       })
       .returning()
 
