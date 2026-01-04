@@ -1,0 +1,59 @@
+import { authRegisterBodySchema } from '#shared/types/auth/register/authRegister.type'
+import { eq } from 'drizzle-orm'
+import { useDB } from '~~/server/db'
+import { usersTable } from '~~/server/db/schema'
+import { hashPassword } from '~~/server/utils/password/password.util'
+import { createSession } from '~~/server/utils/session/session.util'
+
+export default defineEventHandler(async (event) => {
+  const { name, email, password } = await readValidatedBody(event, authRegisterBodySchema.parse)
+
+  const db = useDB()
+
+  const existingUser = await db.query.usersTable.findFirst({
+    where: eq(usersTable.email, email),
+  })
+
+  if (existingUser) {
+    throw createError({
+      statusCode: 409,
+      message: 'Email already registered',
+    })
+  }
+
+  const passwordHash = await hashPassword(password)
+
+  const [newUser] = await db
+    .insert(usersTable)
+    .values({
+      name,
+      email,
+      passwordHash,
+    })
+    .returning()
+
+  if (!newUser) {
+    throw createError({
+      statusCode: 500,
+      message: 'Failed to create user',
+    })
+  }
+
+  const session = await createSession(db)
+
+  setCookie(event, 'session', session.token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 60 * 60 * 24 * 30, // 30 days
+  })
+
+  return {
+    user: {
+      id: newUser.id,
+      name: newUser.name,
+      email: newUser.email,
+    },
+  }
+})

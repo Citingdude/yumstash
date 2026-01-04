@@ -1,11 +1,35 @@
 <script setup lang="ts">
+import { AuthService } from '~/features/auth/services/auth.service'
+
 const emit = defineEmits<{
   addRecipe: []
 }>()
 
+const toast = useToast()
+
 function onAddRecipe(): void {
   emit('addRecipe')
 }
+
+async function logout(): Promise<void> {
+  try {
+    await AuthService.logout()
+    await navigateTo('/login')
+  }
+  catch {
+    toast.add({
+      title: 'Logout failed',
+    })
+  }
+}
+
+const userMenuItems = [
+  [{
+    label: 'Logout',
+    icon: 'i-heroicons-arrow-right-on-rectangle',
+    onSelect: logout,
+  }],
+]
 </script>
 
 <template>
@@ -29,11 +53,17 @@ function onAddRecipe(): void {
           >
             Add Recipe
           </UButton>
-          <UAvatar
-            src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
-            alt="User"
-            size="md"
-          />
+          <UDropdownMenu
+            :items="userMenuItems"
+            :popper="{ placement: 'bottom-end' }"
+          >
+            <UAvatar
+              src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
+              alt="User"
+              size="md"
+              class="cursor-pointer"
+            />
+          </UDropdownMenu>
         </div>
       </div>
     </div>
