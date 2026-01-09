@@ -43,7 +43,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const session = await createSession(db)
+  const session = await createSession(db, newUser.id)
 
   setCookie(event, 'session', session.token, {
     httpOnly: true,

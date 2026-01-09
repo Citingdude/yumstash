@@ -6,10 +6,12 @@ import { and, asc, count, eq, ilike, or } from 'drizzle-orm'
 import { useDB } from '~~/server/db'
 import { recipesTable } from '~~/server/db/schema/index'
 import { RecipeWithRelationsTransformer } from '~~/server/transformers/recipeWithRelations.transformer'
+import { requireAuth } from '~~/server/utils/auth/auth.util'
 import { DEFAULT_RECIPE_PAGE_SIZE } from '~~/shared/constants/recipePagination.constant'
 import { recipeIndexQuerySchema } from '~~/shared/types/recipe/recipeIndexQuery.type'
 
 export default defineEventHandler<Promise<RecipeIndexResult>>(async (event) => {
+  const userId = await requireAuth(event)
   const db = useDB()
 
   const {
@@ -22,7 +24,7 @@ export default defineEventHandler<Promise<RecipeIndexResult>>(async (event) => {
   const pageSize = rawPageSize ?? DEFAULT_RECIPE_PAGE_SIZE
   const requestedPage = rawPage ?? 1
 
-  const filters: SQL[] = buildFilters(search, categoryId)
+  const filters: SQL[] = buildFilters(search, categoryId, userId)
   const whereClause = filters.length > 0 ? and(...filters) : undefined
 
   const countQuery = db.select({ value: count() }).from(recipesTable)
@@ -65,8 +67,11 @@ export default defineEventHandler<Promise<RecipeIndexResult>>(async (event) => {
 function buildFilters(
   search: string | undefined,
   categoryId: string | undefined,
+  userId: string,
 ): SQL[] {
-  const filters: SQL[] = []
+  const filters: SQL[] = [
+    eq(recipesTable.authorId, userId),
+  ]
 
   if (search) {
     const searchFilter = or(

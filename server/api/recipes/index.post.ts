@@ -1,8 +1,10 @@
 import { useDB } from '~~/server/db'
 import { recipesTable } from '~~/server/db/schema/index'
+import { requireAuth } from '~~/server/utils/auth/auth.util'
 import { createRecipeFormSchema } from '~~/shared/types/recipe/createRecipeForm.type'
 
 export default defineEventHandler(async (event) => {
+  const userId = await requireAuth(event)
   const db = useDB()
 
   const body = await readBody(event)
@@ -29,7 +31,7 @@ export default defineEventHandler(async (event) => {
         emoji: data.emoji,
         difficultyId: data.difficultyId,
         categoryId: data.categoryId,
-        authorId: 'fa5642e2-6efa-4e9f-a625-6e5e8a74a076',
+        authorId: userId,
       })
       .returning()
 

@@ -38,7 +38,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const session = await createSession(db)
+    const session = await createSession(db, user.id)
 
     // 30 days or 1 day
     const maxAge = remember

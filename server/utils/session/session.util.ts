@@ -5,7 +5,7 @@ import { decodeBase64, encodeBase64 } from '#shared/utils/encode/encode.util'
 import { eq } from 'drizzle-orm'
 import { sessionsTable } from '~~/server/db/schema'
 
-export async function createSession(db: DB): Promise<SessionWithToken> {
+export async function createSession(db: DB, userId: string): Promise<SessionWithToken> {
   const now = new Date()
 
   const id = generateSecureRandomString()
@@ -24,6 +24,7 @@ export async function createSession(db: DB): Promise<SessionWithToken> {
 
   await db.insert(sessionsTable).values({
     id: session.id,
+    userId,
     secretHash: session.secretHash!,
     createdAt: session.createdAt,
   })
@@ -81,6 +82,7 @@ async function getSession(db: DB, sessionId: string): Promise<Session | null> {
 
   const session: Session = {
     id: result.id,
+    userId: result.userId,
     secretHash: result.secretHash,
     createdAt: result.createdAt,
   }
