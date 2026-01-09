@@ -1,41 +1,42 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '#ui/types'
-import type { z } from 'zod'
+import type { LoginBody } from '~~/shared/types/auth/login/authLogin.type'
 import { authLoginFormDataSchema } from '~~/shared/types/auth/login/authLogin.type'
+import { useApiError } from '~/composables/error/useApiError'
+import { useAppToast } from '~/composables/toast/useAppToast.composable'
 import { AuthService } from '~/features/auth/services/auth.service'
 
-type LoginFormData = z.output<typeof authLoginFormDataSchema>
-
 const router = useRouter()
-const toast = useToast()
+const toast = useAppToast()
+const { extractError } = useApiError()
 
-const isSubmitting = ref(false)
+const isSubmitting = ref<boolean>(false)
 
-const state = reactive<LoginFormData>({
+const state = reactive<LoginBody>({
   email: '',
   password: '',
   remember: true,
 })
 
-async function onSubmit(event: FormSubmitEvent<LoginFormData>): Promise<void> {
+async function onSubmit(event: FormSubmitEvent<LoginBody>): Promise<void> {
   isSubmitting.value = true
 
   try {
     await AuthService.login(event.data)
 
-    toast.add({
+    toast.success({
       title: 'Signed in',
       description: 'Redirecting to your dashboard…',
-      color: 'success',
     })
 
     await router.push('/')
   }
   catch (error) {
-    toast.add({
+    const appError = extractError(error)
+
+    toast.error({
       title: 'Login failed',
-      description: error instanceof Error ? error.message : 'Unable to sign in. Please try again.',
-      color: 'error',
+      errorMessage: appError.message,
     })
   }
   finally {

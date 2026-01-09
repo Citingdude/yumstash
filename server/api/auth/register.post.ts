@@ -2,11 +2,15 @@ import { authRegisterBodySchema } from '#shared/types/auth/register/authRegister
 import { eq } from 'drizzle-orm'
 import { useDB } from '~~/server/db'
 import { usersTable } from '~~/server/db/schema'
-import { hashPassword } from '~~/server/utils/password/password.util'
+import { PasswordUtil } from '~~/server/utils/password/password.util'
 import { createSession } from '~~/server/utils/session/session.util'
 
 export default defineEventHandler(async (event) => {
-  const { name, email, password } = await readValidatedBody(event, authRegisterBodySchema.parse)
+  const {
+    name,
+    email,
+    password,
+  } = await readValidatedBody(event, authRegisterBodySchema.parse)
 
   const db = useDB()
 
@@ -21,7 +25,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const passwordHash = await hashPassword(password)
+  const passwordHash = await PasswordUtil.hash(password)
 
   const [newUser] = await db
     .insert(usersTable)

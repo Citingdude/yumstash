@@ -1,6 +1,8 @@
 const UNAUTHENTICATED_ROUTES = [
   '/login',
   '/register',
+  '/forgot-password',
+  '/reset-password',
 ] as const
 
 type UnauthenticatedRoute = typeof UNAUTHENTICATED_ROUTES[number]
