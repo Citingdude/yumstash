@@ -48,16 +48,12 @@ export async function validateSessionToken(db: DB, token: string): Promise<Sessi
   const sessionId = tokenParts[0]
   const sessionSecret = tokenParts[1]
 
-  if (!sessionId) {
+  if (!sessionId || !sessionSecret) {
     return null
   }
 
   const session = await getSession(db, sessionId)
   if (!session) {
-    return null
-  }
-
-  if (sessionSecret === undefined) {
     return null
   }
 
