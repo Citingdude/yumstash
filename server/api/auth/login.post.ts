@@ -4,23 +4,11 @@ import { useDB } from '~~/server/db'
 import { usersTable } from '~~/server/db/schema'
 import { handleApiError } from '~~/server/utils/error/error.util'
 import { PasswordUtil } from '~~/server/utils/password/password.util'
-import { checkRateLimit, resetRateLimit, throwRateLimitError } from '~~/server/utils/ratelimit/ratelimit.util'
 import { createSession } from '~~/server/utils/session/session.util'
 
 export default defineEventHandler(async (event) => {
   try {
     const { email, password, remember } = await readValidatedBody(event, authLoginBodySchema.parse)
-
-    const rateLimitKey = `login:${getRequestIP(event)}:${email.toLowerCase()}`
-    const rateLimit = checkRateLimit(event, {
-      maxAttempts: 5,
-      windowMs: 15 * 60 * 1000, // 15 minutes
-      keyGenerator: () => rateLimitKey,
-    })
-
-    if (!rateLimit.allowed) {
-      throwRateLimitError(rateLimit.retryAfter!)
-    }
 
     const db = useDB()
 
@@ -51,9 +39,6 @@ export default defineEventHandler(async (event) => {
     }
 
     const session = await createSession(db, user.id)
-
-    // Reset rate limit on successful login
-    resetRateLimit(rateLimitKey)
 
     // 30 days or 1 day
     const maxAge = remember

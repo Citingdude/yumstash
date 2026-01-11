@@ -4,21 +4,10 @@ import { useDB } from '~~/server/db'
 import { usersTable } from '~~/server/db/schema'
 import { handleApiError } from '~~/server/utils/error/error.util'
 import { PasswordUtil } from '~~/server/utils/password/password.util'
-import { checkRateLimit, throwRateLimitError } from '~~/server/utils/ratelimit/ratelimit.util'
 import { createSession } from '~~/server/utils/session/session.util'
 
 export default defineEventHandler(async (event) => {
   try {
-    const rateLimit = checkRateLimit(event, {
-      maxAttempts: 3,
-      windowMs: 60 * 60 * 1000, // 1 hour
-      keyGenerator: event => `register:${getRequestIP(event)}`,
-    })
-
-    if (!rateLimit.allowed) {
-      throwRateLimitError(rateLimit.retryAfter!)
-    }
-
     const {
       name,
       email,
