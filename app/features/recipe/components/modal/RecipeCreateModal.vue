@@ -3,6 +3,10 @@ import type { FormSubmitEvent, SelectItem } from '#ui/types'
 import type { z } from 'zod'
 import type { RecipeCategorySelectItem } from '~~/shared/types/recipe-category/recipeCategorySelectItem.type'
 import { createRecipeFormSchema } from '~~/shared/types/recipe/createRecipeForm.type'
+import { useAppToast } from '~/composables/toast/useAppToast.composable'
+import { QUERY_KEYS } from '~/constants/queryKey.constant'
+import { RecipeService } from '~/features/recipe/services/recipe.service'
+import { invalidateQuery } from '~/utils/query/query.util'
 
 const props = defineProps<{
   categoryOptions: RecipeCategorySelectItem[]
@@ -15,7 +19,10 @@ const emit = defineEmits<{
 
 export type CreateRecipeForm = z.output<typeof createRecipeFormSchema>
 
-const toast = useToast()
+const toast = useAppToast()
+
+const requestFetch = useRequestFetch()
+const recipeService = new RecipeService(requestFetch)
 
 const isSubmitting = ref(false)
 
@@ -46,30 +53,25 @@ async function onSubmit(event: FormSubmitEvent<CreateRecipeForm>) {
   isSubmitting.value = true
 
   try {
-    await $fetch('/api/recipes', {
-      method: 'POST',
-      body: event.data,
-    })
+    await recipeService.createRecipe(event.data)
 
     await Promise.all([
-      refreshNuxtData('recipe-index'),
-      refreshNuxtData('recipe-count'),
+      invalidateQuery(QUERY_KEYS.RECIPE_INDEX),
+      invalidateQuery(QUERY_KEYS.RECIPE_COUNT),
     ])
 
     emit('close')
     resetForm()
 
-    toast.add({
+    toast.success({
       title: 'Success',
       description: 'Recipe created',
-      color: 'success',
     })
   }
   catch {
-    toast.add({
+    toast.error({
       title: 'Error',
-      description: 'Recipe creation failed',
-      color: 'error',
+      errorMessage: 'Recipe creation failed',
     })
   }
   finally {

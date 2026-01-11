@@ -1,3 +1,4 @@
+import type { CreateRecipeForm } from '~~/shared/types/recipe/createRecipeForm.type'
 import type { RecipeIndexResult } from '~~/shared/types/recipe/recipeIndexResult.type'
 import { DEFAULT_RECIPE_PAGE_SIZE } from '~~/shared/constants/recipePagination.constant'
 
@@ -15,7 +16,7 @@ export class RecipeService {
     this.requestFetch = requestFetch
   }
 
-  async getRecipes(params: GetRecipesParams): Promise<RecipeIndexResult> {
+  public async getRecipes(params: GetRecipesParams): Promise<RecipeIndexResult> {
     return this.requestFetch('/api/recipes', {
       query: {
         search: params.search,
@@ -23,6 +24,13 @@ export class RecipeService {
         page: params.page,
         pageSize: params.pageSize ?? DEFAULT_RECIPE_PAGE_SIZE,
       },
+    })
+  }
+
+  public async createRecipe(body: CreateRecipeForm) {
+    await this.requestFetch('/api/recipes', {
+      method: 'POST',
+      body,
     })
   }
 }

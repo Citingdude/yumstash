@@ -7,30 +7,19 @@ export default defineEventHandler(async (event) => {
   const userId = await requireAuth(event)
   const db = useDB()
 
-  const body = await readBody(event)
-  const validationResult = createRecipeFormSchema.safeParse(body)
-
-  if (!validationResult.success) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'Validation failed',
-      data: validationResult.error.format(),
-    })
-  }
-
-  const data = validationResult.data
+  const body = await readValidatedBody(event, createRecipeFormSchema.parse)
 
   try {
     const [newRecipe] = await db
       .insert(recipesTable)
       .values({
-        name: data.name,
-        description: data.description,
-        time: data.time,
-        servings: data.servings,
-        emoji: data.emoji,
-        difficultyId: data.difficultyId,
-        categoryId: data.categoryId,
+        name: body.name,
+        description: body.description,
+        time: body.time,
+        servings: body.servings,
+        emoji: body.emoji,
+        difficultyId: body.difficultyId,
+        categoryId: body.categoryId,
         authorId: userId,
       })
       .returning()
