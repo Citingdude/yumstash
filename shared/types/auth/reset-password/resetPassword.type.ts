@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import z from 'zod'
 
 export const resetPasswordBodySchema = z.object({
   token: z.string().min(1, 'Reset token is required'),
