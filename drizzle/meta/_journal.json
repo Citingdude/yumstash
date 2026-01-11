@@ -22,6 +22,27 @@
       "when": 1766577696321,
       "tag": "0002_odd_robbie_robertson",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1767442315775,
+      "tag": "0003_black_wallflower",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1767980927537,
+      "tag": "0004_black_violations",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1767985638070,
+      "tag": "0005_yielding_black_knight",
+      "breakpoints": true
     }
   ]
 }

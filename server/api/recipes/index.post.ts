@@ -1,35 +1,26 @@
 import { useDB } from '~~/server/db'
 import { recipesTable } from '~~/server/db/schema/index'
+import { requireAuth } from '~~/server/utils/auth/auth.util'
 import { createRecipeFormSchema } from '~~/shared/types/recipe/createRecipeForm.type'
 
 export default defineEventHandler(async (event) => {
+  const userId = await requireAuth(event)
   const db = useDB()
 
-  const body = await readBody(event)
-  const validationResult = createRecipeFormSchema.safeParse(body)
-
-  if (!validationResult.success) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'Validation failed',
-      data: validationResult.error.format(),
-    })
-  }
-
-  const data = validationResult.data
+  const body = await readValidatedBody(event, createRecipeFormSchema.parse)
 
   try {
     const [newRecipe] = await db
       .insert(recipesTable)
       .values({
-        name: data.name,
-        description: data.description,
-        time: data.time,
-        servings: data.servings,
-        emoji: data.emoji,
-        difficultyId: data.difficultyId,
-        categoryId: data.categoryId,
-        authorId: 'fa5642e2-6efa-4e9f-a625-6e5e8a74a076',
+        name: body.name,
+        description: body.description,
+        time: body.time,
+        servings: body.servings,
+        emoji: body.emoji,
+        difficultyId: body.difficultyId,
+        categoryId: body.categoryId,
+        authorId: userId,
       })
       .returning()
 

@@ -6,7 +6,10 @@ import type { RecipeUuid } from '~~/shared/types/recipe/recipeUuid.type'
 import type { RecipeCardProps } from '~/features/recipe/components/card/RecipeCard.vue'
 
 import { refDebounced } from '@vueuse/core'
+import ConfirmDialog from '~/components/dialog/ConfirmDialog.vue'
 import StatsCard from '~/components/stats/StatsCard.vue'
+import { useAppToast } from '~/composables/toast/useAppToast.composable'
+import { QUERY_KEYS } from '~/constants/queryKey.constant'
 import RecipeCard from '~/features/recipe/components/card/RecipeCard.vue'
 import { useRecipeCategoryCountQuery } from '~/features/recipe/queries/recipeCategoryCount.query'
 import { useRecipeCategoryIndexQuery } from '~/features/recipe/queries/recipeCategoryIndex.query'
@@ -14,8 +17,15 @@ import { useRecipeCookedCountQuery } from '~/features/recipe/queries/recipeCooke
 import { useRecipeCountQuery } from '~/features/recipe/queries/recipeCount.query'
 import { useRecipeFavoriteCountQuery } from '~/features/recipe/queries/recipeFavoriteCount.query'
 import { useRecipeIndexQuery } from '~/features/recipe/queries/recipeIndex.query'
+import { RecipeService } from '~/features/recipe/services/recipe.service'
+import { invalidateQuery } from '~/utils/query/query.util'
 
-const toast = useToast()
+const toast = useAppToast()
+const overlay = useOverlay()
+const confirmDialog = overlay.create(ConfirmDialog)
+
+const requestFetch = useRequestFetch()
+const recipeService = new RecipeService(requestFetch)
 
 const selectedCategory = ref<RecipeCategorySelectItem | undefined>(undefined)
 const searchQuery = ref<string | undefined>()
@@ -90,24 +100,22 @@ async function onFavorite(recipeId: RecipeUuid, isFavorite: boolean): Promise<vo
     })
 
     await Promise.all([
-      refreshNuxtData('recipe-index'),
-      refreshNuxtData('recipe-favorite-count'),
+      invalidateQuery(QUERY_KEYS.RECIPE_INDEX),
+      invalidateQuery(QUERY_KEYS.RECIPE_FAVORITE_COUNT),
     ])
 
-    toast.add({
+    toast.success({
       title: isFavorite ? 'Recipe favorited' : 'Favorite removed',
       description: isFavorite
         ? 'Recipe added to your favorites.'
         : 'Recipe removed from your favorites.',
-      color: 'success',
     })
   }
   catch (error) {
     console.error('Failed to update favorite state', error)
-    toast.add({
+    toast.error({
       title: 'Error',
-      description: 'Could not update favorite. Try again later.',
-      color: 'error',
+      errorMessage: 'Could not update favorite. Try again later.',
     })
   }
 }
@@ -126,20 +134,58 @@ async function onCooked(recipeId: RecipeUuid, isCooked: boolean): Promise<void> 
       refreshNuxtData('recipe-cooked-count'),
     ])
 
-    toast.add({
+    toast.success({
       title: isCooked ? 'Recipe marked cooked' : 'Cooked status removed',
       description: isCooked
         ? 'Recipe added to your cooked list.'
         : 'Recipe removed from your cooked list.',
-      color: 'success',
     })
   }
   catch (error) {
     console.error('Failed to update cooked state', error)
-    toast.add({
+    toast.error({
       title: 'Error',
-      description: 'Could not update cooked status. Try again later.',
-      color: 'error',
+      errorMessage: 'Could not update cooked status. Try again later.',
+    })
+  }
+}
+
+async function onDelete(recipeId: RecipeUuid): Promise<void> {
+  const instance = confirmDialog.open({
+    title: 'Delete Recipe',
+    description: 'Are you sure you want to delete this recipe? This action cannot be undone.',
+    icon: 'i-heroicons-exclamation-triangle',
+    confirmColor: 'error',
+    confirmLabel: 'Delete',
+    cancelLabel: 'Cancel',
+  })
+
+  const confirmed = await instance.result
+
+  if (!confirmed) {
+    return
+  }
+
+  try {
+    await recipeService.deleteRecipe(recipeId)
+
+    await Promise.all([
+      invalidateQuery(QUERY_KEYS.RECIPE_INDEX),
+      invalidateQuery(QUERY_KEYS.RECIPE_COUNT),
+      invalidateQuery(QUERY_KEYS.RECIPE_FAVORITE_COUNT),
+      invalidateQuery(QUERY_KEYS.RECIPE_COOKED_COUNT),
+    ])
+
+    toast.success({
+      title: 'Recipe deleted',
+      description: 'Recipe has been successfully deleted.',
+    })
+  }
+  catch (error) {
+    console.error('Failed to delete recipe', error)
+    toast.error({
+      title: 'Error',
+      errorMessage: 'Could not delete recipe. Try again later.',
     })
   }
 }
@@ -221,6 +267,7 @@ async function onCooked(recipeId: RecipeUuid, isCooked: boolean): Promise<void> 
             :is-cooked="recipe.isCooked"
             @favorite="(recipeId, isFavorite) => onFavorite(recipeId, isFavorite)"
             @cooked="(recipeId, isCooked) => onCooked(recipeId, isCooked)"
+            @delete="(recipeId) => onDelete(recipeId)"
           />
         </li>
       </UPageGrid>

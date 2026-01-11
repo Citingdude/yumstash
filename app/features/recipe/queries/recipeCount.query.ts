@@ -1,14 +1,16 @@
-import type { RecipeIndexResult } from '~~/shared/types/recipe/recipeIndexResult.type'
+import { QUERY_KEYS } from '~/constants/queryKey.constant'
+import { RecipeService } from '~/features/recipe/services/recipe.service'
 
 export function useRecipeCountQuery() {
   return useAsyncData(
-    'recipe-count',
+    QUERY_KEYS.RECIPE_COUNT,
     async () => {
-      const response = await $fetch<RecipeIndexResult>('/api/recipes', {
-        query: {
-          pageSize: 1,
-          page: 1,
-        },
+      const requestFetch = useRequestFetch()
+      const recipeService = new RecipeService(requestFetch)
+
+      const response = await recipeService.getRecipes({
+        page: 1,
+        pageSize: 1,
       })
 
       return response.meta.total

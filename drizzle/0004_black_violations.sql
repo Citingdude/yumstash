@@ -1,0 +1,10 @@
+CREATE TABLE "password_reset_tokens" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"userId" uuid NOT NULL,
+	"token" varchar(255) NOT NULL,
+	"expiresAt" timestamp NOT NULL,
+	"createdAt" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "password_reset_tokens_token_unique" UNIQUE("token")
+);
+--> statement-breakpoint
+ALTER TABLE "password_reset_tokens" ADD CONSTRAINT "password_reset_tokens_userId_users_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;

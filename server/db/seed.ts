@@ -1,5 +1,6 @@
 import type { RecipeInsert } from './schema/recipe/recipe.schema'
 import { drizzle } from 'drizzle-orm/node-postgres'
+import { PasswordUtil } from '../utils/password/password.util'
 import { recipeCategoriesTable } from './schema/recipe-category/recipe-category.schema'
 import { recipeDifficultiesTable } from './schema/recipe-difficulty/recipe-difficulty.schema'
 import { recipesTable } from './schema/recipe/recipe.schema'
@@ -10,11 +11,14 @@ const db = drizzle(process.env.DATABASE_URL!)
 
 async function seed() {
   try {
+    const passwordHash = await PasswordUtil.hash('testing123')
+
     const [user] = await db
       .insert(usersTable)
       .values({
         name: 'Demo User',
         email: 'demo@yumstash.com',
+        passwordHash,
       })
       .returning()
 
