@@ -2,9 +2,10 @@
 import type { FormSubmitEvent } from '#ui/types'
 import type { RegisterFormData } from '~~/shared/types/auth/register/authRegister.type'
 import { authRegisterFormDataSchema } from '~~/shared/types/auth/register/authRegister.type'
+import { useAppToast } from '~/composables/toast/useAppToast.composable'
 
 const router = useRouter()
-const toast = useToast()
+const toast = useAppToast()
 
 const isSubmitting = ref(false)
 
@@ -29,19 +30,19 @@ async function onSubmit(event: FormSubmitEvent<RegisterFormData>): Promise<void>
       },
     })
 
-    toast.add({
+    toast.success({
       title: 'Account created',
       description: 'Redirecting to sign in…',
-      color: 'success',
     })
 
     router.push('/')
   }
   catch (error) {
-    toast.add({
+    const apiError = handleApiError(error)
+
+    toast.error({
       title: 'Registration failed',
-      description: error instanceof Error ? error.message : 'Unable to create your account right now.',
-      color: 'error',
+      errorMessage: apiError.message,
     })
   }
   finally {

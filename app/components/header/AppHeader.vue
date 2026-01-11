@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import { useAppToast } from '~/composables/toast/useAppToast.composable'
 import { AuthService } from '~/features/auth/services/auth.service'
 
 const emit = defineEmits<{
   addRecipe: []
 }>()
 
-const toast = useToast()
+const toast = useAppToast()
 
 function onAddRecipe(): void {
   emit('addRecipe')
@@ -17,7 +18,7 @@ async function logout(): Promise<void> {
     await navigateTo('/login')
   }
   catch {
-    toast.add({
+    toast.error({
       title: 'Logout failed',
     })
   }
