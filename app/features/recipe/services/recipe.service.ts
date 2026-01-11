@@ -1,5 +1,6 @@
 import type { CreateRecipeForm } from '~~/shared/types/recipe/createRecipeForm.type'
 import type { RecipeIndexResult } from '~~/shared/types/recipe/recipeIndexResult.type'
+import type { RecipeUuid } from '~~/shared/types/recipe/recipeUuid.type'
 import { DEFAULT_RECIPE_PAGE_SIZE } from '~~/shared/constants/recipePagination.constant'
 
 interface GetRecipesParams {
@@ -31,6 +32,12 @@ export class RecipeService {
     await this.requestFetch('/api/recipes', {
       method: 'POST',
       body,
+    })
+  }
+
+  public async deleteRecipe(recipeId: RecipeUuid) {
+    await this.requestFetch(`/api/recipes/${recipeId}`, {
+      method: 'DELETE',
     })
   }
 }

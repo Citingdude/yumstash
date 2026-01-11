@@ -26,6 +26,9 @@ const emit = defineEmits<{
     recipeId: RecipeUuid,
     isCooked: boolean,
   ]
+  delete: [
+    recipeId: RecipeUuid,
+  ]
 }>()
 
 const difficultyColor = computed(() => {
@@ -50,6 +53,10 @@ function onFavorite(): void {
 
 function onCooked(): void {
   emit('cooked', props.id, props.isCooked)
+}
+
+function onDelete(): void {
+  emit('delete', props.id)
 }
 </script>
 
@@ -114,6 +121,14 @@ function onCooked(): void {
             :aria-pressed="props.isFavorite"
             aria-label="Toggle favorite"
             @click="onFavorite"
+          />
+          <UButton
+            icon="i-heroicons-trash"
+            color="error"
+            variant="ghost"
+            size="sm"
+            aria-label="Delete recipe"
+            @click="onDelete"
           />
         </div>
       </div>
