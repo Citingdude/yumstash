@@ -15,13 +15,9 @@ export function generateSecureRandomString(): string {
 
   let id = ''
   for (let i = 0; i < bytes.length; i++) {
-    const byte = bytes[i]
-
-    if (!byte) {
-      continue
-    }
-
-    // >> 3 "removes" the right-most 3 bits of the byte
+    const byte = bytes[i]!
+    // >> 3 "removes" the right-most 3 bits of the byte, using the top 5 bits
+    // This gives us values 0-31, which perfectly maps to our 32-character alphabet
     id += alphabet[byte >> 3]
   }
   return id
