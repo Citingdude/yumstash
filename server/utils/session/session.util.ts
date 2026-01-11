@@ -89,3 +89,10 @@ async function getSession(db: DB, sessionId: string): Promise<Session | null> {
 
   return session
 }
+
+export async function invalidateAllUserSessions(
+  db: DB,
+  userId: string,
+): Promise<void> {
+  await db.delete(sessionsTable).where(eq(sessionsTable.userId, userId))
+}

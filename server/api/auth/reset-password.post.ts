@@ -5,6 +5,7 @@ import { useDB } from '~~/server/db'
 import { passwordResetTokensTable, usersTable } from '~~/server/db/schema'
 import { handleApiError } from '~~/server/utils/error/error.util'
 import { PasswordUtil } from '~~/server/utils/password/password.util'
+import { invalidateAllUserSessions } from '~~/server/utils/session/session.util'
 
 export default defineEventHandler(async (event): Promise<ApiSuccessResponse> => {
   try {
@@ -40,6 +41,8 @@ export default defineEventHandler(async (event): Promise<ApiSuccessResponse> => 
         updatedAt: new Date(),
       })
       .where(eq(usersTable.id, resetToken.userId))
+
+    await invalidateAllUserSessions(db, resetToken.userId)
 
     await db.delete(passwordResetTokensTable)
       .where(eq(passwordResetTokensTable.id, resetToken.id))
