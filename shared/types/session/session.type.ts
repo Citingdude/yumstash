@@ -1,7 +1,7 @@
 export interface Session {
   id: string
   userId?: string
-  secretHash: string | null
+  secretHash: string
   createdAt: Date
 }
 
