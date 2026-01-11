@@ -22,10 +22,18 @@ export async function createSession(db: DB, userId: string): Promise<SessionWith
     token,
   }
 
+  if (!session.secretHash) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'Failed to create session',
+      message: 'Session secret hash generation failed',
+    })
+  }
+
   await db.insert(sessionsTable).values({
     id: session.id,
     userId,
-    secretHash: session.secretHash!,
+    secretHash: session.secretHash,
     createdAt: session.createdAt,
   })
 
