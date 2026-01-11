@@ -42,6 +42,13 @@ export default defineEventHandler(async (event) => {
     ))
     .returning()
 
+  if (deletedRecipe === undefined) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'Failed to delete recipe',
+    })
+  }
+
   return {
     success: true,
     id: deletedRecipe.id,
