@@ -3,15 +3,13 @@ import type { RecipeUuid } from '~~/shared/types/recipe/recipeUuid.type'
 import ConfirmDialog from '~/components/dialog/ConfirmDialog.vue'
 import { useAppToast } from '~/composables/toast/useAppToast.composable'
 import { useRecipeDetailQuery } from '~/features/recipe/queries/recipeDetail.query'
-import { RecipeService } from '~/features/recipe/services/recipe.service'
+import { useRecipeService } from '~/features/recipe/services/recipe.service'
 
 const route = useRoute('recipes-id')
 const router = useRouter()
 const overlay = useOverlay()
-const requestFetch = useRequestFetch()
 const appToast = useAppToast()
-
-const recipeService = new RecipeService(requestFetch)
+const recipeService = useRecipeService()
 
 const recipeId = computed(() => route.params.id as RecipeUuid)
 const { data: recipe, status, error, refresh } = useRecipeDetailQuery(recipeId)

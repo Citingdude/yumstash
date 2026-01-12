@@ -5,7 +5,7 @@ import type { RecipeCategorySelectItem } from '~~/shared/types/recipe-category/r
 import { createRecipeFormSchema } from '~~/shared/types/recipe/createRecipeForm.type'
 import { useAppToast } from '~/composables/toast/useAppToast.composable'
 import { QUERY_KEYS } from '~/constants/queryKey.constant'
-import { RecipeService } from '~/features/recipe/services/recipe.service'
+import { useRecipeService } from '~/features/recipe/services/recipe.service'
 import { invalidateQuery } from '~/utils/query/query.util'
 
 const props = defineProps<{
@@ -21,8 +21,7 @@ export type CreateRecipeForm = z.output<typeof createRecipeFormSchema>
 
 const toast = useAppToast()
 
-const requestFetch = useRequestFetch()
-const recipeService = new RecipeService(requestFetch)
+const recipeService = useRecipeService()
 
 const isSubmitting = ref(false)
 

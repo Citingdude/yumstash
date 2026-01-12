@@ -17,15 +17,14 @@ import { useRecipeCookedCountQuery } from '~/features/recipe/queries/recipeCooke
 import { useRecipeCountQuery } from '~/features/recipe/queries/recipeCount.query'
 import { useRecipeFavoriteCountQuery } from '~/features/recipe/queries/recipeFavoriteCount.query'
 import { useRecipeIndexQuery } from '~/features/recipe/queries/recipeIndex.query'
-import { RecipeService } from '~/features/recipe/services/recipe.service'
+import { useRecipeService } from '~/features/recipe/services/recipe.service'
 import { invalidateQuery } from '~/utils/query/query.util'
 
 const toast = useAppToast()
 const overlay = useOverlay()
 const confirmDialog = overlay.create(ConfirmDialog)
 
-const requestFetch = useRequestFetch()
-const recipeService = new RecipeService(requestFetch)
+const recipeService = useRecipeService()
 
 const selectedCategory = ref<RecipeCategorySelectItem | undefined>(undefined)
 const searchQuery = ref<string | undefined>()

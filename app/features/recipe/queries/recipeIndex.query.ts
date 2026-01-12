@@ -2,7 +2,7 @@ import type { Ref } from 'vue'
 import type { RecipeIndexResult } from '~~/shared/types/recipe/recipeIndexResult.type'
 import { DEFAULT_RECIPE_PAGE_SIZE } from '~~/shared/constants/recipePagination.constant'
 import { QUERY_KEYS } from '~/constants/queryKey.constant'
-import { RecipeService } from '~/features/recipe/services/recipe.service'
+import { useRecipeService } from '~/features/recipe/services/recipe.service'
 
 export function useRecipeIndexQuery(
   search: Ref<string | undefined>,
@@ -13,8 +13,7 @@ export function useRecipeIndexQuery(
   return useAsyncData<RecipeIndexResult>(
     QUERY_KEYS.RECIPE_INDEX,
     () => {
-      const requestFetch = useRequestFetch()
-      const recipeService = new RecipeService(requestFetch)
+      const recipeService = useRecipeService()
 
       return recipeService.getRecipes({
         search: search.value,
