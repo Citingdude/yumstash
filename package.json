@@ -43,6 +43,7 @@
   "devDependencies": {
     "@antfu/eslint-config": "6.7.1",
     "@iconify-json/heroicons": "1.2.3",
+    "@iconify-json/mdi": "^1.2.3",
     "@types/pg": "8.16.0",
     "drizzle-kit": "0.31.8",
     "tsx": "^4.21.0"

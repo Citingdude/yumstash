@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { RecipeUuid } from '~~/shared/types/recipe/recipeUuid.type'
+import AppButton from '~/components/app/AppButton.vue'
 import ConfirmDialog from '~/components/dialog/ConfirmDialog.vue'
 import { useAppToast } from '~/composables/toast/useAppToast.composable'
 import { useRecipeDetailQuery } from '~/features/recipe/queries/recipeDetail.query'
@@ -155,9 +156,9 @@ async function deleteRecipe() {
           <p class="text-stone-600 mb-6">
             The recipe you're looking for doesn't exist or you don't have permission to view it.
           </p>
-          <UButton to="/" color="error">
+          <AppButton to="/" color="error">
             Back to Recipes
-          </UButton>
+          </AppButton>
         </div>
       </UCard>
     </div>
@@ -166,7 +167,7 @@ async function deleteRecipe() {
     <div v-else-if="recipe" class="container mx-auto px-4 py-8 lg:py-12">
       <div class="max-w-5xl mx-auto">
         <!-- Back Button -->
-        <UButton
+        <AppButton
           to="/"
           variant="ghost"
           color="neutral"
@@ -174,7 +175,7 @@ async function deleteRecipe() {
           class="mb-6"
         >
           Back to Recipes
-        </UButton>
+        </AppButton>
 
         <!-- Recipe Header -->
         <div class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden mb-6">
@@ -199,7 +200,7 @@ async function deleteRecipe() {
 
               <!-- Action Buttons -->
               <div class="flex gap-2">
-                <UButton
+                <AppButton
                   :icon="recipe.isFavorite ? 'i-heroicons-heart-solid' : 'i-heroicons-heart'"
                   :color="recipe.isFavorite ? 'error' : 'neutral'"
                   :variant="recipe.isFavorite ? 'solid' : 'outline'"
@@ -207,7 +208,7 @@ async function deleteRecipe() {
                   size="lg"
                   @click="toggleFavorite"
                 />
-                <UButton
+                <AppButton
                   :icon="recipe.isCooked ? 'i-heroicons-check-circle-solid' : 'i-heroicons-check-circle'"
                   :color="recipe.isCooked ? 'success' : 'neutral'"
                   :variant="recipe.isCooked ? 'solid' : 'outline'"
@@ -215,7 +216,7 @@ async function deleteRecipe() {
                   size="lg"
                   @click="toggleCooked"
                 />
-                <UButton
+                <AppButton
                   icon="i-heroicons-trash"
                   color="neutral"
                   variant="outline"

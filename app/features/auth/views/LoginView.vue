@@ -132,7 +132,7 @@ async function onSubmit(event: FormSubmitEvent<LoginBody>): Promise<void> {
       </UFormField>
 
       <div class="space-y-4">
-        <UButton
+        <AppButton
           type="submit"
           :loading="isSubmitting"
           block
@@ -140,7 +140,7 @@ async function onSubmit(event: FormSubmitEvent<LoginBody>): Promise<void> {
           color="error"
         >
           {{ isSubmitting ? 'Signing in…' : 'Sign in' }}
-        </UButton>
+        </AppButton>
         <p class="text-center text-sm text-stone-600">
           New to Yumstash?
           <NuxtLink class="font-semibold text-stone-900 hover:text-red-600" to="/register">

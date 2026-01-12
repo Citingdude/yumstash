@@ -102,7 +102,7 @@ function backToLogin() {
         </UFormField>
 
         <div class="space-y-4">
-          <UButton
+          <AppButton
             type="submit"
             size="lg"
             block
@@ -110,9 +110,9 @@ function backToLogin() {
             :disabled="isSubmitting"
           >
             Send reset link
-          </UButton>
+          </AppButton>
 
-          <UButton
+          <AppButton
             type="button"
             size="lg"
             block
@@ -121,7 +121,7 @@ function backToLogin() {
             @click="backToLogin"
           >
             Back to login
-          </UButton>
+          </AppButton>
         </div>
       </UForm>
 
@@ -155,14 +155,14 @@ function backToLogin() {
         We've sent a password reset link to
         <span class="font-medium text-stone-900">{{ state.email }}</span>
       </p>
-      <UButton
+      <AppButton
         type="button"
         size="lg"
         class="mt-6"
         @click="backToLogin"
       >
         Return to login
-      </UButton>
+      </AppButton>
     </div>
   </section>
 </template>

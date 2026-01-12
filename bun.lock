@@ -4,6 +4,7 @@
     "": {
       "name": "yumstash",
       "dependencies": {
+        "@iconify-json/lucide": "1.2.84",
         "@nuxt/eslint": "1.12.1",
         "@nuxt/hints": "1.0.0-alpha.4",
         "@nuxt/image": "2.0.0",
@@ -221,6 +222,8 @@
     "@humanwhocodes/retry": ["@humanwhocodes/retry@0.4.3", "", {}, "sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ=="],
 
     "@iconify-json/heroicons": ["@iconify-json/heroicons@1.2.3", "", { "dependencies": { "@iconify/types": "*" } }, "sha512-n+vmCEgTesRsOpp5AB5ILB6srsgsYK+bieoQBNlafvoEhjVXLq8nIGN4B0v/s4DUfa0dOrjwE/cKJgIKdJXOEg=="],
+
+    "@iconify-json/lucide": ["@iconify-json/lucide@1.2.84", "", { "dependencies": { "@iconify/types": "*" } }, "sha512-m45MY1aW2swSK6Neb3J2qdZ+BxZ1VTdN7UeoXENwyMACG9bqGHWYJYxWoFzwoSnCfYLyKWTcBhesBgMd5IrUzQ=="],
 
     "@iconify/collections": ["@iconify/collections@1.0.631", "", { "dependencies": { "@iconify/types": "*" } }, "sha512-n54Bocfg8MFcZI5v4kioXClQhSsSVscWmSk07pb21vt2VBfMa/Q1AB/uzE9A1P08pqFEhKbjx2+OaHsPgjHyzg=="],
 

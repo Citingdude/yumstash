@@ -1,4 +1,7 @@
 export default defineAppConfig({
+  icon: {
+    mode: 'svg',
+  },
   ui: {
     colors: {
       primary: 'red',

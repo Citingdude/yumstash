@@ -112,7 +112,7 @@ function onDelete(): void {
             {{ props.category }}
           </UBadge>
           <div class="flex items-center gap-2">
-            <UButton
+            <AppButton
               :icon="props.isCooked ? 'i-mdi-pot-steam-outline' : 'i-mdi-pot-outline'"
               :color="props.isCooked ? 'success' : 'neutral'"
               variant="ghost"
@@ -121,7 +121,7 @@ function onDelete(): void {
               aria-label="Toggle cooked"
               @click.prevent="onCooked"
             />
-            <UButton
+            <AppButton
               :icon="props.isFavorite ? 'i-heroicons-heart-solid' : 'i-heroicons-heart'"
               color="error"
               variant="ghost"
@@ -130,7 +130,7 @@ function onDelete(): void {
               aria-label="Toggle favorite"
               @click.prevent="onFavorite"
             />
-            <UButton
+            <AppButton
               icon="i-heroicons-trash"
               color="error"
               variant="ghost"

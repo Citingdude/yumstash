@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import AppButton from '~/components/app/AppButton.vue'
+
 export interface ConfirmDialogProps {
   title?: string
   description?: string
@@ -37,19 +39,19 @@ function onCancel() {
     :ui="{ footer: 'justify-end' }"
   >
     <template #footer>
-      <UButton
+      <AppButton
         color="neutral"
         variant="outline"
         @click="onCancel"
       >
         {{ props.cancelLabel }}
-      </UButton>
-      <UButton
+      </AppButton>
+      <AppButton
         :color="props.confirmColor"
         @click="onConfirm"
       >
         {{ props.confirmLabel }}
-      </UButton>
+      </AppButton>
     </template>
   </UModal>
 </template>

@@ -120,11 +120,11 @@ onMounted(() => {
           autocomplete="new-password"
         >
           <template #trailing>
-            <UButton
+            <AppButton
               color="neutral"
               variant="link"
               size="sm"
-              :icon="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'"
+              :icon="showPassword ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'"
               :aria-label="showPassword ? 'Hide password' : 'Show password'"
               :aria-pressed="showPassword"
               aria-controls="password"
@@ -149,7 +149,7 @@ onMounted(() => {
       </UFormField>
 
       <div class="space-y-4">
-        <UButton
+        <AppButton
           type="submit"
           size="lg"
           block
@@ -158,9 +158,9 @@ onMounted(() => {
           :disabled="isSubmitting"
         >
           Reset password
-        </UButton>
+        </AppButton>
 
-        <UButton
+        <AppButton
           type="button"
           size="lg"
           block
@@ -168,7 +168,7 @@ onMounted(() => {
           @click="router.push('/login')"
         >
           Back to login
-        </UButton>
+        </AppButton>
       </div>
     </UForm>
 

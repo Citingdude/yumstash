@@ -153,21 +153,21 @@ async function onSubmit(event: FormSubmitEvent<CreateRecipeForm>) {
         </div>
 
         <div class="flex justify-end gap-3 pt-4">
-          <UButton
+          <AppButton
             type="button"
             color="neutral"
             variant="ghost"
             @click="onCancel"
           >
             Cancel
-          </UButton>
-          <UButton
+          </AppButton>
+          <AppButton
             type="submit"
             :loading="isSubmitting"
             :disabled="isSubmitting"
           >
             Create Recipe
-          </UButton>
+          </AppButton>
         </div>
       </UForm>
     </template>
