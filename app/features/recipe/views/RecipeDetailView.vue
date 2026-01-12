@@ -7,13 +7,16 @@ import { RecipeService } from '~/features/recipe/services/recipe.service'
 
 const route = useRoute('recipes-id')
 const router = useRouter()
+const overlay = useOverlay()
+const requestFetch = useRequestFetch()
+const appToast = useAppToast()
+
+const recipeService = new RecipeService(requestFetch)
+
 const recipeId = computed(() => route.params.id as RecipeUuid)
 const { data: recipe, status, error, refresh } = useRecipeDetailQuery(recipeId)
-const requestFetch = useRequestFetch()
-const recipeService = new RecipeService(requestFetch)
-const overlay = useOverlay()
+
 const confirmDialog = overlay.create(ConfirmDialog)
-const appToast = useAppToast()
 
 const isTogglingFavorite = ref(false)
 const isTogglingCooked = ref(false)
@@ -22,12 +25,36 @@ const isDeleting = ref(false)
 const difficultyConfig = computed(() => {
   if (!recipe.value)
     return null
+
   const difficultyMap = {
-    easy: { color: 'success' as const, icon: 'i-heroicons-star', label: 'Easy' },
-    medium: { color: 'warning' as const, icon: 'i-heroicons-fire', label: 'Medium' },
-    hard: { color: 'error' as const, icon: 'i-heroicons-bolt', label: 'Hard' },
+    easy: {
+      color: 'success' as const,
+      icon: 'i-heroicons-star',
+      label: 'Easy',
+    },
+    medium: {
+      color: 'warning' as const,
+      icon: 'i-heroicons-fire',
+      label: 'Medium',
+    },
+    hard: {
+      color: 'error' as const,
+      icon: 'i-heroicons-bolt',
+      label: 'Hard',
+    },
   }
   return difficultyMap[recipe.value.difficulty.name]
+})
+
+const formattedDate = computed(() => {
+  if (!recipe.value?.createdAt)
+    return ''
+
+  return new Date(recipe.value.createdAt).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
 })
 
 async function toggleFavorite() {
@@ -106,16 +133,6 @@ async function deleteRecipe() {
     isDeleting.value = false
   }
 }
-
-const formattedDate = computed(() => {
-  if (!recipe.value?.createdAt)
-    return ''
-  return new Date(recipe.value.createdAt).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
-})
 </script>
 
 <template>
