@@ -202,14 +202,14 @@ async function deleteRecipe() {
               <div class="flex gap-2">
                 <AppButton
                   :icon="recipe.isFavorite ? 'i-heroicons-heart-solid' : 'i-heroicons-heart'"
-                  :color="recipe.isFavorite ? 'error' : 'neutral'"
+                  :color="recipe.isFavorite ? 'success' : 'neutral'"
                   :variant="recipe.isFavorite ? 'solid' : 'outline'"
                   :loading="isTogglingFavorite"
                   size="lg"
                   @click="toggleFavorite"
                 />
                 <AppButton
-                  :icon="recipe.isCooked ? 'i-heroicons-check-circle-solid' : 'i-heroicons-check-circle'"
+                  :icon="recipe.isCooked ? 'i-mdi-pot-steam' : 'i-mdi-pot-steam-outline'"
                   :color="recipe.isCooked ? 'success' : 'neutral'"
                   :variant="recipe.isCooked ? 'solid' : 'outline'"
                   :loading="isTogglingCooked"
@@ -218,8 +218,8 @@ async function deleteRecipe() {
                 />
                 <AppButton
                   icon="i-heroicons-trash"
-                  color="neutral"
-                  variant="outline"
+                  color="error"
+                  variant="solid"
                   :loading="isDeleting"
                   size="lg"
                   @click="deleteRecipe"
