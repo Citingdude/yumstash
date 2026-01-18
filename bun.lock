@@ -4,7 +4,6 @@
     "": {
       "name": "yumstash",
       "dependencies": {
-        "@iconify-json/lucide": "1.2.84",
         "@nuxt/eslint": "1.12.1",
         "@nuxt/hints": "1.0.0-alpha.4",
         "@nuxt/image": "2.0.0",
@@ -28,9 +27,10 @@
       "devDependencies": {
         "@antfu/eslint-config": "6.7.1",
         "@iconify-json/heroicons": "1.2.3",
+        "@iconify-json/mdi": "1.2.3",
         "@types/pg": "8.16.0",
         "drizzle-kit": "0.31.8",
-        "tsx": "^4.21.0",
+        "tsx": "4.21.0",
       },
     },
   },
@@ -223,7 +223,7 @@
 
     "@iconify-json/heroicons": ["@iconify-json/heroicons@1.2.3", "", { "dependencies": { "@iconify/types": "*" } }, "sha512-n+vmCEgTesRsOpp5AB5ILB6srsgsYK+bieoQBNlafvoEhjVXLq8nIGN4B0v/s4DUfa0dOrjwE/cKJgIKdJXOEg=="],
 
-    "@iconify-json/lucide": ["@iconify-json/lucide@1.2.84", "", { "dependencies": { "@iconify/types": "*" } }, "sha512-m45MY1aW2swSK6Neb3J2qdZ+BxZ1VTdN7UeoXENwyMACG9bqGHWYJYxWoFzwoSnCfYLyKWTcBhesBgMd5IrUzQ=="],
+    "@iconify-json/mdi": ["@iconify-json/mdi@1.2.3", "", { "dependencies": { "@iconify/types": "*" } }, "sha512-O3cLwbDOK7NNDf2ihaQOH5F9JglnulNDFV7WprU2dSoZu3h3cWH//h74uQAB87brHmvFVxIOkuBX2sZSzYhScg=="],
 
     "@iconify/collections": ["@iconify/collections@1.0.631", "", { "dependencies": { "@iconify/types": "*" } }, "sha512-n54Bocfg8MFcZI5v4kioXClQhSsSVscWmSk07pb21vt2VBfMa/Q1AB/uzE9A1P08pqFEhKbjx2+OaHsPgjHyzg=="],
 
