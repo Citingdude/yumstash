@@ -5,7 +5,7 @@ import type { RecipeCategorySelectItem } from '~~/shared/types/recipe-category/r
 import { createRecipeFormSchema } from '~~/shared/types/recipe/createRecipeForm.type'
 import { useAppToast } from '~/composables/toast/useAppToast.composable'
 import { QUERY_KEYS } from '~/constants/queryKey.constant'
-import { RecipeService } from '~/features/recipe/services/recipe.service'
+import { useRecipeService } from '~/features/recipe/services/recipe.service'
 import { invalidateQuery } from '~/utils/query/query.util'
 
 const props = defineProps<{
@@ -21,8 +21,7 @@ export type CreateRecipeForm = z.output<typeof createRecipeFormSchema>
 
 const toast = useAppToast()
 
-const requestFetch = useRequestFetch()
-const recipeService = new RecipeService(requestFetch)
+const recipeService = useRecipeService()
 
 const isSubmitting = ref(false)
 
@@ -154,21 +153,21 @@ async function onSubmit(event: FormSubmitEvent<CreateRecipeForm>) {
         </div>
 
         <div class="flex justify-end gap-3 pt-4">
-          <UButton
+          <AppButton
             type="button"
             color="neutral"
             variant="ghost"
             @click="onCancel"
           >
             Cancel
-          </UButton>
-          <UButton
+          </AppButton>
+          <AppButton
             type="submit"
             :loading="isSubmitting"
             :disabled="isSubmitting"
           >
             Create Recipe
-          </UButton>
+          </AppButton>
         </div>
       </UForm>
     </template>

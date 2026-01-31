@@ -173,7 +173,7 @@ async function onSubmit(event: FormSubmitEvent<RegisterFormData>): Promise<void>
       </UFormField>
 
       <div class="space-y-4">
-        <UButton
+        <AppButton
           type="submit"
           :loading="isSubmitting"
           block
@@ -181,7 +181,7 @@ async function onSubmit(event: FormSubmitEvent<RegisterFormData>): Promise<void>
           color="neutral"
         >
           {{ isSubmitting ? 'Creating account…' : 'Create account' }}
-        </UButton>
+        </AppButton>
         <p class="text-center text-sm text-stone-600">
           Already have an account?
           <NuxtLink class="font-semibold text-stone-900 hover:text-red-600" to="/login">

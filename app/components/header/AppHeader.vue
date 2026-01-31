@@ -46,14 +46,14 @@ const userMenuItems = [
           </h1>
         </div>
         <div class="flex items-center gap-3">
-          <UButton
+          <AppButton
             icon="i-heroicons-plus"
             color="primary"
             size="lg"
             @click="onAddRecipe"
           >
             Add Recipe
-          </UButton>
+          </AppButton>
           <UDropdownMenu
             :items="userMenuItems"
             :popper="{ placement: 'bottom-end' }"
