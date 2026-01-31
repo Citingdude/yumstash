@@ -12,6 +12,7 @@
         "@nuxt/ui": "4.3.0",
         "@unhead/vue": "2.0.19",
         "@vueuse/core": "14.1.0",
+        "better-result": "^2.6.0",
         "dotenv": "17.2.3",
         "drizzle-orm": "0.45.1",
         "drizzle-zod": "0.8.3",
@@ -906,6 +907,8 @@
     "base64-js": ["base64-js@1.5.1", "", {}, "sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA=="],
 
     "baseline-browser-mapping": ["baseline-browser-mapping@2.9.11", "", { "bin": { "baseline-browser-mapping": "dist/cli.js" } }, "sha512-Sg0xJUNDU1sJNGdfGWhVHX0kkZ+HWcvmVymJbj6NSgZZmW/8S9Y2HQ5euytnIgakgxN6papOAWiwDo1ctFDcoQ=="],
+
+    "better-result": ["better-result@2.6.0", "", { "dependencies": { "@clack/prompts": "^0.11.0" }, "bin": { "better-result": "bin/cli.mjs" } }, "sha512-hv31uYHmjFf3zIJgj5V0mT2ZOUg8zDVfd6Pv0iKKGcEAtjukxJofNa0q91cft+YqwHBSQAld5i9zbwgI9alZnA=="],
 
     "bindings": ["bindings@1.5.0", "", { "dependencies": { "file-uri-to-path": "1.0.0" } }, "sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ=="],
 

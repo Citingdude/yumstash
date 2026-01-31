@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Result } from 'better-result'
 import { useAppToast } from '~/composables/toast/useAppToast.composable'
 import { AuthService } from '~/features/auth/services/auth.service'
 
@@ -13,13 +14,23 @@ function onAddRecipe(): void {
 }
 
 async function logout(): Promise<void> {
-  try {
-    await AuthService.logout()
-    await navigateTo('/login')
-  }
-  catch {
+  const logoutResult = await Result.tryPromise(() => AuthService.logout())
+
+  if (logoutResult.isErr()) {
     toast.error({
       title: 'Logout failed',
+    })
+
+    return
+  }
+
+  const redirect = navigateTo('/login')
+
+  const redirectResult = await Result.tryPromise(() => Promise.resolve(redirect))
+
+  if (redirectResult.isErr()) {
+    toast.error({
+      title: 'Redirect failed',
     })
   }
 }
