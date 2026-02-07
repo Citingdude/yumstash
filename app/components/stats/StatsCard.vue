@@ -11,7 +11,7 @@ const props = defineProps<StatCardProps>()
 <template>
   <UCard>
     <div class="flex items-center gap-4">
-      <div class="p-3 bg-neutral-50 rounded-lg">
+      <div class="p-3 bg-accented rounded-lg">
         <div class="text-2xl">
           {{ props.emoji }}
         </div>
