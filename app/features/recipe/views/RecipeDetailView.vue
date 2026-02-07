@@ -111,7 +111,7 @@ async function deleteRecipe() {
 <template>
   <article
     v-if="recipe"
-    class="min-h-screen bg-stone-50"
+    class="min-h-screen"
   >
     <div
       class="container mx-auto px-4 py-8 lg:py-12"
@@ -128,7 +128,7 @@ async function deleteRecipe() {
         </AppButton>
 
         <div
-          class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden mb-6"
+          class="bg-default rounded-2xl shadow-sm border border-default overflow-hidden mb-6"
         >
           <RecipeDetailHeader
             :recipe="recipe"

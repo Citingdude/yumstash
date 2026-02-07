@@ -10,14 +10,14 @@ const props = defineProps<{
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <UCard>
       <div class="flex items-center gap-3">
-        <div class="p-3 bg-red-100 rounded-xl">
-          <UIcon name="i-heroicons-tag" class="w-6 h-6 text-red-600" />
+        <div class="p-3 bg-accented rounded-xl">
+          <UIcon name="i-heroicons-tag" class="w-6 h-6 text-primary" />
         </div>
         <div>
-          <p class="text-sm text-stone-600 font-medium">
+          <p class="text-sm font-medium">
             Category
           </p>
-          <p class="text-lg font-semibold text-stone-900 capitalize">
+          <p class="text-lg font-semibold capitalize">
             {{ props.recipe.category.name }}
           </p>
         </div>
@@ -26,14 +26,14 @@ const props = defineProps<{
 
     <UCard>
       <div class="flex items-center gap-3">
-        <div class="p-3 bg-red-100 rounded-xl">
-          <UIcon name="i-heroicons-user" class="w-6 h-6 text-red-600" />
+        <div class="p-3 bg-accented rounded-xl">
+          <UIcon name="i-heroicons-user" class="w-6 h-6 text-primary" />
         </div>
         <div>
-          <p class="text-sm text-stone-600 font-medium">
+          <p class="text-sm font-medium">
             Author
           </p>
-          <p class="text-lg font-semibold text-stone-900">
+          <p class="text-lg font-semibold">
             {{ props.recipe.author.name }}
           </p>
         </div>
