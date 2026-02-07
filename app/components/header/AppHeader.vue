@@ -34,18 +34,19 @@ const userMenuItems = [
 </script>
 
 <template>
-  <header class="bg-white border-b border-stone-200 sticky top-0 z-10">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+  <header class="bg-default border-b border-default sticky top-0 z-10 py-4">
+    <AppContainer>
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <div class="text-3xl">
-            🍲
-          </div>
-          <h1 class="text-2xl font-bold text-stone-900">
+          <AppLogo />
+          <h1 class="text-2xl font-bold">
             Yumstash
           </h1>
         </div>
+
         <div class="flex items-center gap-3">
+          <UColorModeSelect />
+
           <AppButton
             icon="i-heroicons-plus"
             color="primary"
@@ -54,6 +55,7 @@ const userMenuItems = [
           >
             Add Recipe
           </AppButton>
+
           <UDropdownMenu
             :items="userMenuItems"
             :popper="{ placement: 'bottom-end' }"
@@ -67,6 +69,6 @@ const userMenuItems = [
           </UDropdownMenu>
         </div>
       </div>
-    </div>
+    </AppContainer>
   </header>
 </template>

@@ -29,19 +29,6 @@
   --color-yellow-950: #422006;
   
 
-  /* Neutral Colors - Soft Pastel Beige/Stone */
-  --color-stone-50: #faf9f7;
-  --color-stone-100: #f5f3ef;
-  --color-stone-200: #ebe7df;
-  --color-stone-300: #ddd6c9;
-  --color-stone-400: #c9bfad;
-  --color-stone-500: #b8aa95;
-  --color-stone-600: #a89780;
-  --color-stone-700: #8d7e6b;
-  --color-stone-800: #75685a;
-  --color-stone-900: #60574c;
-  --color-stone-950: #332e27;
-
   /* Font Family - Poppins */
   --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
@@ -49,4 +36,5 @@
 /* Apply custom font globally */
 body {
   font-family: var(--font-sans);
+  color: var(--text-color-default);
 }
