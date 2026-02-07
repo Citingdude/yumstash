@@ -228,7 +228,7 @@ async function onDelete(recipeId: RecipeUuid): Promise<void> {
         class="mb-6"
       />
 
-      <section class="space-y-8">
+      <section class="grid gap-8">
         <UPageGrid as="ul">
           <li
             v-for="recipe in recipeCards"
