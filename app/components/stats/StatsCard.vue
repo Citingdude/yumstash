@@ -21,7 +21,7 @@ const props = defineProps<StatCardProps>()
           {{ props.title }}
         </p>
         <p class="text-2xl font-bold text-highlighted">
-          {{ props.number }}
+          <AppNumberCounter :duration="300" :value="Number.parseInt(props.number)" />
         </p>
       </div>
     </div>
