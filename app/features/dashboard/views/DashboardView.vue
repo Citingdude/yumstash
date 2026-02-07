@@ -191,93 +191,94 @@ async function onDelete(recipeId: RecipeUuid): Promise<void> {
 </script>
 
 <template>
-  <!-- Main Content -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Stats -->
-    <ul class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-      <li>
-        <StatsCard
-          emoji="📖"
-          title="Total Recipes"
-          :number="totalRecipes.toString()"
-        />
-      </li>
-      <li>
-        <StatsCard
-          emoji="❤️"
-          title="Favorites"
-          :number="totalFavorites.toString()"
-        />
-      </li>
-      <li>
-        <StatsCard
-          emoji="👨‍🍳"
-          title="Cooked"
-          :number="totalCooked.toString()"
-        />
-      </li>
-      <li>
-        <StatsCard
-          emoji="🏷️"
-          title="Categories"
-          :number="totalCategories.toString()"
-        />
-      </li>
-    </ul>
-
-    <!-- Search and Filters -->
-    <div class="mb-6 flex flex-col sm:flex-row gap-4">
-      <div class="flex-1">
-        <UInput
-          v-model="searchQuery"
-          icon="i-heroicons-magnifying-glass"
-          size="lg"
-          placeholder="Search recipes..."
-          class="w-full"
-        />
-      </div>
-      <USelectMenu
-        v-model="selectedCategory"
-        :items="recipeCategoryItems"
-        placeholder="Select category"
-        size="lg"
-        class="w-full sm:w-48"
-        searchable
-        searchable-placeholder="Search categories..."
-      />
-    </div>
-
-    <section class="space-y-8">
-      <UPageGrid as="ul">
-        <li
-          v-for="recipe in recipeCards"
-          :key="recipe.name"
-        >
-          <RecipeCard
-            :id="recipe.id"
-            :emoji="recipe.emoji"
-            :difficulty="recipe.difficulty"
-            :name="recipe.name"
-            :description="recipe.description"
-            :time="recipe.time"
-            :servings="recipe.servings"
-            :category="recipe.category"
-            :is-favorite="recipe.isFavorite"
-            :is-cooked="recipe.isCooked"
-            @favorite="(recipeId, isFavorite) => onFavorite(recipeId, isFavorite)"
-            @cooked="(recipeId, isCooked) => onCooked(recipeId, isCooked)"
-            @delete="(recipeId) => onDelete(recipeId)"
+  <main class="py-8">
+    <AppContainer>
+      <!-- Stats -->
+      <ul class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <li>
+          <StatsCard
+            emoji="📖"
+            title="Total Recipes"
+            :number="totalRecipes.toString()"
           />
         </li>
-      </UPageGrid>
+        <li>
+          <StatsCard
+            emoji="❤️"
+            title="Favorites"
+            :number="totalFavorites.toString()"
+          />
+        </li>
+        <li>
+          <StatsCard
+            emoji="👨‍🍳"
+            title="Cooked"
+            :number="totalCooked.toString()"
+          />
+        </li>
+        <li>
+          <StatsCard
+            emoji="🏷️"
+            title="Categories"
+            :number="totalCategories.toString()"
+          />
+        </li>
+      </ul>
 
-      <UPagination
-        v-model:page="page"
-        :ui="{
-          root: 'flex justify-center',
-        }"
-        :total="totalFilteredRecipes"
-      />
-    </section>
+      <!-- Search and Filters -->
+      <div class="mb-6 flex flex-col sm:flex-row gap-4">
+        <div class="flex-1">
+          <UInput
+            v-model="searchQuery"
+            icon="i-heroicons-magnifying-glass"
+            size="lg"
+            placeholder="Search recipes..."
+            class="w-full"
+          />
+        </div>
+        <USelectMenu
+          v-model="selectedCategory"
+          :items="recipeCategoryItems"
+          placeholder="Select category"
+          size="lg"
+          class="w-full sm:w-48"
+          searchable
+          searchable-placeholder="Search categories..."
+        />
+      </div>
+
+      <section class="space-y-8">
+        <UPageGrid as="ul">
+          <li
+            v-for="recipe in recipeCards"
+            :key="recipe.name"
+          >
+            <RecipeCard
+              :id="recipe.id"
+              :emoji="recipe.emoji"
+              :difficulty="recipe.difficulty"
+              :name="recipe.name"
+              :description="recipe.description"
+              :time="recipe.time"
+              :servings="recipe.servings"
+              :category="recipe.category"
+              :is-favorite="recipe.isFavorite"
+              :is-cooked="recipe.isCooked"
+              @favorite="(recipeId, isFavorite) => onFavorite(recipeId, isFavorite)"
+              @cooked="(recipeId, isCooked) => onCooked(recipeId, isCooked)"
+              @delete="(recipeId) => onDelete(recipeId)"
+            />
+          </li>
+        </UPageGrid>
+
+        <UPagination
+          v-model:page="page"
+          :ui="{
+            root: 'flex justify-center',
+          }"
+          :total="totalFilteredRecipes"
+        />
+      </section>
+    </AppContainer>
   </main>
 </template>
