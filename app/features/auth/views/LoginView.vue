@@ -2,13 +2,11 @@
 import type { FormSubmitEvent } from '#ui/types'
 import type { LoginBody } from '~~/shared/types/auth/login/authLogin.type'
 import { authLoginFormDataSchema } from '~~/shared/types/auth/login/authLogin.type'
-import { useApiError } from '~/composables/error/useApiError'
 import { useAppToast } from '~/composables/toast/useAppToast.composable'
 import { AuthService } from '~/features/auth/services/auth.service'
 
 const router = useRouter()
 const toast = useAppToast()
-const { extractError } = useApiError()
 
 const isSubmitting = ref<boolean>(false)
 
@@ -21,27 +19,26 @@ const state = reactive<LoginBody>({
 async function onSubmit(event: FormSubmitEvent<LoginBody>): Promise<void> {
   isSubmitting.value = true
 
-  try {
-    await AuthService.login(event.data)
+  await AuthService
+    .login(event.data)
+    .match(
+      () => {
+        toast.success({
+          title: 'Signed in',
+          description: 'Redirecting to your dashboard…',
+        })
 
-    toast.success({
-      title: 'Signed in',
-      description: 'Redirecting to your dashboard…',
-    })
+        router.push('/')
+      },
+      (error) => {
+        toast.error({
+          title: 'Login failed',
+          errorMessage: error.message,
+        })
+      },
+    )
 
-    await router.push('/')
-  }
-  catch (error) {
-    const appError = extractError(error)
-
-    toast.error({
-      title: 'Login failed',
-      errorMessage: appError.message,
-    })
-  }
-  finally {
-    isSubmitting.value = false
-  }
+  isSubmitting.value = false
 }
 </script>
 

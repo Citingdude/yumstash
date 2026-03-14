@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '#ui/types'
-import type { RegisterFormData } from '~~/shared/types/auth/register/authRegister.type'
+import type { RegisterBody, RegisterFormData } from '~~/shared/types/auth/register/authRegister.type'
 import { authRegisterFormDataSchema } from '~~/shared/types/auth/register/authRegister.type'
 import { useAppToast } from '~/composables/toast/useAppToast.composable'
+import { AuthService } from '~/features/auth/services/auth.service'
 
 const router = useRouter()
 const toast = useAppToast()
@@ -20,34 +21,31 @@ const state = reactive<RegisterFormData>({
 async function onSubmit(event: FormSubmitEvent<RegisterFormData>): Promise<void> {
   isSubmitting.value = true
 
-  try {
-    await $fetch('/api/auth/register', {
-      method: 'POST',
-      body: {
-        name: event.data.name,
-        email: event.data.email,
-        password: event.data.password,
+  const body: RegisterBody = {
+    email: event.data.email,
+    name: event.data.name,
+    password: event.data.password,
+  }
+
+  AuthService
+    .register(body)
+    .match(
+      () => {
+        toast.success({
+          title: 'Account created',
+          description: 'Redirecting to sign in…',
+        })
+
+        router.push('/')
       },
-    })
+      (error) => {
+        toast.error({
+          title: error.message,
+        })
+      },
+    )
 
-    toast.success({
-      title: 'Account created',
-      description: 'Redirecting to sign in…',
-    })
-
-    router.push('/')
-  }
-  catch (error) {
-    const apiError = handleApiError(error)
-
-    toast.error({
-      title: 'Registration failed',
-      errorMessage: apiError.message,
-    })
-  }
-  finally {
-    isSubmitting.value = false
-  }
+  isSubmitting.value = false
 }
 </script>
 

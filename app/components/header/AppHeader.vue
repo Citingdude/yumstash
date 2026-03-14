@@ -13,15 +13,21 @@ function onAddRecipe(): void {
 }
 
 async function logout(): Promise<void> {
-  try {
-    await AuthService.logout()
-    await navigateTo('/login')
-  }
-  catch {
-    toast.error({
-      title: 'Logout failed',
-    })
-  }
+  await AuthService
+    .logout()
+    .match(
+      () => {
+        toast.success({
+          title: 'Logout succeeded',
+        })
+        navigateTo('/login')
+      },
+      (error) => {
+        toast.error({
+          title: error.message,
+        })
+      },
+    )
 }
 
 const userMenuItems = [
