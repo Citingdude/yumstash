@@ -1,14 +1,9 @@
-import type { H3Error } from 'h3'
+import { H3Error } from 'h3'
 import { ZodError } from 'zod'
 
-/**
- * Checks if an error is an H3Error.
- */
-function isH3Error(error: unknown): error is H3Error {
-  return typeof error === 'object'
-    && error !== null
-    && 'statusCode' in error
-    && 'statusMessage' in error
+interface ErrorBody {
+  message: string
+  errors?: Record<string, string[]>
 }
 
 /**
@@ -18,13 +13,11 @@ function isH3Error(error: unknown): error is H3Error {
  * @param error - The error to handle
  * @returns A properly formatted H3Error
  */
-export function handleApiError(error: unknown): H3Error {
-  // Already an H3Error - pass through
-  if (isH3Error(error)) {
-    return error
+export function handleApiError(error: unknown): H3Error<ErrorBody> {
+  if (error instanceof H3Error) {
+    return createError<ErrorBody>(error)
   }
 
-  // Zod validation error
   if (error instanceof ZodError) {
     const validationErrors: Record<string, string[]> = {}
     error.issues.forEach((issue) => {
@@ -38,7 +31,10 @@ export function handleApiError(error: unknown): H3Error {
     return createError({
       statusCode: 422,
       message: 'Validation failed',
-      data: { errors: validationErrors },
+      data: {
+        errors: validationErrors,
+        message: error.message,
+      },
     })
   }
 

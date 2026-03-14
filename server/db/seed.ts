@@ -22,6 +22,10 @@ async function seed() {
       })
       .returning()
 
+    if (user === undefined) {
+      throw new Error('No user')
+    }
+
     const categories = [
       { name: 'Breakfast', slug: 'breakfast' },
       { name: 'Lunch', slug: 'lunch' },
