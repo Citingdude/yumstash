@@ -2,14 +2,12 @@
 import type { FormSubmitEvent } from '#ui/types'
 import type { ResetPasswordBody } from '~~/shared/types/auth/reset-password/resetPassword.type'
 import { resetPasswordBodySchema } from '~~/shared/types/auth/reset-password/resetPassword.type'
-import { useApiError } from '~/composables/error/useApiError'
 import { useAppToast } from '~/composables/toast/useAppToast.composable'
 import { AuthService } from '~/features/auth/services/auth.service'
 
 const router = useRouter()
 const route = useRoute()
 const toast = useAppToast()
-const { extractError } = useApiError()
 
 const isSubmitting = ref<boolean>(false)
 const showPassword = ref<boolean>(false)
@@ -27,27 +25,26 @@ async function onSubmit(
 ): Promise<void> {
   isSubmitting.value = true
 
-  try {
-    await AuthService.resetPassword(event.data)
+  await AuthService
+    .resetPassword(event.data)
+    .match(
+      () => {
+        toast.success({
+          title: 'Password reset successful',
+          description: 'Your password has been reset. Redirecting to login...',
+        })
 
-    toast.success({
-      title: 'Password reset successful',
-      description: 'Your password has been reset. Redirecting to login...',
-    })
+        router.push('/login')
+      },
+      (error) => {
+        toast.error({
+          title: 'Reset failed',
+          errorMessage: error.message,
+        })
+      },
+    )
 
-    router.push('/login')
-  }
-  catch (error) {
-    const errorInfo = extractError(error)
-
-    toast.error({
-      title: 'Reset failed',
-      errorMessage: errorInfo.message,
-    })
-  }
-  finally {
-    isSubmitting.value = false
-  }
+  isSubmitting.value = false
 }
 
 watchEffect(() => {

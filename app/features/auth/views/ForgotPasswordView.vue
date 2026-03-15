@@ -2,13 +2,11 @@
 import type { ForgotPasswordBody } from '#shared/types/auth/forgot-password/forgotPassword.type'
 import type { FormSubmitEvent } from '#ui/types'
 import { forgotPasswordBodySchema } from '#shared/types/auth/forgot-password/forgotPassword.type'
-import { useApiError } from '~/composables/error/useApiError'
 import { useAppToast } from '~/composables/toast/useAppToast.composable'
 import { AuthService } from '~/features/auth/services/auth.service'
 
 const router = useRouter()
 const toast = useAppToast()
-const { extractError } = useApiError()
 
 const isSubmitting = ref<boolean>(false)
 const emailSent = ref<boolean>(false)
@@ -22,26 +20,26 @@ async function onSubmit(
 ): Promise<void> {
   isSubmitting.value = true
 
-  try {
-    await AuthService.forgotPassword(event.data)
+  AuthService
+    .forgotPassword(event.data)
+    .match(
+      () => {
+        emailSent.value = true
 
-    emailSent.value = true
+        toast.success({
+          title: 'Reset link sent',
+          description: 'Check your email for password reset instructions.',
+        })
+      },
+      (error) => {
+        toast.error({
+          title: 'Request failed',
+          errorMessage: error.message,
+        })
+      },
+    )
 
-    toast.success({
-      title: 'Reset link sent',
-      description: 'Check your email for password reset instructions.',
-    })
-  }
-  catch (error) {
-    const errorInfo = extractError(error)
-    toast.error({
-      title: 'Request failed',
-      errorMessage: errorInfo.message,
-    })
-  }
-  finally {
-    isSubmitting.value = false
-  }
+  isSubmitting.value = false
 }
 
 function backToLogin() {
