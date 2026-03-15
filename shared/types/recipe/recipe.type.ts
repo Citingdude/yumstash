@@ -1,8 +1,7 @@
 import { z } from 'zod'
-import { recipeUuidSchema } from '~~/shared/types/recipe/recipeUuid.type'
 
 export const recipeSchema = z.object({
-  id: recipeUuidSchema,
+  id: z.string(),
   authorId: z.uuid(),
   createdAt: z.iso.datetime().nullable(),
   updatedAt: z.iso.datetime().nullable(),

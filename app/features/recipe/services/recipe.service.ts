@@ -2,6 +2,8 @@ import type { CreateRecipeForm } from '~~/shared/types/recipe/createRecipeForm.t
 import type { RecipeWithRelations } from '~~/shared/types/recipe/recipe.type'
 import type { RecipeIndexResult } from '~~/shared/types/recipe/recipeIndexResult.type'
 import type { RecipeUuid } from '~~/shared/types/recipe/recipeUuid.type'
+import type { RecipeError } from '~/features/recipe/models/error/RecipeError.model'
+import { ResultAsync } from 'neverthrow'
 import { DEFAULT_RECIPE_PAGE_SIZE } from '~~/shared/constants/recipePagination.constant'
 
 interface GetRecipesParams {
@@ -14,8 +16,8 @@ interface GetRecipesParams {
 export function useRecipeService() {
   const requestFetch = useRequestFetch()
 
-  async function getRecipes(params: GetRecipesParams): Promise<RecipeIndexResult> {
-    return requestFetch('/api/recipes', {
+  function getRecipes(params: GetRecipesParams): ResultAsync<RecipeIndexResult, RecipeError> {
+    const req = requestFetch('/api/recipes', {
       query: {
         search: params.search,
         categoryId: params.categoryId,
@@ -23,17 +25,48 @@ export function useRecipeService() {
         pageSize: params.pageSize ?? DEFAULT_RECIPE_PAGE_SIZE,
       },
     })
+
+    return ResultAsync.fromPromise(
+      req,
+      (error) => {
+        return {
+          message: 'Failed to get recipes',
+          error,
+        }
+      },
+    )
   }
 
-  async function getRecipe(recipeId: RecipeUuid): Promise<RecipeWithRelations> {
-    return requestFetch(`/api/recipes/${recipeId}`)
+  function getRecipe(recipeId: RecipeUuid): ResultAsync<RecipeWithRelations, RecipeError> {
+    const req = requestFetch(`/api/recipes/${recipeId}`)
+
+    return ResultAsync.fromPromise(
+      req,
+      (error) => {
+        return {
+          message: `Failed to fetch recipe with id: ${recipeId}`,
+          error,
+        }
+      },
+    )
   }
 
-  async function createRecipe(body: CreateRecipeForm) {
-    await requestFetch('/api/recipes', {
+  function createRecipe(
+    body: CreateRecipeForm,
+  ): ResultAsync<RecipeWithRelations, RecipeError> {
+    const req = requestFetch('/api/recipes', {
       method: 'POST',
       body,
     })
+
+    return ResultAsync.fromPromise(
+      req,
+      () => {
+        return {
+          message: 'Failed to create recipe',
+        }
+      },
+    )
   }
 
   async function deleteRecipe(recipeId: RecipeUuid) {

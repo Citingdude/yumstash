@@ -51,31 +51,31 @@ function onCancel() {
 async function onSubmit(event: FormSubmitEvent<CreateRecipeForm>) {
   isSubmitting.value = true
 
-  try {
-    await recipeService.createRecipe(event.data)
+  recipeService
+    .createRecipe(event.data)
+    .match(
+      async () => {
+        await Promise.all([
+          invalidateQuery(QUERY_KEYS.RECIPE_INDEX),
+          invalidateQuery(QUERY_KEYS.RECIPE_COUNT),
+        ])
 
-    await Promise.all([
-      invalidateQuery(QUERY_KEYS.RECIPE_INDEX),
-      invalidateQuery(QUERY_KEYS.RECIPE_COUNT),
-    ])
+        emit('close')
+        resetForm()
 
-    emit('close')
-    resetForm()
+        toast.success({
+          title: 'Success',
+          description: 'Recipe created',
+        })
+      },
+      (error) => {
+        toast.error({
+          title: error.message,
+        })
+      },
+    )
 
-    toast.success({
-      title: 'Success',
-      description: 'Recipe created',
-    })
-  }
-  catch {
-    toast.error({
-      title: 'Error',
-      errorMessage: 'Recipe creation failed',
-    })
-  }
-  finally {
-    isSubmitting.value = false
-  }
+  isSubmitting.value = false
 }
 </script>
 

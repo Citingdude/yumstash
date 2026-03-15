@@ -1,5 +1,4 @@
 import type { RecipeSelectWithRelations } from '~~/server/db/schema/index'
-import type { RecipeWithRelations } from '~~/shared/types/recipe/recipe.type'
 import { eq } from 'drizzle-orm'
 import { z } from 'zod'
 import { useDB } from '~~/server/db'
@@ -12,7 +11,7 @@ const recipeParamsSchema = z.object({
   recipeId: recipeUuidSchema,
 })
 
-export default defineEventHandler<Promise<RecipeWithRelations>>(async (event) => {
+export default defineEventHandler(async (event) => {
   const userId = await requireAuth(event)
   const db = useDB()
 

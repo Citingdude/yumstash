@@ -20,7 +20,10 @@ export function useRecipeIndexQuery(
         categoryId: categoryId.value,
         page: page.value,
         pageSize,
-      })
+      }).match(
+        res => res,
+        (error) => { throw new Error(error.message) },
+      )
     },
     {
       watch: [

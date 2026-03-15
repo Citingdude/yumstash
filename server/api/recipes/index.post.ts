@@ -1,9 +1,11 @@
+import type { RecipeWithRelations } from '~~/shared/types/recipe/recipe.type'
 import { useDB } from '~~/server/db'
 import { recipesTable } from '~~/server/db/schema/index'
+import { RecipeWithRelationsTransformer } from '~~/server/transformers/recipeWithRelations.transformer'
 import { requireAuth } from '~~/server/utils/auth/auth.util'
 import { createRecipeFormSchema } from '~~/shared/types/recipe/createRecipeForm.type'
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler<Promise<RecipeWithRelations>>(async (event) => {
   const userId = await requireAuth(event)
   const db = useDB()
 
@@ -47,32 +49,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    return {
-      id: recipe.id,
-      name: recipe.name,
-      description: recipe.description,
-      time: recipe.time,
-      servings: recipe.servings,
-      emoji: recipe.emoji,
-      isFavorite: recipe.isFavorite,
-      isCooked: recipe.isCooked,
-      difficulty: {
-        id: recipe.difficulty.id,
-        name: recipe.difficulty.name,
-      },
-      category: {
-        id: recipe.category.id,
-        name: recipe.category.name,
-        slug: recipe.category.slug,
-      },
-      author: {
-        id: recipe.author.id,
-        name: recipe.author.name,
-        email: recipe.author.email,
-      },
-      createdAt: recipe.createdAt.toISOString(),
-      updatedAt: recipe.updatedAt.toISOString(),
-    }
+    return RecipeWithRelationsTransformer.fromDb(recipe)
   }
   catch (error) {
     console.error('Error creating recipe:', error)
