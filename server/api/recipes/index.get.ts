@@ -2,7 +2,7 @@ import type { SQL } from 'drizzle-orm'
 import type { RecipeSelectWithRelations } from '~~/server/db/schema/index'
 import type { RecipeWithRelations } from '~~/shared/types/recipe/recipe.type'
 import type { RecipeIndexResult } from '~~/shared/types/recipe/recipeIndexResult.type'
-import { and, asc, count, eq, ilike, or } from 'drizzle-orm'
+import { and, count, desc, eq, ilike, or } from 'drizzle-orm'
 import { useDB } from '~~/server/db'
 import { recipesTable } from '~~/server/db/schema/index'
 import { RecipeWithRelationsTransformer } from '~~/server/transformers/recipeWithRelations.transformer'
@@ -40,7 +40,7 @@ export default defineEventHandler<Promise<RecipeIndexResult>>(async (event) => {
   const dbRecipes: RecipeSelectWithRelations[] = await db.query.recipesTable.findMany({
     where: whereClause,
     orderBy: [
-      asc(recipesTable.name),
+      desc(recipesTable.createdAt),
     ],
     with: {
       difficulty: true,
