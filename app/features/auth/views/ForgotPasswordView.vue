@@ -50,34 +50,30 @@ function backToLogin() {
 </script>
 
 <template>
-  <section class="grid gap-10 rounded-3xl bg-white/90 p-8 shadow-2xl shadow-stone-900/40 backdrop-blur xl:grid-cols-[1.1fr_0.9fr] xl:p-12">
-    <div class="flex flex-col justify-between border-b border-stone-200/60 pb-8 xl:border-b-0 xl:border-r xl:pb-0 xl:pr-12">
-      <div>
-        <span class="inline-flex items-center rounded-full bg-blue-500/20 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-blue-800">Password recovery</span>
-        <h1 class="mt-6 text-4xl font-semibold text-stone-900 lg:text-5xl">
+  <section class="grid gap-10 rounded-3xl p-8 shadow-2xl shadow-stone-900/40 backdrop-blur xl:grid-cols-[1.1fr_0.9fr] xl:p-12">
+    <div class="flex flex-col justify-between border-b border-muted pb-8 xl:border-b-0 xl:border-r xl:pb-0 xl:pr-12">
+      <div class="flex flex-col gap-4 items-start">
+        <UBadge variant="soft" color="secondary">
+          Password recovery
+        </UBadge>
+
+        <h1 class="text-4xl font-semibold lg:text-5xl">
           Reset your password
         </h1>
-        <p class="mt-4 text-base text-stone-600">
+
+        <p class="text-base text-toned">
           Enter your email address and we'll send you a link to reset your password. Get back to your recipes in just a few clicks.
         </p>
       </div>
 
-      <div class="mt-8 rounded-2xl bg-stone-50/80 p-6 text-stone-900">
-        <div class="flex items-start gap-3">
-          <UIcon
-            name="i-heroicons-information-circle"
-            class="mt-0.5 size-5 shrink-0 text-stone-500"
-          />
-          <div>
-            <p class="text-sm font-medium text-stone-700">
-              Need help?
-            </p>
-            <p class="mt-1 text-sm text-stone-600">
-              If you don't receive the email within a few minutes, check your spam folder or contact support.
-            </p>
-          </div>
-        </div>
-      </div>
+      <UAlert
+        class="mt-8"
+        title="Need help?"
+        icon="i-heroicons-information-circle"
+        description="If you don't receive the email within a few minutes, check your spam folder or contact support."
+        variant="soft"
+        color="info"
+      />
     </div>
 
     <div v-if="!emailSent">
@@ -126,11 +122,11 @@ function backToLogin() {
       </UForm>
 
       <div class="mt-8 text-center">
-        <p class="text-sm text-stone-600">
+        <p class="text-sm">
           Don't have an account?
           <NuxtLink
             to="/register"
-            class="font-semibold text-stone-900 hover:text-stone-700"
+            class="font-semibold"
           >
             Sign up
           </NuxtLink>

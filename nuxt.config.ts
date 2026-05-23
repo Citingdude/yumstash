@@ -38,7 +38,7 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
 
   ui: {
-    colorMode: false,
+    colorMode: true,
   },
 
   runtimeConfig: {

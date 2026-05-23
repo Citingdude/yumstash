@@ -62,6 +62,7 @@ function onDelete(): void {
 
 <template>
   <NuxtLink
+    class="group"
     :to="{
       name: 'recipes-id',
       params: {
@@ -70,11 +71,11 @@ function onDelete(): void {
     }"
   >
     <UCard
-      class="hover:shadow-lg transition-shadow cursor-pointer"
+      class="group-hover:shadow-xl group-hover:-translate-y-2 transition-all cursor-pointer"
     >
       <template #header>
         <div class="relative">
-          <div class="w-full h-48 bg-stone-200 rounded-lg flex items-center justify-center text-6xl">
+          <div class="w-full h-48 bg-accented rounded-lg flex items-center justify-center text-6xl">
             {{ props.emoji }}
           </div>
           <UBadge
@@ -88,15 +89,15 @@ function onDelete(): void {
 
       <div class="space-y-3">
         <div>
-          <h3 class="text-lg font-semibold text-stone-900 mb-1">
+          <h3 class="text-lg font-semibold text-highlighted mb-1">
             {{ props.name }}
           </h3>
-          <p class="text-sm text-stone-600">
+          <p class="text-sm">
             {{ props.description }}
           </p>
         </div>
 
-        <div class="flex items-center gap-4 text-sm text-stone-600">
+        <div class="flex items-center gap-4 text-sm text-muted">
           <div class="flex items-center gap-1">
             <UIcon name="i-heroicons-clock" />
             <span>{{ props.time }}</span>
@@ -107,14 +108,14 @@ function onDelete(): void {
           </div>
         </div>
 
-        <div class="flex items-center justify-between pt-2 border-t border-stone-200">
+        <div class="flex items-center justify-between pt-2 border-t border-default">
           <UBadge color="secondary" variant="solid">
             {{ props.category }}
           </UBadge>
           <div class="flex items-center gap-2">
             <AppButton
               :icon="props.isCooked ? 'i-mdi-pot-steam-outline' : 'i-mdi-pot-outline'"
-              :color="props.isCooked ? 'success' : 'neutral'"
+              color="primary"
               variant="ghost"
               size="sm"
               :aria-pressed="props.isCooked"
@@ -123,7 +124,7 @@ function onDelete(): void {
             />
             <AppButton
               :icon="props.isFavorite ? 'i-heroicons-heart-solid' : 'i-heroicons-heart'"
-              color="error"
+              color="primary"
               variant="ghost"
               size="sm"
               :aria-pressed="props.isFavorite"
@@ -132,7 +133,7 @@ function onDelete(): void {
             />
             <AppButton
               icon="i-heroicons-trash"
-              color="error"
+              color="primary"
               variant="ghost"
               size="sm"
               aria-label="Delete recipe"

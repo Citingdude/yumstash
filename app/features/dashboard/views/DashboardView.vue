@@ -3,13 +3,15 @@ import type { RecipeCategoryFilterItem } from '~~/shared/types/recipe-category/r
 import type { RecipeCategorySelectItem } from '~~/shared/types/recipe-category/recipeCategorySelectItem.type'
 import type { RecipeWithRelations } from '~~/shared/types/recipe/recipe.type'
 import type { RecipeUuid } from '~~/shared/types/recipe/recipeUuid.type'
-import type { RecipeCardProps } from '~/features/recipe/components/card/RecipeCard.vue'
+import type { StatCardProps } from '~/components/stats/StatsCard.vue'
 
+import type { RecipeCardProps } from '~/features/recipe/components/card/RecipeCard.vue'
 import { refDebounced } from '@vueuse/core'
 import ConfirmDialog from '~/components/dialog/ConfirmDialog.vue'
-import StatsCard from '~/components/stats/StatsCard.vue'
 import { useAppToast } from '~/composables/toast/useAppToast.composable'
 import { QUERY_KEYS } from '~/constants/queryKey.constant'
+import DashboardSearch from '~/features/dashboard/components/DashboardSearch.vue'
+import DashboardStats from '~/features/dashboard/components/DashboardStats.vue'
 import RecipeCard from '~/features/recipe/components/card/RecipeCard.vue'
 import { useRecipeCategoryCountQuery } from '~/features/recipe/queries/recipeCategoryCount.query'
 import { useRecipeCategoryIndexQuery } from '~/features/recipe/queries/recipeCategoryIndex.query'
@@ -63,14 +65,35 @@ watch(totalPages, (newTotalPages) => {
 })
 
 const totalRecipes = computed(() => recipeCountQuery.data.value ?? 0)
-
 const totalFilteredRecipes = computed<number>(() => recipeIndexQuery.data.value?.meta?.total ?? 0)
-
 const totalCategories = computed(() => recipeCategoryCountQuery.data.value ?? 0)
-
 const totalFavorites = computed(() => recipeFavoriteCountQuery.data.value ?? 0)
-
 const totalCooked = computed(() => recipeCookedCountQuery.data.value ?? 0)
+
+const dashboardStats = computed<StatCardProps[]>(() => {
+  return [
+    {
+      emoji: '📖',
+      number: totalRecipes.value.toString(),
+      title: 'Total Recipes',
+    },
+    {
+      emoji: '❤️',
+      number: totalFavorites.value.toString(),
+      title: 'Favorites',
+    },
+    {
+      emoji: '👨‍🍳',
+      number: totalCooked.value.toString(),
+      title: 'Cooked',
+    },
+    {
+      emoji: '🏷️',
+      number: totalCategories.value.toString(),
+      title: 'Categories',
+    },
+  ]
+})
 
 const recipeCards = computed<RecipeCardProps[]>(() => {
   return recipes.value.map((recipe) => {
@@ -191,93 +214,52 @@ async function onDelete(recipeId: RecipeUuid): Promise<void> {
 </script>
 
 <template>
-  <!-- Main Content -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Stats -->
-    <ul class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-      <li>
-        <StatsCard
-          emoji="📖"
-          title="Total Recipes"
-          :number="totalRecipes.toString()"
-        />
-      </li>
-      <li>
-        <StatsCard
-          emoji="❤️"
-          title="Favorites"
-          :number="totalFavorites.toString()"
-        />
-      </li>
-      <li>
-        <StatsCard
-          emoji="👨‍🍳"
-          title="Cooked"
-          :number="totalCooked.toString()"
-        />
-      </li>
-      <li>
-        <StatsCard
-          emoji="🏷️"
-          title="Categories"
-          :number="totalCategories.toString()"
-        />
-      </li>
-    </ul>
-
-    <!-- Search and Filters -->
-    <div class="mb-6 flex flex-col sm:flex-row gap-4">
-      <div class="flex-1">
-        <UInput
-          v-model="searchQuery"
-          icon="i-heroicons-magnifying-glass"
-          size="lg"
-          placeholder="Search recipes..."
-          class="w-full"
-        />
-      </div>
-      <USelectMenu
-        v-model="selectedCategory"
-        :items="recipeCategoryItems"
-        placeholder="Select category"
-        size="lg"
-        class="w-full sm:w-48"
-        searchable
-        searchable-placeholder="Search categories..."
+  <main class="py-8">
+    <AppContainer>
+      <DashboardStats
+        class="mb-6"
+        :stats="dashboardStats"
       />
-    </div>
 
-    <section class="space-y-8">
-      <UPageGrid as="ul">
-        <li
-          v-for="recipe in recipeCards"
-          :key="recipe.name"
-        >
-          <RecipeCard
-            :id="recipe.id"
-            :emoji="recipe.emoji"
-            :difficulty="recipe.difficulty"
-            :name="recipe.name"
-            :description="recipe.description"
-            :time="recipe.time"
-            :servings="recipe.servings"
-            :category="recipe.category"
-            :is-favorite="recipe.isFavorite"
-            :is-cooked="recipe.isCooked"
-            @favorite="(recipeId, isFavorite) => onFavorite(recipeId, isFavorite)"
-            @cooked="(recipeId, isCooked) => onCooked(recipeId, isCooked)"
-            @delete="(recipeId) => onDelete(recipeId)"
-          />
-        </li>
-      </UPageGrid>
-
-      <UPagination
-        v-model:page="page"
-        :ui="{
-          root: 'flex justify-center',
-        }"
-        :total="totalFilteredRecipes"
+      <DashboardSearch
+        v-model:query="searchQuery"
+        v-model:category="selectedCategory"
+        :category-items="recipeCategoryItems"
+        class="mb-6"
       />
-    </section>
+
+      <section class="grid gap-8">
+        <UPageGrid as="ul">
+          <li
+            v-for="recipe in recipeCards"
+            :key="recipe.name"
+          >
+            <RecipeCard
+              :id="recipe.id"
+              :emoji="recipe.emoji"
+              :difficulty="recipe.difficulty"
+              :name="recipe.name"
+              :description="recipe.description"
+              :time="recipe.time"
+              :servings="recipe.servings"
+              :category="recipe.category"
+              :is-favorite="recipe.isFavorite"
+              :is-cooked="recipe.isCooked"
+              @favorite="(recipeId, isFavorite) => onFavorite(recipeId, isFavorite)"
+              @cooked="(recipeId, isCooked) => onCooked(recipeId, isCooked)"
+              @delete="(recipeId) => onDelete(recipeId)"
+            />
+          </li>
+        </UPageGrid>
+
+        <UPagination
+          v-model:page="page"
+          :ui="{
+            root: 'flex justify-center',
+          }"
+          :total="totalFilteredRecipes"
+        />
+      </section>
+    </AppContainer>
   </main>
 </template>
