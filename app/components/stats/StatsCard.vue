@@ -11,9 +11,9 @@ const props = defineProps<StatCardProps>()
 </script>
 
 <template>
-  <UCard>
+  <UCard variant="soft">
     <div class="flex items-center gap-4">
-      <div class="p-3 bg-elevated rounded-lg">
+      <div class="p-3 rounded-lg bg-primary/5">
         <UIcon
           :name="props.icon"
           class="w-8 h-8 text-primary"
