@@ -74,22 +74,22 @@ const totalCooked = computed(() => recipeCookedCountQuery.data.value ?? 0)
 const dashboardStats = computed<StatCardProps[]>(() => {
   return [
     {
-      emoji: '📖',
+      icon: 'i-heroicons-document-text',
       number: totalRecipes.value.toString(),
       title: 'Total Recipes',
     },
     {
-      emoji: '❤️',
+      icon: 'i-heroicons-heart',
       number: totalFavorites.value.toString(),
       title: 'Favorites',
     },
     {
-      emoji: '👨‍🍳',
+      icon: 'i-mdi-pot-steam',
       number: totalCooked.value.toString(),
       title: 'Cooked',
     },
     {
-      emoji: '🏷️',
+      icon: 'i-heroicons-tag',
       number: totalCategories.value.toString(),
       title: 'Categories',
     },

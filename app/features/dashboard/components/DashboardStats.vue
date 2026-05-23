@@ -13,7 +13,7 @@ const props = defineProps<{
       :key="stat.title"
     >
       <StatsCard
-        :emoji="stat.emoji"
+        :icon="stat.icon"
         :title="stat.title"
         :number="stat.number.toString()"
       />
