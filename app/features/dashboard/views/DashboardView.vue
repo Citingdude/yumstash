@@ -7,6 +7,7 @@ import type { StatCardProps } from '~/components/stats/StatsCard.vue'
 
 import type { RecipeCardProps } from '~/features/recipe/components/card/RecipeCard.vue'
 import { refDebounced } from '@vueuse/core'
+import { DEFAULT_RECIPE_PAGE_SIZE } from '~~/shared/constants/recipePagination.constant'
 import ConfirmDialog from '~/components/dialog/ConfirmDialog.vue'
 import { useAppToast } from '~/composables/toast/useAppToast.composable'
 import { QUERY_KEYS } from '~/constants/queryKey.constant'
@@ -258,6 +259,7 @@ async function onDelete(recipeId: RecipeUuid): Promise<void> {
             root: 'flex justify-center',
           }"
           :total="totalFilteredRecipes"
+          :items-per-page="DEFAULT_RECIPE_PAGE_SIZE"
         />
       </section>
     </AppContainer>
