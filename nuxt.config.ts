@@ -17,6 +17,19 @@ export default defineNuxtConfig({
 
   app: {
     head: {
+      title: 'Yumstash',
+      htmlAttrs: {
+        lang: 'en',
+      },
+      meta: [
+        {
+          name: 'description',
+          content: 'A modern web application for storing and managing your favorite recipes',
+        },
+        {
+          name: '',
+        },
+      ],
       link: [
         {
           rel: 'preconnect',
