@@ -75,12 +75,13 @@ function onDelete(): void {
     >
       <template #header>
         <div class="relative">
-          <div class="w-full h-48 bg-accented rounded-lg flex items-center justify-center text-6xl">
+          <div class="w-full h-48 bg-elevated rounded-lg flex items-center justify-center text-6xl">
             {{ props.emoji }}
           </div>
           <UBadge
             :color="difficultyColor"
             class="absolute top-2 right-2 capitalize"
+            variant="soft"
           >
             {{ props.difficulty }}
           </UBadge>
@@ -109,7 +110,7 @@ function onDelete(): void {
         </div>
 
         <div class="flex items-center justify-between pt-2 border-t border-default">
-          <UBadge color="secondary" variant="solid">
+          <UBadge color="secondary" variant="outline">
             {{ props.category }}
           </UBadge>
           <div class="flex items-center gap-2">
