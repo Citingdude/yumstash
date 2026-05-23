@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { FormSubmitEvent, SelectItem } from '#ui/types'
 import type { z } from 'zod'
 import type { RecipeCategorySelectItem } from '~~/shared/types/recipe-category/recipeCategorySelectItem.type'
+import type { FormSubmitEvent, SelectItem } from '#ui/types'
 import { createRecipeFormSchema } from '~~/shared/types/recipe/createRecipeForm.type'
 import { useAppToast } from '~/composables/toast/useAppToast.composable'
 import { QUERY_KEYS } from '~/constants/queryKey.constant'

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { FormSubmitEvent } from '#ui/types'
 import type { RegisterFormData } from '~~/shared/types/auth/register/authRegister.type'
+import type { FormSubmitEvent } from '#ui/types'
 import { authRegisterFormDataSchema } from '~~/shared/types/auth/register/authRegister.type'
 import { useAppToast } from '~/composables/toast/useAppToast.composable'
 

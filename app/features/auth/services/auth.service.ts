@@ -1,7 +1,7 @@
-import type { LoginBody } from '#shared/types/auth/login/authLogin.type'
 import type { ForgotPasswordBody } from '~~/shared/types/auth/forgot-password/forgotPassword.type'
 import type { RegisterBody } from '~~/shared/types/auth/register/authRegister.type'
 import type { ResetPasswordBody } from '~~/shared/types/auth/reset-password/resetPassword.type'
+import type { LoginBody } from '#shared/types/auth/login/authLogin.type'
 
 export class AuthService {
   public static async login(body: LoginBody) {

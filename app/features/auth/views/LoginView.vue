@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { FormSubmitEvent } from '#ui/types'
 import type { LoginBody } from '~~/shared/types/auth/login/authLogin.type'
+import type { FormSubmitEvent } from '#ui/types'
 import { authLoginFormDataSchema } from '~~/shared/types/auth/login/authLogin.type'
 import { useApiError } from '~/composables/error/useApiError'
 import { useAppToast } from '~/composables/toast/useAppToast.composable'

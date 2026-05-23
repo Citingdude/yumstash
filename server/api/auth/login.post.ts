@@ -1,10 +1,10 @@
-import { authLoginBodySchema } from '#shared/types/auth/login/authLogin.type'
 import { eq } from 'drizzle-orm'
 import { useDB } from '~~/server/db'
 import { usersTable } from '~~/server/db/schema'
 import { handleApiError } from '~~/server/utils/error/error.util'
 import { PasswordUtil } from '~~/server/utils/password/password.util'
 import { createSession } from '~~/server/utils/session/session.util'
+import { authLoginBodySchema } from '#shared/types/auth/login/authLogin.type'
 
 export default defineEventHandler(async (event) => {
   try {

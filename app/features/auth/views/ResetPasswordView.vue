@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { FormSubmitEvent } from '#ui/types'
 import type { ResetPasswordBody } from '~~/shared/types/auth/reset-password/resetPassword.type'
+import type { FormSubmitEvent } from '#ui/types'
 import { resetPasswordBodySchema } from '~~/shared/types/auth/reset-password/resetPassword.type'
 import { useApiError } from '~/composables/error/useApiError'
 import { useAppToast } from '~/composables/toast/useAppToast.composable'

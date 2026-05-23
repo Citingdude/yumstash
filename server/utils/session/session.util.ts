@@ -1,9 +1,9 @@
 import type { DB } from '~~/server/db'
 import type { Session, SessionWithToken } from '~~/shared/types/session/session.type'
-import { constantTimeEqual, generateSecureRandomString, hashSecret } from '#shared/utils/crypto/crypto.util'
-import { decodeBase64, encodeBase64 } from '#shared/utils/encode/encode.util'
 import { eq } from 'drizzle-orm'
 import { sessionsTable } from '~~/server/db/schema'
+import { constantTimeEqual, generateSecureRandomString, hashSecret } from '#shared/utils/crypto/crypto.util'
+import { decodeBase64, encodeBase64 } from '#shared/utils/encode/encode.util'
 
 export async function createSession(db: DB, userId: string): Promise<SessionWithToken> {
   const now = new Date()

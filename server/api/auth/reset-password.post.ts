@@ -1,11 +1,11 @@
 import type { ApiSuccessResponse } from '#shared/types/api/apiResponse.type'
-import { resetPasswordBodySchema } from '#shared/types/auth/reset-password/resetPassword.type'
 import { and, eq, gt } from 'drizzle-orm'
 import { useDB } from '~~/server/db'
 import { passwordResetTokensTable, usersTable } from '~~/server/db/schema'
 import { handleApiError } from '~~/server/utils/error/error.util'
 import { PasswordUtil } from '~~/server/utils/password/password.util'
 import { invalidateAllUserSessions } from '~~/server/utils/session/session.util'
+import { resetPasswordBodySchema } from '#shared/types/auth/reset-password/resetPassword.type'
 
 export default defineEventHandler(async (event): Promise<ApiSuccessResponse> => {
   try {
