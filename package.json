@@ -3,6 +3,7 @@
   "type": "module",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@11.5.0",
   "description": "A modern web application for storing and managing your favorite recipes",
   "author": "Citingdude",
   "scripts": {
@@ -29,8 +30,8 @@
     "@nuxt/image": "2.0.0",
     "@nuxt/scripts": "1.1.1",
     "@nuxt/test-utils": "4.0.3",
-    "@nuxt/ui": "4.8.0",
-    "@unhead/vue": "3.1.0",
+    "@nuxt/ui": "4.8.1",
+    "@unhead/vue": "3.1.1",
     "@vueuse/core": "14.3.0",
     "dotenv": "17.4.2",
     "drizzle-orm": "0.45.2",
@@ -40,8 +41,8 @@
     "pg": "8.21.0",
     "tailwindcss": "4.3.0",
     "typescript": "6.0.3",
-    "vue": "3.5.34",
-    "vue-router": "5.0.7",
+    "vue": "3.5.35",
+    "vue-router": "5.1.0",
     "zod": "4.4.3"
   },
   "devDependencies": {
@@ -53,6 +54,6 @@
     "drizzle-kit": "0.31.10",
     "tsx": "4.22.3",
     "vitest": "^4.1.7",
-    "vue-tsc": "3.3.1"
+    "vue-tsc": "3.3.2"
   }
 }
