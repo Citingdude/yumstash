@@ -133,6 +133,8 @@ async function onSubmit(event: FormSubmitEvent<CreateRecipeForm>) {
             <UInput
               v-model="state.time"
               placeholder="e.g., 30 min"
+              type="number"
+              :min="0"
             />
           </UFormField>
 
