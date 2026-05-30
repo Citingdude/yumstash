@@ -29,7 +29,7 @@ const state = reactive<Partial<CreateRecipeForm>>({
   name: '',
   description: '',
   emoji: '🍽️',
-  time: '',
+  time: 0,
   servings: '',
   difficultyId: '',
 })
@@ -38,7 +38,7 @@ function resetForm() {
   state.name = ''
   state.description = ''
   state.emoji = '🍽️'
-  state.time = ''
+  state.time = 0
   state.servings = ''
   state.difficultyId = ''
 }

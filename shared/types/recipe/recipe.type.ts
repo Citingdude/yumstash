@@ -8,7 +8,7 @@ export const recipeSchema = z.object({
   updatedAt: z.iso.datetime().nullable(),
   name: z.string(),
   description: z.string(),
-  time: z.string(),
+  time: z.number(),
   servings: z.string(),
   emoji: z.emoji().nullable(),
   isFavorite: z.boolean().default(false),

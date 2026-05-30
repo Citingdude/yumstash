@@ -8,7 +8,7 @@ export interface RecipeCardProps {
   difficulty: RecipeDifficultNameEnum
   name: string
   description: string
-  time: string
+  time: number
   servings: string
   category: string
   isFavorite: boolean

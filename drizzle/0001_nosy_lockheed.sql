@@ -1,1 +1,0 @@
-ALTER TABLE "recipes" ADD COLUMN "isFavorite" boolean DEFAULT false NOT NULL;

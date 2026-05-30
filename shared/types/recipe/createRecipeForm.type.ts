@@ -4,7 +4,7 @@ import { recipeCategoryUuidSchema } from '~~/shared/types/recipe-category/recipe
 export const createRecipeFormSchema = z.object({
   name: z.string().min(1),
   description: z.string().min(1),
-  time: z.string().min(1),
+  time: z.number().min(1),
   servings: z.string().min(1),
   difficultyId: z.uuid(),
   categoryId: recipeCategoryUuidSchema,

@@ -1,7 +1,7 @@
 import type { InferInsertModel, InferSelectModel } from 'drizzle-orm'
 import type { RecipeDifficultyEnum } from '../recipe-difficulty/recipe-difficulty.schema'
 import { relations } from 'drizzle-orm'
-import { boolean, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core'
+import { boolean, integer, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core'
 import { recipeCategoriesTable } from '../recipe-category/recipe-category.schema'
 import { recipeDifficultiesTable } from '../recipe-difficulty/recipe-difficulty.schema'
 import { usersTable } from '../user/user.schema'
@@ -10,7 +10,7 @@ export const recipesTable = pgTable('recipes', {
   id: uuid().primaryKey().defaultRandom(),
   name: varchar({ length: 255 }).notNull(),
   description: text().notNull(),
-  time: varchar({ length: 50 }).notNull(),
+  time: integer().notNull(),
   servings: varchar({ length: 50 }).notNull(),
   emoji: varchar({ length: 10 }),
   isFavorite: boolean().default(false).notNull(),
