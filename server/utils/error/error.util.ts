@@ -1,14 +1,15 @@
 import type { H3Error } from 'h3'
+import { createError } from 'h3'
 import { ZodError } from 'zod'
 
 /**
  * Checks if an error is an H3Error.
  */
 function isH3Error(error: unknown): error is H3Error {
-  return typeof error === 'object'
-    && error !== null
-    && 'statusCode' in error
-    && 'statusMessage' in error
+  if (typeof error !== 'object' || error === null)
+    return false
+  const obj = error as Record<string, unknown>
+  return 'statusCode' in obj && 'statusMessage' in obj
 }
 
 /**
