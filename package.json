@@ -26,7 +26,6 @@
   },
   "dependencies": {
     "@nuxt/eslint": "1.15.2",
-    "@nuxt/hints": "1.1.2",
     "@nuxt/image": "2.0.0",
     "@nuxt/scripts": "1.1.1",
     "@nuxt/test-utils": "4.0.3",
