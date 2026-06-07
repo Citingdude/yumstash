@@ -13,6 +13,7 @@ const emit = defineEmits<{
   toggleFavorite: []
   toggleCooked: []
   deleteRecipe: []
+  editRecipe: []
 }>()
 
 const formattedDate = computed<string>(() => {
@@ -44,6 +45,13 @@ const formattedDate = computed<string>(() => {
 
       <!-- Action Buttons -->
       <div class="flex gap-2">
+        <AppButton
+          icon="i-heroicons-pencil-square"
+          color="neutral"
+          variant="outline"
+          size="lg"
+          @click="emit('editRecipe')"
+        />
         <AppButton
           :icon="recipe.isFavorite ? 'i-heroicons-heart-solid' : 'i-heroicons-heart'"
           :color="recipe.isFavorite ? 'secondary' : 'neutral'"

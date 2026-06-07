@@ -8,7 +8,10 @@ import RecipeDetailContent from '~/features/recipe/components/detail/RecipeDetai
 import RecipeDetailHeader from '~/features/recipe/components/detail/RecipeDetailHeader.vue'
 import RecipeDetailInfo from '~/features/recipe/components/detail/RecipeDetailInfo.vue'
 import RecipeDetailMeta from '~/features/recipe/components/detail/RecipeDetailMeta.vue'
+import RecipeEditModal from '~/features/recipe/components/modal/RecipeEditModal.vue'
+import { useRecipeCategoryIndexQuery } from '~/features/recipe/queries/recipeCategoryIndex.query'
 import { useRecipeDetailQuery } from '~/features/recipe/queries/recipeDetail.query'
+import { useRecipeDifficultyQuery } from '~/features/recipe/queries/recipeDifficulty.query'
 import { useRecipeService } from '~/features/recipe/services/recipe.service'
 
 const route = useRoute('recipes-id')
@@ -19,8 +22,11 @@ const recipeService = useRecipeService()
 
 const recipeId = computed(() => route.params.id as RecipeUuid)
 const recipeDetailQuery = useRecipeDetailQuery(recipeId)
+const recipeCategoryIndexQuery = useRecipeCategoryIndexQuery()
+const recipeDifficultyQuery = useRecipeDifficultyQuery()
 
 const confirmDialog = overlay.create(ConfirmDialog)
+const editDialog = overlay.create(RecipeEditModal)
 
 const isTogglingFavorite = ref<boolean>(false)
 const isTogglingCooked = ref<boolean>(false)
@@ -106,6 +112,14 @@ async function deleteRecipe() {
     isDeleting.value = false
   }
 }
+
+function editRecipe() {
+  editDialog.open({
+    recipeId: recipeId.value,
+    categoryOptions: recipeCategoryIndexQuery.selectItems.value,
+    difficultyOptions: recipeDifficultyQuery.selectItems.value,
+  })
+}
 </script>
 
 <template>
@@ -138,6 +152,7 @@ async function deleteRecipe() {
             @delete-recipe="deleteRecipe"
             @toggle-cooked="toggleCooked"
             @toggle-favorite="toggleFavorite"
+            @edit-recipe="editRecipe"
           />
           <RecipeDetailMeta :recipe="recipe" />
           <RecipeDetailContent :recipe="recipe" />
