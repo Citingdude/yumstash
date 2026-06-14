@@ -22,14 +22,6 @@ const groups: CommandPaletteGroup[] = [
           open.value = false
         },
       },
-      {
-        label: 'Settings',
-        icon: 'i-lucide-settings',
-        to: '/settings',
-        onSelect: () => {
-          open.value = false
-        },
-      },
     ],
   },
 ]
