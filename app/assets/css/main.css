@@ -1,6 +1,24 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
 
+:root {
+  --ui-primary: var(--ui-color-primary-500);
+  --ui-secondary: var(--ui-color-secondary-500);
+  --ui-success: var(--ui-color-success-500);
+  --ui-info: var(--ui-color-info-500);
+  --ui-warning: var(--ui-color-warning-500);
+  --ui-error: var(--ui-color-error-500);
+}
+
+.dark {
+  --ui-primary: var(--ui-color-primary-400);
+  --ui-secondary: var(--ui-color-secondary-400);
+  --ui-success: var(--ui-color-success-400);
+  --ui-info: var(--ui-color-info-400);
+  --ui-warning: var(--ui-color-warning-400);
+  --ui-error: var(--ui-color-error-400);
+}
+
 @theme {  
   /* Primary/Accent Color - #cc2936 (Red) */
   --color-red-50: #fef2f3;
@@ -27,6 +45,30 @@
   --color-yellow-800: #854d0e;
   --color-yellow-900: #713f12;
   --color-yellow-950: #422006;
+
+  /* --ui-color-neutral-50:  oklch(98.2% 0.012 65);
+  --ui-color-neutral-100: oklch(95.8% 0.018 65);
+  --ui-color-neutral-200: oklch(91.5% 0.026 62);
+  --ui-color-neutral-300: oklch(84.5% 0.038 58);
+  --ui-color-neutral-400: oklch(68.5% 0.052 50);
+  --ui-color-neutral-500: oklch(53.0% 0.055 42);
+  --ui-color-neutral-600: oklch(42.0% 0.050 38);
+  --ui-color-neutral-700: oklch(33.0% 0.045 34);
+  --ui-color-neutral-800: oklch(25.0% 0.040 30);
+  --ui-color-neutral-900: oklch(19.5% 0.035 28);
+  --ui-color-neutral-950: oklch(14.8% 0.030 26); */
+
+  --ui-color-primary-50:  oklch(98.2% 0.018 45);
+  --ui-color-primary-100: oklch(95.5% 0.040 43);
+  --ui-color-primary-200: oklch(90.8% 0.080 40);
+  --ui-color-primary-300: oklch(84.5% 0.130 37);
+  --ui-color-primary-400: oklch(76.5% 0.180 33);
+  --ui-color-primary-500: oklch(68.0% 0.205 30); /* #F16034 */
+  --ui-color-primary-600: oklch(61.0% 0.195 28);
+  --ui-color-primary-700: oklch(52.0% 0.175 25);
+  --ui-color-primary-800: oklch(43.0% 0.145 22);
+  --ui-color-primary-900: oklch(34.0% 0.105 20);
+  --ui-color-primary-950: oklch(24.0% 0.065 18);
   
 
   /* Font Family - Poppins */

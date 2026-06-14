@@ -99,6 +99,7 @@ async function onSubmit(event: FormSubmitEvent<CreateRecipeForm>) {
           <UInput
             v-model="state.name"
             placeholder="e.g., Chocolate Chip Cookies"
+            variant="soft"
           />
         </UFormField>
 
@@ -107,6 +108,7 @@ async function onSubmit(event: FormSubmitEvent<CreateRecipeForm>) {
             v-model="state.description"
             placeholder="Describe your recipe..."
             :rows="3"
+            variant="soft"
           />
         </UFormField>
 
@@ -116,6 +118,7 @@ async function onSubmit(event: FormSubmitEvent<CreateRecipeForm>) {
               v-model="state.emoji"
               placeholder="🍽️"
               maxlength="2"
+              variant="soft"
             />
           </UFormField>
 
@@ -124,6 +127,7 @@ async function onSubmit(event: FormSubmitEvent<CreateRecipeForm>) {
               v-model="state.categoryId"
               :items="props.categoryOptions"
               placeholder="Select category"
+              variant="soft"
             />
           </UFormField>
         </div>
@@ -135,6 +139,7 @@ async function onSubmit(event: FormSubmitEvent<CreateRecipeForm>) {
               placeholder="e.g., 30 min"
               type="number"
               :min="0"
+              variant="soft"
             />
           </UFormField>
 
@@ -142,6 +147,7 @@ async function onSubmit(event: FormSubmitEvent<CreateRecipeForm>) {
             <UInput
               v-model="state.servings"
               placeholder="e.g., 4"
+              variant="soft"
             />
           </UFormField>
 
@@ -150,6 +156,7 @@ async function onSubmit(event: FormSubmitEvent<CreateRecipeForm>) {
               v-model="state.difficultyId"
               :items="difficultyOptions"
               placeholder="Select difficulty"
+              variant="soft"
             />
           </UFormField>
         </div>

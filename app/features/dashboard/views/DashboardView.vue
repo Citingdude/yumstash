@@ -260,6 +260,7 @@ async function onDelete(recipeId: RecipeUuid): Promise<void> {
           }"
           :total="totalFilteredRecipes"
           :items-per-page="DEFAULT_RECIPE_PAGE_SIZE"
+          variant="ghost"
         />
       </section>
     </AppContainer>

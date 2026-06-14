@@ -72,6 +72,10 @@ function onDelete(): void {
   >
     <UCard
       class="group-hover:shadow-xl group-hover:-translate-y-2 transition-all cursor-pointer"
+      variant="soft"
+      :ui="{
+        body: 'border-none',
+      }"
     >
       <template #header>
         <div class="relative">

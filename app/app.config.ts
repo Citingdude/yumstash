@@ -6,7 +6,7 @@ export default defineAppConfig({
     colors: {
       primary: 'red',
       secondary: 'amber',
-      neutral: 'slate',
+      neutral: 'zinc',
     },
     select: {
       slots: {

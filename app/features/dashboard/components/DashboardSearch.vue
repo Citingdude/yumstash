@@ -19,6 +19,7 @@ const category = defineModel<RecipeCategorySelectItem>('category')
         size="lg"
         placeholder="Search recipes..."
         class="w-full"
+        variant="soft"
       />
     </div>
     <USelectMenu
@@ -29,6 +30,7 @@ const category = defineModel<RecipeCategorySelectItem>('category')
       class="w-full sm:w-48"
       searchable
       searchable-placeholder="Search categories..."
+      variant="soft"
     />
   </div>
 </template>
