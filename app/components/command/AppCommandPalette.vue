@@ -34,7 +34,7 @@ const groups: CommandPaletteGroup[] = [
         label: 'System',
         icon: 'i-lucide-layout-dashboard',
         onSelect: () => {
-          colorMode.value = 'system'
+          colorMode.preference = 'system'
           open.value = false
         },
       },
@@ -42,7 +42,7 @@ const groups: CommandPaletteGroup[] = [
         label: 'Light',
         icon: 'i-lucide-layout-dashboard',
         onSelect: () => {
-          colorMode.value = 'light'
+          colorMode.preference = 'light'
           open.value = false
         },
       },
@@ -50,7 +50,7 @@ const groups: CommandPaletteGroup[] = [
         label: 'Dark',
         icon: 'i-lucide-layout-dashboard',
         onSelect: () => {
-          colorMode.value = 'dark'
+          colorMode.preference = 'dark'
           open.value = false
         },
       },
