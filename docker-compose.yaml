@@ -1,0 +1,16 @@
+services:
+  yumstash-db:
+    image: postgres:17-alpine
+    container_name: yumstash-db
+    environment:
+      POSTGRES_DB: yumstash
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5442:5432"
+    volumes:
+      - yumstash_postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  yumstash_postgres_data:
