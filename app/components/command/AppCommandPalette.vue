@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { CommandPaletteGroup } from '@nuxt/ui'
 
+const colorMode = useColorMode()
+
 const open = ref(false)
 
 defineShortcuts({
@@ -19,6 +21,36 @@ const groups: CommandPaletteGroup[] = [
         icon: 'i-lucide-layout-dashboard',
         to: '/',
         onSelect: () => {
+          open.value = false
+        },
+      },
+    ],
+  },
+  {
+    id: 'color-mode',
+    label: 'Color mode',
+    items: [
+      {
+        label: 'System',
+        icon: 'i-lucide-layout-dashboard',
+        onSelect: () => {
+          colorMode.value = 'system'
+          open.value = false
+        },
+      },
+      {
+        label: 'Light',
+        icon: 'i-lucide-layout-dashboard',
+        onSelect: () => {
+          colorMode.value = 'light'
+          open.value = false
+        },
+      },
+      {
+        label: 'Dark',
+        icon: 'i-lucide-layout-dashboard',
+        onSelect: () => {
+          colorMode.value = 'dark'
           open.value = false
         },
       },
