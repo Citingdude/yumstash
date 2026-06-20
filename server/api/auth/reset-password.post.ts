@@ -1,5 +1,5 @@
 import type { ApiSuccessResponse } from '#shared/types/api/apiResponse.type'
-import { and, eq, gt } from 'drizzle-orm'
+import { eq } from 'drizzle-orm'
 import { useDB } from '~~/server/db'
 import { passwordResetTokensTable, usersTable } from '~~/server/db/schema'
 import { handleApiError } from '~~/server/utils/error/error.util'
@@ -17,10 +17,12 @@ export default defineEventHandler(async (event): Promise<ApiSuccessResponse> => 
     const db = useDB()
 
     const resetToken = await db.query.passwordResetTokensTable.findFirst({
-      where: and(
-        eq(passwordResetTokensTable.token, token),
-        gt(passwordResetTokensTable.expiresAt, new Date()),
-      ),
+      where: {
+        token,
+        expiresAt: {
+          gt: new Date(),
+        },
+      },
       with: {
         user: true,
       },

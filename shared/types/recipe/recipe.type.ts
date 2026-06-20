@@ -21,17 +21,17 @@ export const recipeWithRelationsSchema = recipeSchema.extend({
   difficulty: z.object({
     id: z.uuid(),
     name: z.enum(['easy', 'medium', 'hard']),
-  }),
+  }).nullable(),
   category: z.object({
     id: z.uuid(),
     name: z.string(),
     slug: z.string(),
-  }),
+  }).nullable(),
   author: z.object({
     id: z.uuid(),
     name: z.string(),
     email: z.email(),
-  }),
+  }).nullable(),
 })
 
 export type Recipe = z.infer<typeof recipeSchema>

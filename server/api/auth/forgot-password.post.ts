@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm'
 import { useDB } from '~~/server/db'
-import { passwordResetTokensTable, usersTable } from '~~/server/db/schema'
+import { passwordResetTokensTable } from '~~/server/db/schema'
 import { forgotPasswordBodySchema } from '#shared/types/auth/forgot-password/forgotPassword.type'
 import { generateSecureRandomString } from '#shared/utils/crypto/crypto.util'
 
@@ -12,7 +12,9 @@ export default defineEventHandler(async (event) => {
   const db = useDB()
 
   const user = await db.query.usersTable.findFirst({
-    where: eq(usersTable.email, email),
+    where: {
+      email,
+    },
   })
 
   if (!user) {

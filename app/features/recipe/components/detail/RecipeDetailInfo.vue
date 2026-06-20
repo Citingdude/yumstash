@@ -13,7 +13,7 @@ const props = defineProps<{
         <div class="p-3 bg-accented rounded-xl">
           <UIcon name="i-heroicons-tag" class="w-6 h-6 text-primary" />
         </div>
-        <div>
+        <div v-if="props.recipe.category">
           <p class="text-sm font-medium">
             Category
           </p>
@@ -29,7 +29,7 @@ const props = defineProps<{
         <div class="p-3 bg-accented rounded-xl">
           <UIcon name="i-heroicons-user" class="w-6 h-6 text-primary" />
         </div>
-        <div>
+        <div v-if="props.recipe.author">
           <p class="text-sm font-medium">
             Author
           </p>

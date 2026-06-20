@@ -18,7 +18,6 @@ import { useRecipeCategoryCountQuery } from '~/features/recipe/queries/recipeCat
 import { useRecipeCategoryIndexQuery } from '~/features/recipe/queries/recipeCategoryIndex.query'
 import { useRecipeCookedCountQuery } from '~/features/recipe/queries/recipeCookedCount.query'
 import { useRecipeCountQuery } from '~/features/recipe/queries/recipeCount.query'
-import { useRecipeFavoriteCountQuery } from '~/features/recipe/queries/recipeFavoriteCount.query'
 import { useRecipeIndexQuery } from '~/features/recipe/queries/recipeIndex.query'
 import { useRecipeService } from '~/features/recipe/services/recipe.service'
 import { invalidateQuery } from '~/utils/query/query.util'
@@ -40,7 +39,6 @@ const recipeIndexQuery = useRecipeIndexQuery(debouncedSearchQuery, categoryId, p
 const recipeCountQuery = useRecipeCountQuery()
 const recipeCategoryIndexQuery = useRecipeCategoryIndexQuery()
 const recipeCategoryCountQuery = useRecipeCategoryCountQuery()
-const recipeFavoriteCountQuery = useRecipeFavoriteCountQuery()
 const recipeCookedCountQuery = useRecipeCookedCountQuery()
 
 watch([debouncedSearchQuery, categoryId], () => {
@@ -68,7 +66,7 @@ watch(totalPages, (newTotalPages) => {
 const totalRecipes = computed(() => recipeCountQuery.data.value ?? 0)
 const totalFilteredRecipes = computed<number>(() => recipeIndexQuery.data.value?.meta?.total ?? 0)
 const totalCategories = computed(() => recipeCategoryCountQuery.data.value ?? 0)
-const totalFavorites = computed(() => recipeFavoriteCountQuery.data.value ?? 0)
+const totalFavorites = computed(() => 0)
 const totalCooked = computed(() => recipeCookedCountQuery.data.value ?? 0)
 
 const dashboardStats = computed<StatCardProps[]>(() => {
@@ -101,47 +99,17 @@ const recipeCards = computed<RecipeCardProps[]>(() => {
     return {
       id: recipe.id,
       emoji: recipe.emoji ?? '',
-      difficulty: recipe.difficulty.name,
+      difficulty: recipe.difficulty?.name ?? null,
       name: recipe.name,
       description: recipe.description,
       time: recipe.time,
       servings: recipe.servings,
-      category: recipe.category.name,
-      isFavorite: recipe.isFavorite,
+      category: recipe.category?.name ?? null,
+      isFavorite: false,
       isCooked: recipe.isCooked,
     }
   })
 })
-
-async function onFavorite(recipeId: RecipeUuid, isFavorite: boolean): Promise<void> {
-  try {
-    await $fetch(`/api/recipes/${recipeId}/favorite`, {
-      method: 'POST',
-      body: {
-        isFavorite,
-      },
-    })
-
-    await Promise.all([
-      invalidateQuery(QUERY_KEYS.RECIPE_INDEX),
-      invalidateQuery(QUERY_KEYS.RECIPE_FAVORITE_COUNT),
-    ])
-
-    toast.success({
-      title: isFavorite ? 'Recipe favorited' : 'Favorite removed',
-      description: isFavorite
-        ? 'Recipe added to your favorites.'
-        : 'Recipe removed from your favorites.',
-    })
-  }
-  catch (error) {
-    console.error('Failed to update favorite state', error)
-    toast.error({
-      title: 'Error',
-      errorMessage: 'Could not update favorite. Try again later.',
-    })
-  }
-}
 
 async function onCooked(recipeId: RecipeUuid, isCooked: boolean): Promise<void> {
   try {
@@ -246,7 +214,6 @@ async function onDelete(recipeId: RecipeUuid): Promise<void> {
               :category="recipe.category"
               :is-favorite="recipe.isFavorite"
               :is-cooked="recipe.isCooked"
-              @favorite="(recipeId, isFavorite) => onFavorite(recipeId, isFavorite)"
               @cooked="(recipeId, isCooked) => onCooked(recipeId, isCooked)"
               @delete="(recipeId) => onDelete(recipeId)"
             />

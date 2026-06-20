@@ -5,12 +5,12 @@ import type { RecipeUuid } from '~~/shared/types/recipe/recipeUuid.type'
 export interface RecipeCardProps {
   id: RecipeUuid
   emoji: string
-  difficulty: RecipeDifficultNameEnum
+  difficulty: RecipeDifficultNameEnum | null
   name: string
   description: string
   time: number
   servings: string
-  category: string
+  category: string | null
   isFavorite: boolean
   isCooked: boolean
 }

@@ -1,4 +1,3 @@
-import { eq } from 'drizzle-orm'
 import { useDB } from '~~/server/db'
 import { usersTable } from '~~/server/db/schema'
 import { handleApiError } from '~~/server/utils/error/error.util'
@@ -17,7 +16,9 @@ export default defineEventHandler(async (event) => {
     const db = useDB()
 
     const existingUser = await db.query.usersTable.findFirst({
-      where: eq(usersTable.email, email),
+      where: {
+        email,
+      },
     })
 
     if (existingUser) {

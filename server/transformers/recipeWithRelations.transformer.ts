@@ -11,26 +11,32 @@ export class RecipeWithRelationsTransformer {
       time: dbRecipe.time,
       servings: dbRecipe.servings,
       emoji: dbRecipe.emoji,
-      difficulty: {
-        id: dbRecipe.difficulty.id,
-        name: dbRecipe.difficulty.name,
-      },
-      category: {
-        id: dbRecipe.category.id,
-        name: dbRecipe.category.name,
-        slug: dbRecipe.category.slug,
-      },
-      author: {
-        id: dbRecipe.author.id,
-        name: dbRecipe.author.name,
-        email: dbRecipe.author.email,
-      },
+      difficulty: dbRecipe.recipeDifficulty
+        ? {
+            id: dbRecipe.recipeDifficulty.id,
+            name: dbRecipe.recipeDifficulty.name,
+          }
+        : null,
+      category: dbRecipe.recipeCategory
+        ? {
+            id: dbRecipe.recipeCategory.id,
+            name: dbRecipe.recipeCategory.name,
+            slug: dbRecipe.recipeCategory.slug,
+          }
+        : null,
+      author: dbRecipe.user
+        ? {
+            id: dbRecipe.user.id,
+            name: dbRecipe.user.name,
+            email: dbRecipe.user.email,
+          }
+        : null,
       createdAt: dbRecipe.createdAt.toISOString(),
       updatedAt: dbRecipe.updatedAt.toISOString(),
       authorId: dbRecipe.authorId,
       categoryId: dbRecipe.categoryId,
       difficultyId: dbRecipe.difficultyId,
-      isFavorite: dbRecipe.isFavorite,
+      isFavorite: false,
       isCooked: dbRecipe.isCooked,
     }
   }

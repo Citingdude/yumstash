@@ -1,6 +1,4 @@
-import { eq } from 'drizzle-orm'
 import { useDB } from '~~/server/db'
-import { usersTable } from '~~/server/db/schema'
 import { handleApiError } from '~~/server/utils/error/error.util'
 import { PasswordUtil } from '~~/server/utils/password/password.util'
 import { createSession } from '~~/server/utils/session/session.util'
@@ -12,8 +10,14 @@ export default defineEventHandler(async (event) => {
 
     const db = useDB()
 
+    if (db === null) {
+      throw createError('No DB')
+    }
+
     const user = await db.query.usersTable.findFirst({
-      where: eq(usersTable.email, email),
+      where: {
+        email,
+      },
     })
 
     if (!user) {

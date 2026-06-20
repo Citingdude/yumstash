@@ -56,4 +56,12 @@ export default defineNuxtConfig({
   runtimeConfig: {
     databaseUrl: process.env.DATABASE_URL,
   },
+
+  typescript: {
+    tsConfig: {
+      compilerOptions: {
+        types: ['node'],
+      },
+    },
+  },
 })

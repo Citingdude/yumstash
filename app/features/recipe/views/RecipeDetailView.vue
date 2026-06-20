@@ -36,7 +36,6 @@ async function toggleFavorite() {
 
   isTogglingFavorite.value = true
   try {
-    await recipeService.toggleFavorite(recipe.value.id, recipe.value.isFavorite)
     await recipeDetailQuery.refresh()
     appToast.success({
       title: recipe.value.isFavorite ? 'Removed from favorites' : 'Added to favorites',

@@ -32,11 +32,13 @@ export default defineEventHandler(async (event) => {
     }
 
     const recipe = await db.query.recipesTable.findFirst({
-      where: (recipes, { eq }) => eq(recipes.id, newRecipe.id),
+      where: {
+        id: newRecipe.id,
+      },
       with: {
-        difficulty: true,
-        category: true,
-        author: true,
+        recipeDifficulty: true,
+        recipeCategory: true,
+        user: true,
       },
     })
 
@@ -54,22 +56,28 @@ export default defineEventHandler(async (event) => {
       time: recipe.time,
       servings: recipe.servings,
       emoji: recipe.emoji,
-      isFavorite: recipe.isFavorite,
+      isFavorite: false,
       isCooked: recipe.isCooked,
-      difficulty: {
-        id: recipe.difficulty.id,
-        name: recipe.difficulty.name,
-      },
-      category: {
-        id: recipe.category.id,
-        name: recipe.category.name,
-        slug: recipe.category.slug,
-      },
-      author: {
-        id: recipe.author.id,
-        name: recipe.author.name,
-        email: recipe.author.email,
-      },
+      difficulty: recipe.recipeDifficulty
+        ? {
+            id: recipe.recipeDifficulty.id,
+            name: recipe.recipeDifficulty.name,
+          }
+        : null,
+      category: recipe.recipeCategory
+        ? {
+            id: recipe.recipeCategory.id,
+            name: recipe.recipeCategory.name,
+            slug: recipe.recipeCategory.slug,
+          }
+        : null,
+      user: recipe.user
+        ? {
+            id: recipe.user.id,
+            name: recipe.user.name,
+            email: recipe.user.email,
+          }
+        : null,
       createdAt: recipe.createdAt.toISOString(),
       updatedAt: recipe.updatedAt.toISOString(),
     }

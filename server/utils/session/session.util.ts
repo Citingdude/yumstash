@@ -1,7 +1,7 @@
 import type { DB } from '~~/server/db'
 import type { Session, SessionWithToken } from '~~/shared/types/session/session.type'
 import { eq } from 'drizzle-orm'
-import { sessionsTable } from '~~/server/db/schema'
+import { sessionsTable } from '~~/server/db/schema/index'
 import { constantTimeEqual, generateSecureRandomString, hashSecret } from '#shared/utils/crypto/crypto.util'
 import { decodeBase64, encodeBase64 } from '#shared/utils/encode/encode.util'
 
@@ -73,7 +73,9 @@ export async function validateSessionToken(db: DB, token: string): Promise<Sessi
 
 async function getSession(db: DB, sessionId: string): Promise<Session | null> {
   const result = await db.query.sessionsTable.findFirst({
-    where: ({ id }) => eq(id, sessionId),
+    where: {
+      id: sessionId,
+    },
   })
 
   if (!result) {

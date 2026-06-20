@@ -1,9 +1,7 @@
-import type { RecipeSelectWithRelations } from '~~/server/db/schema/index'
+import type { RecipeSelectWithRelations } from '~~/server/db/schema'
 import type { RecipeWithRelations } from '~~/shared/types/recipe/recipe.type'
-import { eq } from 'drizzle-orm'
 import { z } from 'zod'
 import { useDB } from '~~/server/db'
-import { recipesTable } from '~~/server/db/schema/index'
 import { RecipeWithRelationsTransformer } from '~~/server/transformers/recipeWithRelations.transformer'
 import { requireAuth } from '~~/server/utils/auth/auth.util'
 import { recipeUuidSchema } from '~~/shared/types/recipe/recipeUuid.type'
@@ -19,11 +17,13 @@ export default defineEventHandler<Promise<RecipeWithRelations>>(async (event) =>
   const params = await getValidatedRouterParams(event, recipeParamsSchema.parse)
 
   const dbRecipe: RecipeSelectWithRelations | undefined = await db.query.recipesTable.findFirst({
-    where: eq(recipesTable.id, params.recipeId),
+    where: {
+      id: params.recipeId,
+    },
     with: {
-      difficulty: true,
-      category: true,
-      author: true,
+      recipeDifficulty: true,
+      recipeCategory: true,
+      user: true,
     },
   })
 

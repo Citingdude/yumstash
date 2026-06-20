@@ -1,10 +1,7 @@
-import type { RecipeInsert } from './schema/recipe/recipe.schema'
+import type { RecipeInsert } from '../db/schema'
 import { drizzle } from 'drizzle-orm/node-postgres'
+import { recipeCategoriesTable, recipeDifficultiesTable, recipesTable, usersTable } from '../db/schema'
 import { PasswordUtil } from '../utils/password/password.util'
-import { recipeCategoriesTable } from './schema/recipe-category/recipe-category.schema'
-import { recipeDifficultiesTable } from './schema/recipe-difficulty/recipe-difficulty.schema'
-import { recipesTable } from './schema/recipe/recipe.schema'
-import { usersTable } from './schema/user/user.schema'
 import 'dotenv/config'
 
 const db = drizzle(process.env.DATABASE_URL!)

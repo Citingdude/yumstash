@@ -7,6 +7,10 @@ const props = defineProps<{
 }>()
 
 const difficultyConfig = computed(() => {
+  if (!props.recipe.difficulty) {
+    return null
+  }
+
   const difficultyMap = {
     easy: {
       color: 'success' as const,
