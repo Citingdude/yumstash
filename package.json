@@ -32,6 +32,7 @@
     "@nuxt/ui": "4.8.1",
     "@unhead/vue": "3.1.1",
     "@vueuse/core": "14.3.0",
+    "culori": "4.0.2",
     "dotenv": "17.4.2",
     "drizzle-orm": "v1.0.0-rc.3",
     "eslint": "10.4.1",

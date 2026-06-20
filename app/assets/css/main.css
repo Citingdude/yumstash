@@ -46,17 +46,17 @@
   --color-yellow-900: #713f12;
   --color-yellow-950: #422006;
 
-  /* --ui-color-neutral-50:  oklch(98.2% 0.012 65);
-  --ui-color-neutral-100: oklch(95.8% 0.018 65);
-  --ui-color-neutral-200: oklch(91.5% 0.026 62);
-  --ui-color-neutral-300: oklch(84.5% 0.038 58);
-  --ui-color-neutral-400: oklch(68.5% 0.052 50);
-  --ui-color-neutral-500: oklch(53.0% 0.055 42);
-  --ui-color-neutral-600: oklch(42.0% 0.050 38);
-  --ui-color-neutral-700: oklch(33.0% 0.045 34);
-  --ui-color-neutral-800: oklch(25.0% 0.040 30);
-  --ui-color-neutral-900: oklch(19.5% 0.035 28);
-  --ui-color-neutral-950: oklch(14.8% 0.030 26); */
+  --ui-color-neutral-50: oklch(0.99 0.006 206.43749860369303);
+  --ui-color-neutral-100: oklch(0.975 0.008 206.43749860369303);
+  --ui-color-neutral-200: oklch(0.935 0.01 206.43749860369303);
+  --ui-color-neutral-300: oklch(0.86 0.012 206.43749860369303);
+  --ui-color-neutral-400: oklch(0.7 0.014 206.43749860369303);
+  --ui-color-neutral-500: oklch(0.55 0.015 206.43749860369303);
+  --ui-color-neutral-600: oklch(0.44 0.014 206.43749860369303);
+  --ui-color-neutral-700: oklch(0.34 0.013 206.43749860369303);
+  --ui-color-neutral-800: oklch(0.26 0.012 206.43749860369303);
+  --ui-color-neutral-900: oklch(0.19 0.011 206.43749860369303);
+  --ui-color-neutral-950: oklch(0.14 0.01 206.43749860369303);
 
   --ui-color-primary-50:  oklch(98.2% 0.018 45);
   --ui-color-primary-100: oklch(95.5% 0.040 43);
