@@ -3,7 +3,7 @@ import type { CommandPaletteGroup } from '@nuxt/ui'
 
 const colorMode = useColorMode()
 
-const open = ref(false)
+const open = useState<boolean>('command-palette-open', () => false)
 
 defineShortcuts({
   meta_k: () => {
