@@ -3,17 +3,21 @@ const UNAUTHENTICATED_ROUTES = [
   '/register',
   '/forgot-password',
   '/reset-password',
-] as const
+]
+
+const GUEST_ONLY_ROUTES = ['/login', '/register']
 
 type UnauthenticatedRoute = typeof UNAUTHENTICATED_ROUTES[number]
 
 function isUnauthenticatedRoute(path: string): path is UnauthenticatedRoute {
-  return (UNAUTHENTICATED_ROUTES as readonly string[]).includes(path)
+  return UNAUTHENTICATED_ROUTES.includes(path)
 }
 
 export default defineNuxtRouteMiddleware(async (to, _from) => {
   const requestFetch = useRequestFetch()
-  if (isUnauthenticatedRoute(to.path)) {
+  const isGuestOnlyRoute = GUEST_ONLY_ROUTES.includes(to.path)
+
+  if (isUnauthenticatedRoute(to.path) && !isGuestOnlyRoute) {
     return
   }
 
@@ -21,6 +25,13 @@ export default defineNuxtRouteMiddleware(async (to, _from) => {
     await requestFetch('/api/auth/validate')
   }
   catch {
-    return navigateTo('/login')
+    if (!isGuestOnlyRoute) {
+      return navigateTo('/login')
+    }
+    return
+  }
+
+  if (isGuestOnlyRoute) {
+    return navigateTo('/')
   }
 })
