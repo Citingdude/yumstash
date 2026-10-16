@@ -12,12 +12,17 @@ export interface RecipeCardProps {
   servings: string
   category: string | null
   isFavorite: boolean
+  isTogglingFavorite?: boolean
   isCooked: boolean
 }
 
 const props = defineProps<RecipeCardProps>()
 
 const emit = defineEmits<{
+  favorite: [
+    recipeId: RecipeUuid,
+    isFavorite: boolean,
+  ]
   cooked: [
     recipeId: RecipeUuid,
     isCooked: boolean,
@@ -42,6 +47,11 @@ const difficultyColor = computed(() => {
       return undefined
   }
 })
+
+function onFavorite(): void {
+  if (!props.isTogglingFavorite)
+    emit('favorite', props.id, props.isFavorite)
+}
 
 function onCooked(): void {
   emit('cooked', props.id, props.isCooked)
@@ -69,16 +79,13 @@ const coverClass = computed(() => {
 </script>
 
 <template>
-  <article class="group flex h-full flex-col overflow-hidden rounded-3xl border border-default bg-default transition-shadow duration-200 hover:shadow-md">
+  <article class="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-default bg-default transition-shadow duration-200 hover:shadow-md">
     <NuxtLink :to="{ name: 'recipes-id', params: { id: props.id } }" class="flex flex-1 flex-col rounded-t-3xl focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary">
       <div :class="coverClass" class="relative m-3 mb-0 flex h-44 shrink-0 items-center justify-center overflow-hidden rounded-2xl">
         <span aria-hidden="true" class="text-7xl motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:scale-110">{{ props.emoji || '🍽️' }}</span>
         <UBadge v-if="props.difficulty" :color="difficultyColor" class="absolute top-3 left-3 rounded-full capitalize" variant="subtle">
           {{ props.difficulty }}
         </UBadge>
-        <span v-if="props.isFavorite" class="absolute top-3 right-3 flex size-8 items-center justify-center rounded-full bg-default text-primary" aria-label="Favorite">
-          <UIcon name="i-heroicons-heart-solid" class="size-4" />
-        </span>
       </div>
       <div class="flex flex-1 flex-col px-5 pt-5 pb-4">
         <p class="mb-2 text-xs font-medium text-primary capitalize">
@@ -102,6 +109,17 @@ const coverClass = computed(() => {
         </div>
       </div>
     </NuxtLink>
+    <AppButton
+      :icon="props.isFavorite ? 'i-heroicons-heart-solid' : 'i-heroicons-heart'"
+      :color="props.isFavorite ? 'primary' : 'neutral'"
+      variant="outline"
+      class="absolute top-6 right-6 size-11 justify-center rounded-full bg-default"
+      :loading="props.isTogglingFavorite"
+      :disabled="props.isTogglingFavorite"
+      :aria-pressed="props.isFavorite"
+      :aria-label="`${props.isFavorite ? 'Remove from favorites' : 'Add to favorites'}: ${props.name}`"
+      @click="onFavorite"
+    />
     <div class="mx-5 flex items-center justify-between gap-2 border-t border-default py-3">
       <AppButton
         :icon="props.isCooked ? 'i-heroicons-check-circle' : 'i-mdi-pot-steam-outline'"

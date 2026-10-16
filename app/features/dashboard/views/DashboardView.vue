@@ -105,6 +105,8 @@ const dashboardStats = computed<StatCardProps[]>(() => {
   ]
 })
 
+const togglingFavoriteIds = ref(new Set<RecipeUuid>())
+
 const recipeCards = computed<RecipeCardProps[]>(() => {
   return recipes.value.map((recipe) => {
     return {
@@ -117,10 +119,37 @@ const recipeCards = computed<RecipeCardProps[]>(() => {
       servings: recipe.servings,
       category: recipe.category?.name ?? null,
       isFavorite: recipe.isFavorite,
+      isTogglingFavorite: togglingFavoriteIds.value.has(recipe.id),
       isCooked: recipe.isCooked,
     }
   })
 })
+
+async function onFavorite(recipeId: RecipeUuid, isFavorite: boolean): Promise<void> {
+  if (togglingFavoriteIds.value.has(recipeId))
+    return
+
+  togglingFavoriteIds.value.add(recipeId)
+  try {
+    const result = await recipeService.toggleFavorite(recipeId, isFavorite)
+    await Promise.all([
+      refreshNuxtData(QUERY_KEYS.RECIPE_INDEX),
+      refreshNuxtData(`${QUERY_KEYS.RECIPE_INDEX}-${recipeId}`),
+    ])
+    toast.success({
+      title: result.isFavorite ? 'Added to favorites' : 'Removed from favorites',
+    })
+  }
+  catch {
+    toast.error({
+      title: 'Failed to update favorite status',
+      errorMessage: 'Please try again.',
+    })
+  }
+  finally {
+    togglingFavoriteIds.value.delete(recipeId)
+  }
+}
 
 async function onCooked(recipeId: RecipeUuid, isCooked: boolean): Promise<void> {
   try {
@@ -298,7 +327,7 @@ function onAddRecipe() {
             </div>
             <ul v-else class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               <li v-for="recipe in recipeCards" :key="recipe.id" class="min-w-0">
-                <RecipeCard v-bind="recipe" @cooked="onCooked" @delete="onDelete" />
+                <RecipeCard v-bind="recipe" @favorite="onFavorite" @cooked="onCooked" @delete="onDelete" />
               </li>
             </ul>
           </AppFadeSlideTransition>
