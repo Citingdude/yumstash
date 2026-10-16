@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { RecipeCategoryFilterItem } from '~~/shared/types/recipe-category/recipeCategoryFilterItem.type'
-import type { RecipeCategorySelectItem } from '~~/shared/types/recipe-category/recipeCategorySelectItem.type'
 import type { RecipeWithRelations } from '~~/shared/types/recipe/recipe.type'
 import type { RecipeUuid } from '~~/shared/types/recipe/recipeUuid.type'
 import type { StatCardProps } from '~/components/stats/StatsCard.vue'
@@ -14,10 +13,12 @@ import { QUERY_KEYS } from '~/constants/queryKey.constant'
 import DashboardSearch from '~/features/dashboard/components/DashboardSearch.vue'
 import DashboardStats from '~/features/dashboard/components/DashboardStats.vue'
 import RecipeCard from '~/features/recipe/components/card/RecipeCard.vue'
+import RecipeCreateModal from '~/features/recipe/components/modal/RecipeCreateModal.vue'
 import { useRecipeCategoryCountQuery } from '~/features/recipe/queries/recipeCategoryCount.query'
 import { useRecipeCategoryIndexQuery } from '~/features/recipe/queries/recipeCategoryIndex.query'
 import { useRecipeCookedCountQuery } from '~/features/recipe/queries/recipeCookedCount.query'
 import { useRecipeCountQuery } from '~/features/recipe/queries/recipeCount.query'
+import { useRecipeDifficultyQuery } from '~/features/recipe/queries/recipeDifficulty.query'
 import { useRecipeIndexQuery } from '~/features/recipe/queries/recipeIndex.query'
 import { useRecipeService } from '~/features/recipe/services/recipe.service'
 import { invalidateQuery } from '~/utils/query/query.util'
@@ -28,7 +29,7 @@ const confirmDialog = overlay.create(ConfirmDialog)
 
 const recipeService = useRecipeService()
 
-const selectedCategory = ref<RecipeCategorySelectItem | undefined>(undefined)
+const selectedCategory = ref<RecipeCategoryFilterItem | undefined>(undefined)
 const searchQuery = ref<string | undefined>()
 const debouncedSearchQuery = refDebounced(searchQuery, 300)
 const page = ref<number>(1)
@@ -66,7 +67,6 @@ watch(totalPages, (newTotalPages) => {
 const totalRecipes = computed(() => recipeCountQuery.data.value ?? 0)
 const totalFilteredRecipes = computed<number>(() => recipeIndexQuery.data.value?.meta?.total ?? 0)
 const totalCategories = computed(() => recipeCategoryCountQuery.data.value ?? 0)
-const totalFavorites = computed(() => 0)
 const totalCooked = computed(() => recipeCookedCountQuery.data.value ?? 0)
 
 const dashboardStats = computed<StatCardProps[]>(() => {
@@ -75,11 +75,6 @@ const dashboardStats = computed<StatCardProps[]>(() => {
       icon: 'i-heroicons-document-text',
       number: totalRecipes.value.toString(),
       title: 'Total Recipes',
-    },
-    {
-      icon: 'i-heroicons-heart',
-      number: totalFavorites.value.toString(),
-      title: 'Favorites',
     },
     {
       icon: 'i-mdi-pot-steam',
@@ -105,7 +100,7 @@ const recipeCards = computed<RecipeCardProps[]>(() => {
       time: recipe.time,
       servings: recipe.servings,
       category: recipe.category?.name ?? null,
-      isFavorite: false,
+      isFavorite: recipe.isFavorite,
       isCooked: recipe.isCooked,
     }
   })
@@ -126,10 +121,10 @@ async function onCooked(recipeId: RecipeUuid, isCooked: boolean): Promise<void> 
     ])
 
     toast.success({
-      title: isCooked ? 'Recipe marked cooked' : 'Cooked status removed',
+      title: isCooked ? 'Cooked status removed' : 'Recipe marked cooked',
       description: isCooked
-        ? 'Recipe added to your cooked list.'
-        : 'Recipe removed from your cooked list.',
+        ? 'Recipe removed from your cooked list.'
+        : 'Recipe added to your cooked list.',
     })
   }
   catch (error) {
@@ -180,56 +175,122 @@ async function onDelete(recipeId: RecipeUuid): Promise<void> {
     })
   }
 }
+const recipeDifficultyQuery = useRecipeDifficultyQuery()
+const createRecipeModal = overlay.create(RecipeCreateModal)
+const hasFilters = computed(() => Boolean(searchQuery.value || categoryId.value))
+
+function clearFilters() {
+  searchQuery.value = ''
+  selectedCategory.value = undefined
+  page.value = 1
+}
+
+function onAddRecipe() {
+  createRecipeModal.open({
+    categoryOptions: recipeCategoryIndexQuery.selectItems.value,
+    difficultyOptions: recipeDifficultyQuery.selectItems.value,
+  })
+}
 </script>
 
 <template>
-  <main class="py-8">
-    <AppContainer>
-      <DashboardStats
-        class="mb-6"
-        :stats="dashboardStats"
-      />
+  <main class="min-h-screen bg-muted/40">
+    <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:py-10">
+      <header class="relative mb-8 overflow-hidden rounded-3xl border border-default bg-default p-6 sm:p-8 lg:p-10">
+        <div class="absolute inset-y-0 right-0 w-1/3 bg-linear-to-l from-primary/10 to-transparent" aria-hidden="true" />
+        <div class="relative flex items-center justify-between gap-6">
+          <div class="max-w-xl">
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+              Your personal cookbook
+            </p>
+            <h1 class="text-3xl font-semibold tracking-tight text-highlighted sm:text-4xl lg:text-5xl">
+              Good food starts here.
+            </h1>
+            <p class="mt-4 max-w-md text-sm leading-6 text-muted sm:text-base">
+              All your keepers, kitchen experiments, and next-meal inspiration. In one delicious collection.
+            </p>
+            <AppButton icon="i-heroicons-plus" size="lg" class="mt-6 rounded-xl" @click="onAddRecipe">
+              Add a recipe
+            </AppButton>
+          </div>
+          <div aria-hidden="true" class="hidden size-36 shrink-0 items-center justify-center rounded-full border border-primary/15 bg-primary/10 text-7xl md:flex lg:size-44 lg:text-8xl">
+            🍳
+          </div>
+        </div>
+      </header>
 
-      <DashboardSearch
-        v-model:query="searchQuery"
-        v-model:category="selectedCategory"
-        :category-items="recipeCategoryItems"
-        class="mb-6"
-      />
+      <DashboardStats class="mb-10" :stats="dashboardStats" />
 
-      <section class="grid gap-8">
-        <UPageGrid as="ul">
-          <li
-            v-for="recipe in recipeCards"
-            :key="recipe.name"
-          >
-            <RecipeCard
-              :id="recipe.id"
-              :emoji="recipe.emoji"
-              :difficulty="recipe.difficulty"
-              :name="recipe.name"
-              :description="recipe.description"
-              :time="recipe.time"
-              :servings="recipe.servings"
-              :category="recipe.category"
-              :is-favorite="recipe.isFavorite"
-              :is-cooked="recipe.isCooked"
-              @cooked="(recipeId, isCooked) => onCooked(recipeId, isCooked)"
-              @delete="(recipeId) => onDelete(recipeId)"
-            />
-          </li>
-        </UPageGrid>
+      <section aria-labelledby="collection-title">
+        <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 id="collection-title" class="text-2xl font-semibold tracking-tight text-highlighted">
+              Your recipes
+            </h2>
+            <p class="mt-1 text-sm text-muted">
+              Find a favorite. Try something new.
+            </p>
+          </div>
+          <span v-if="recipeIndexQuery.status.value === 'success'" role="status" class="rounded-full border border-default bg-default px-3 py-1 text-xs font-medium text-muted">
+            {{ totalFilteredRecipes }} {{ totalFilteredRecipes === 1 ? 'recipe' : 'recipes' }}{{ hasFilters ? ' found' : ' in your collection' }}
+          </span>
+        </div>
 
-        <UPagination
-          v-model:page="page"
-          :ui="{
-            root: 'flex justify-center',
-          }"
-          :total="totalFilteredRecipes"
-          :items-per-page="DEFAULT_RECIPE_PAGE_SIZE"
-          variant="ghost"
+        <DashboardSearch
+          v-model:query="searchQuery"
+          v-model:category="selectedCategory"
+          :category-items="recipeCategoryItems"
+          class="mb-6"
         />
+
+        <div v-if="recipeIndexQuery.status.value === 'pending'" role="status" aria-label="Loading recipes">
+          <span class="sr-only">Loading recipes…</span>
+          <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <USkeleton v-for="index in 6" :key="index" class="h-96 rounded-3xl" />
+          </div>
+        </div>
+        <div v-else-if="recipeIndexQuery.error.value" role="alert" class="rounded-3xl border border-default bg-default px-6 py-16 text-center">
+          <UIcon name="i-heroicons-exclamation-circle" class="size-10 text-muted" />
+          <h3 class="mt-4 text-lg font-semibold text-highlighted">
+            Couldn’t load your recipes
+          </h3>
+          <p class="mt-2 text-sm text-muted">
+            Please try again to get back to your collection.
+          </p>
+          <AppButton class="mt-6 rounded-xl" @click="recipeIndexQuery.refresh()">
+            Try again
+          </AppButton>
+        </div>
+        <div v-else-if="!recipeCards.length" class="rounded-3xl border border-dashed border-default bg-default px-6 py-16 text-center">
+          <div aria-hidden="true" class="mb-5 text-5xl">
+            {{ hasFilters ? '🔎' : '🥣' }}
+          </div>
+          <h3 class="text-xl font-semibold text-highlighted">
+            {{ hasFilters ? 'No recipes on the menu' : 'Your cookbook starts here' }}
+          </h3>
+          <p class="mx-auto mt-2 max-w-sm text-sm leading-6 text-muted">
+            {{ hasFilters ? 'Try a different search or clear your filters to see the whole collection.' : 'Save your first recipe and make it easy to find the next time you’re hungry.' }}
+          </p>
+          <AppButton v-if="hasFilters" class="mt-6 rounded-xl" color="neutral" variant="outline" @click="clearFilters">
+            Clear filters
+          </AppButton>
+          <AppButton v-else icon="i-heroicons-plus" class="mt-6 rounded-xl" @click="onAddRecipe">
+            Add your first recipe
+          </AppButton>
+        </div>
+        <ul v-else class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <li v-for="recipe in recipeCards" :key="recipe.id" class="min-w-0">
+            <RecipeCard v-bind="recipe" @cooked="onCooked" @delete="onDelete" />
+          </li>
+        </ul>
+
+        <div v-if="totalFilteredRecipes > DEFAULT_RECIPE_PAGE_SIZE && recipeIndexQuery.status.value === 'success'" class="mt-8 flex flex-col items-center justify-between gap-4 border-t border-default pt-6 sm:flex-row">
+          <p class="text-xs text-muted">
+            Page {{ page }} of {{ totalPages }}
+          </p>
+          <UPagination v-model:page="page" :total="totalFilteredRecipes" :items-per-page="DEFAULT_RECIPE_PAGE_SIZE" :sibling-count="1" :show-edges="false" variant="ghost" />
+        </div>
       </section>
-    </AppContainer>
+    </div>
   </main>
 </template>

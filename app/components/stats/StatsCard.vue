@@ -11,22 +11,17 @@ const props = defineProps<StatCardProps>()
 </script>
 
 <template>
-  <UCard variant="soft">
-    <div class="flex items-center gap-4">
-      <div class="p-3 rounded-lg bg-primary/5">
-        <UIcon
-          :name="props.icon"
-          class="w-8 h-8 text-primary"
-        />
-      </div>
-      <div>
-        <p class="text-sm text-muted">
-          {{ props.title }}
-        </p>
-        <p class="text-2xl font-bold text-highlighted">
-          <AppNumberCounter :duration="300" :value="Number.parseInt(props.number)" />
-        </p>
-      </div>
+  <div class="flex items-center gap-4 rounded-2xl border border-default bg-default px-5 py-4 sm:p-5">
+    <div class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+      <UIcon :name="props.icon" class="size-5 text-primary" />
     </div>
-  </UCard>
+    <div class="flex flex-1 items-center justify-between gap-3 sm:block">
+      <p class="text-xs font-medium text-muted">
+        {{ props.title }}
+      </p>
+      <p class="text-2xl font-semibold tracking-tight text-highlighted sm:mt-1">
+        <AppNumberCounter :duration="300" :value="Number.parseInt(props.number)" />
+      </p>
+    </div>
+  </div>
 </template>

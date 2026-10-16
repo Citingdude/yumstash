@@ -18,10 +18,6 @@ export interface RecipeCardProps {
 const props = defineProps<RecipeCardProps>()
 
 const emit = defineEmits<{
-  favorite: [
-    recipeId: RecipeUuid,
-    isFavorite: boolean,
-  ]
   cooked: [
     recipeId: RecipeUuid,
     isCooked: boolean,
@@ -47,10 +43,6 @@ const difficultyColor = computed(() => {
   }
 })
 
-function onFavorite(): void {
-  emit('favorite', props.id, props.isFavorite)
-}
-
 function onCooked(): void {
   emit('cooked', props.id, props.isCooked)
 }
@@ -58,95 +50,72 @@ function onCooked(): void {
 function onDelete(): void {
   emit('delete', props.id)
 }
+const preview = computed(() => props.description
+  .replace(/<[^>]*>/g, ' ')
+  .replace(/&nbsp;/g, ' ')
+  .replace(/&amp;/g, '&')
+  .replace(/&lt;/g, '<')
+  .replace(/&gt;/g, '>')
+  .replace(/&quot;/g, '"')
+  .replace(/&#39;/g, '\'')
+  .replace(/\s+/g, ' ')
+  .trim())
+
+const coverClass = computed(() => {
+  const colors = ['bg-primary/10', 'bg-amber-500/10', 'bg-emerald-500/10', 'bg-sky-500/10']
+  const hash = [...props.id].reduce((sum, character) => sum + character.charCodeAt(0), 0)
+  return colors[hash % colors.length]
+})
 </script>
 
 <template>
-  <NuxtLink
-    class="group"
-    :to="{
-      name: 'recipes-id',
-      params: {
-        id: props.id,
-      },
-    }"
-  >
-    <UCard
-      class="group-hover:shadow-xl group-hover:-translate-y-2 transition-all cursor-pointer"
-      variant="soft"
-      :ui="{
-        body: 'border-none',
-      }"
-    >
-      <template #header>
-        <div class="relative">
-          <div class="w-full h-48 bg-elevated rounded-lg flex items-center justify-center text-6xl">
-            {{ props.emoji }}
-          </div>
-          <UBadge
-            :color="difficultyColor"
-            class="absolute top-2 right-2 capitalize"
-            variant="soft"
-          >
-            {{ props.difficulty }}
-          </UBadge>
-        </div>
-      </template>
-
-      <div class="space-y-3">
-        <div>
-          <h3 class="text-lg font-semibold text-highlighted mb-1">
-            {{ props.name }}
-          </h3>
-          <p class="text-sm">
-            {{ props.description }}
-          </p>
-        </div>
-
-        <div class="flex items-center gap-4 text-sm text-muted">
-          <div class="flex items-center gap-1">
-            <UIcon name="i-heroicons-clock" />
-            <span>{{ props.time }}</span>
-          </div>
-          <div class="flex items-center gap-1">
-            <UIcon name="i-heroicons-user-group" />
-            <span>{{ props.servings }}</span>
-          </div>
-        </div>
-
-        <div class="flex items-center justify-between pt-2 border-t border-default">
-          <UBadge color="secondary" variant="outline">
-            {{ props.category }}
-          </UBadge>
-          <div class="flex items-center gap-2">
-            <AppButton
-              :icon="props.isCooked ? 'i-mdi-pot-steam-outline' : 'i-mdi-pot-outline'"
-              color="primary"
-              variant="ghost"
-              size="sm"
-              :aria-pressed="props.isCooked"
-              aria-label="Toggle cooked"
-              @click.prevent="onCooked"
-            />
-            <AppButton
-              :icon="props.isFavorite ? 'i-heroicons-heart-solid' : 'i-heroicons-heart'"
-              color="primary"
-              variant="ghost"
-              size="sm"
-              :aria-pressed="props.isFavorite"
-              aria-label="Toggle favorite"
-              @click.prevent="onFavorite"
-            />
-            <AppButton
-              icon="i-heroicons-trash"
-              color="primary"
-              variant="ghost"
-              size="sm"
-              aria-label="Delete recipe"
-              @click.prevent="onDelete"
-            />
-          </div>
+  <article class="group flex h-full flex-col overflow-hidden rounded-3xl border border-default bg-default transition-shadow duration-200 hover:shadow-md">
+    <NuxtLink :to="{ name: 'recipes-id', params: { id: props.id } }" class="flex flex-1 flex-col rounded-t-3xl focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary">
+      <div :class="coverClass" class="relative m-3 mb-0 flex h-44 shrink-0 items-center justify-center overflow-hidden rounded-2xl">
+        <span aria-hidden="true" class="text-7xl motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:scale-110">{{ props.emoji || '🍽️' }}</span>
+        <UBadge v-if="props.difficulty" :color="difficultyColor" class="absolute top-3 left-3 rounded-full capitalize" variant="subtle">
+          {{ props.difficulty }}
+        </UBadge>
+        <span v-if="props.isFavorite" class="absolute top-3 right-3 flex size-8 items-center justify-center rounded-full bg-default text-primary" aria-label="Favorite">
+          <UIcon name="i-heroicons-heart-solid" class="size-4" />
+        </span>
+      </div>
+      <div class="flex flex-1 flex-col px-5 pt-5 pb-4">
+        <p class="mb-2 text-xs font-medium text-primary capitalize">
+          {{ props.category || 'Uncategorized' }}
+        </p>
+        <h3 class="line-clamp-2 text-lg font-semibold leading-7 tracking-tight text-highlighted break-words">
+          {{ props.name }}
+        </h3>
+        <p class="mt-2 line-clamp-2 text-sm leading-6 text-muted break-words">
+          {{ preview || 'A little inspiration for your next meal.' }}
+        </p>
+        <div class="mt-auto flex flex-wrap items-center gap-x-4 gap-y-2 pt-5 text-xs text-muted">
+          <span class="flex items-center gap-1.5">
+            <UIcon name="i-heroicons-clock" class="size-4 shrink-0" />
+            {{ props.time }} min
+          </span>
+          <span class="flex min-w-0 items-center gap-1.5" :aria-label="`Servings: ${props.servings || 'Not specified'}`">
+            <UIcon name="i-heroicons-user-group" class="size-4 shrink-0" />
+            <span class="break-words">{{ props.servings ? `${props.servings} servings` : 'Servings not specified' }}</span>
+          </span>
         </div>
       </div>
-    </UCard>
-  </NuxtLink>
+    </NuxtLink>
+    <div class="mx-5 flex items-center justify-between gap-2 border-t border-default py-3">
+      <AppButton
+        :icon="props.isCooked ? 'i-heroicons-check-circle' : 'i-mdi-pot-steam-outline'"
+        :color="props.isCooked ? 'success' : 'neutral'"
+        variant="ghost"
+        size="sm"
+        class="-ml-2 rounded-lg"
+        :aria-pressed="props.isCooked"
+        :aria-label="`${props.isCooked ? 'Mark as not cooked' : 'Mark as cooked'}: ${props.name}`"
+        @click="onCooked"
+      >
+        {{ props.isCooked ? 'Cooked before' : 'Mark as cooked' }}
+      </AppButton>
+      <AppButton icon="i-heroicons-trash" color="neutral" variant="ghost" size="sm" class="-mr-2 rounded-lg" :aria-label="`Delete recipe: ${props.name}`" @click="onDelete" />
+    </div>
+  </article>
 </template>

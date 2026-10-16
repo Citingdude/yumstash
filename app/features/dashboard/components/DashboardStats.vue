@@ -7,7 +7,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <ul class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+  <ul class="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
     <li
       v-for="stat in props.stats"
       :key="stat.title"
