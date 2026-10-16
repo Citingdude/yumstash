@@ -24,6 +24,7 @@ const toast = useAppToast()
 const recipeService = useRecipeService()
 
 const isSubmitting = ref(false)
+const formId = useId()
 
 const state = reactive<Partial<CreateRecipeForm>>({
   name: '',
@@ -41,14 +42,21 @@ function resetForm() {
   state.time = 0
   state.servings = ''
   state.difficultyId = ''
+  state.categoryId = undefined
 }
 
 function onCancel() {
+  if (isSubmitting.value)
+    return
+
   resetForm()
   emit('close')
 }
 
 async function onSubmit(event: FormSubmitEvent<CreateRecipeForm>) {
+  if (isSubmitting.value)
+    return
+
   isSubmitting.value = true
 
   try {
@@ -81,104 +89,76 @@ async function onSubmit(event: FormSubmitEvent<CreateRecipeForm>) {
 
 <template>
   <UModal
-    title="Create New Recipe"
-    description="Create a new recipe"
+    title="Add a recipe"
+    description="Save something delicious to your personal cookbook."
+    :dismissible="!isSubmitting"
+    :close="!isSubmitting"
+    :ui="{ content: 'max-w-2xl', footer: 'flex-col-reverse sm:flex-row sm:justify-between' }"
+    @update:open="(open) => { if (!open) onCancel() }"
   >
+    <template #title>
+      <span class="mb-4 flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-2xl" aria-hidden="true">{{ state.emoji || '🍽️' }}</span>
+      Add a recipe
+    </template>
     <template #body>
-      <UForm
-        :schema="createRecipeFormSchema"
-        :state="state"
-        class="grid grid-cols-1 gap-4"
-        @submit="onSubmit"
-      >
-        <UFormField
-          label="Recipe Name"
-          name="name"
-          required
-        >
-          <UInput
-            v-model="state.name"
-            placeholder="e.g., Chocolate Chip Cookies"
-            variant="soft"
-          />
-        </UFormField>
-
-        <UFormField label="Description" name="description" required>
-          <UTextarea
-            v-model="state.description"
-            placeholder="Describe your recipe..."
-            :rows="3"
-            variant="soft"
-          />
-        </UFormField>
-
-        <div class="grid grid-cols-2 gap-4">
-          <UFormField label="Emoji" name="emoji" required>
-            <UInput
-              v-model="state.emoji"
-              placeholder="🍽️"
-              maxlength="2"
-              variant="soft"
-            />
-          </UFormField>
-
+      <UForm :id="formId" :schema="createRecipeFormSchema" :state="state" :disabled="isSubmitting" class="space-y-7" @submit="onSubmit">
+        <fieldset class="space-y-4">
+          <legend class="mb-4 text-xs font-semibold uppercase tracking-wider text-muted">
+            The basics
+          </legend>
+          <div class="grid grid-cols-[minmax(0,1fr)_5rem] items-start gap-4">
+            <UFormField label="Recipe name" name="name" required>
+              <UInput v-model="state.name" placeholder="e.g. Sunday morning pancakes" size="lg" />
+            </UFormField>
+            <UFormField label="Emoji" name="emoji" required>
+              <UInput v-model="state.emoji" placeholder="🥞" size="lg" :ui="{ base: 'text-center' }" />
+            </UFormField>
+          </div>
           <UFormField label="Category" name="categoryId" required>
-            <USelect
-              v-model="state.categoryId"
-              :items="props.categoryOptions"
-              placeholder="Select category"
-              variant="soft"
-            />
+            <USelect v-model="state.categoryId" :items="props.categoryOptions" placeholder="Choose a category" size="lg" icon="i-heroicons-tag" />
           </UFormField>
-        </div>
+        </fieldset>
 
-        <div class="grid grid-cols-3 gap-4">
-          <UFormField label="Cooking Time" name="time" required>
-            <UInput
-              v-model="state.time"
-              placeholder="e.g., 30 min"
-              type="number"
-              :min="0"
-              variant="soft"
-            />
+        <fieldset class="border-t border-default pt-6">
+          <legend class="float-left mb-4 w-full text-xs font-semibold uppercase tracking-wider text-muted">
+            At a glance
+          </legend>
+          <div class="clear-both grid gap-4 sm:grid-cols-3">
+            <UFormField label="Total time" name="time" required>
+              <UInput v-model.number="state.time" type="number" :min="0" size="lg" icon="i-heroicons-clock">
+                <template #trailing>
+                  <span class="text-xs text-muted">min</span>
+                </template>
+              </UInput>
+            </UFormField>
+            <UFormField label="Servings" name="servings" required>
+              <UInput v-model="state.servings" placeholder="e.g. 4" size="lg" icon="i-heroicons-user-group" />
+            </UFormField>
+            <UFormField label="Difficulty" name="difficultyId" required>
+              <USelect v-model="state.difficultyId" :items="props.difficultyOptions" placeholder="Choose level" size="lg" />
+            </UFormField>
+          </div>
+        </fieldset>
+
+        <div class="border-t border-default pt-6">
+          <UFormField label="The recipe" name="description" description="Include ingredients, steps, and any notes you want to remember." required>
+            <UTextarea v-model="state.description" placeholder="Start with your ingredients, then walk through the steps…" :rows="6" size="lg" class="mt-2" />
           </UFormField>
-
-          <UFormField label="Servings" name="servings" required>
-            <UInput
-              v-model="state.servings"
-              placeholder="e.g., 4"
-              variant="soft"
-            />
-          </UFormField>
-
-          <UFormField label="Difficulty" name="difficultyId" required>
-            <USelect
-              v-model="state.difficultyId"
-              :items="difficultyOptions"
-              placeholder="Select difficulty"
-              variant="soft"
-            />
-          </UFormField>
-        </div>
-
-        <div class="flex justify-end gap-3 pt-4">
-          <AppButton
-            type="button"
-            color="neutral"
-            variant="ghost"
-            @click="onCancel"
-          >
-            Cancel
-          </AppButton>
-          <AppButton
-            type="submit"
-            :loading="isSubmitting"
-            :disabled="isSubmitting"
-          >
-            Create Recipe
-          </AppButton>
         </div>
       </UForm>
+    </template>
+    <template #footer>
+      <p class="text-center text-xs text-muted sm:text-left">
+        A little inspiration for your next meal.
+      </p>
+      <div class="flex w-full gap-3 sm:w-auto">
+        <AppButton type="button" color="neutral" variant="outline" size="lg" class="flex-1 justify-center rounded-xl sm:flex-none" :disabled="isSubmitting" @click="onCancel">
+          Cancel
+        </AppButton>
+        <AppButton type="submit" :form="formId" icon="i-heroicons-plus" size="lg" class="flex-1 justify-center rounded-xl sm:flex-none" :loading="isSubmitting" :disabled="isSubmitting">
+          {{ isSubmitting ? 'Saving…' : 'Save recipe' }}
+        </AppButton>
+      </div>
     </template>
   </UModal>
 </template>

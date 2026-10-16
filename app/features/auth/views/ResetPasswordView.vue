@@ -4,6 +4,7 @@ import type { FormSubmitEvent } from '#ui/types'
 import { resetPasswordBodySchema } from '~~/shared/types/auth/reset-password/resetPassword.type'
 import { useApiError } from '~/composables/error/useApiError'
 import { useAppToast } from '~/composables/toast/useAppToast.composable'
+import AuthFormCard from '~/features/auth/components/AuthFormCard.vue'
 import { AuthService } from '~/features/auth/services/auth.service'
 
 const router = useRouter()
@@ -25,6 +26,9 @@ const token = computed(() => route.query.token as string)
 async function onSubmit(
   event: FormSubmitEvent<ResetPasswordBody>,
 ): Promise<void> {
+  if (isSubmitting.value)
+    return
+
   isSubmitting.value = true
 
   try {
@@ -68,38 +72,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="grid gap-10 rounded-3xl bg-white/90 p-8 shadow-2xl shadow-stone-900/40 backdrop-blur xl:grid-cols-[1.1fr_0.9fr] xl:p-12">
-    <div class="flex flex-col justify-between border-b border-stone-200/60 pb-8 xl:border-b-0 xl:border-r xl:pb-0 xl:pr-12">
-      <div>
-        <span class="inline-flex items-center rounded-full bg-green-500/20 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-green-800">New password</span>
-        <h1 class="mt-6 text-4xl font-semibold text-stone-900 lg:text-5xl">
-          Create a new password
-        </h1>
-        <p class="mt-4 text-base text-stone-600">
-          Choose a strong password to secure your account. Make sure it's at least 8 characters long and unique to Yumstash.
-        </p>
-      </div>
-
-      <div class="mt-8 rounded-2xl bg-stone-50/80 p-6 text-stone-900">
-        <div class="flex items-start gap-3">
-          <UIcon
-            name="i-heroicons-shield-check"
-            class="mt-0.5 size-5 shrink-0 text-green-600"
-          />
-          <div>
-            <p class="text-sm font-medium text-stone-700">
-              Password tips
-            </p>
-            <ul class="mt-1 space-y-1 text-sm text-stone-600">
-              <li>• Use at least 8 characters</li>
-              <li>• Mix uppercase and lowercase</li>
-              <li>• Include numbers and symbols</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
+  <AuthFormCard
+    eyebrow="A fresh start"
+    title="Choose a new password"
+    description="Use at least 8 characters to secure your cookbook."
+    icon="i-heroicons-lock-closed"
+  >
     <UForm
       :schema="resetPasswordBodySchema"
       :state="state"
@@ -122,12 +100,12 @@ onMounted(() => {
           <template #trailing>
             <AppButton
               color="neutral"
-              variant="link"
+              variant="ghost"
               size="sm"
               :icon="showPassword ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'"
               :aria-label="showPassword ? 'Hide password' : 'Show password'"
               :aria-pressed="showPassword"
-              aria-controls="password"
+              type="button"
               @click="showPassword = !showPassword"
             />
           </template>
@@ -151,9 +129,10 @@ onMounted(() => {
       <div class="space-y-4">
         <AppButton
           type="submit"
+          class="rounded-xl"
           size="lg"
           block
-          color="success"
+          color="primary"
           :loading="isSubmitting"
           :disabled="isSubmitting"
         >
@@ -162,26 +141,16 @@ onMounted(() => {
 
         <AppButton
           type="button"
+          class="rounded-xl"
           size="lg"
           block
           variant="ghost"
+          color="neutral"
           @click="router.push('/login')"
         >
           Back to login
         </AppButton>
       </div>
     </UForm>
-
-    <div class="mt-8 text-center">
-      <p class="text-sm text-stone-600">
-        Remember your password?
-        <NuxtLink
-          to="/login"
-          class="font-semibold text-stone-900 hover:text-stone-700"
-        >
-          Sign in
-        </NuxtLink>
-      </p>
-    </div>
-  </section>
+  </AuthFormCard>
 </template>

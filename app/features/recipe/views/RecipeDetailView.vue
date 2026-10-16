@@ -81,6 +81,7 @@ async function deleteRecipe() {
     title: 'Delete Recipe',
     description: `Are you sure you want to delete "${recipe.value!.name}"? This action cannot be undone.`,
     confirmLabel: 'Delete',
+    confirmColor: 'error',
     cancelLabel: 'Cancel',
   })
 

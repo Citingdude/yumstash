@@ -1,9 +1,16 @@
 <template>
-  <div class="relative min-h-screen">
-    <div class="relative z-10 flex min-h-screen items-center justify-center px-4 py-10 sm:px-8 lg:px-12">
-      <div class="w-full max-w-6xl">
-        <slot />
+  <main class="min-h-screen bg-muted/40 px-4 py-8 sm:py-12">
+    <div class="mx-auto w-full max-w-lg">
+      <div class="mb-8 flex items-center justify-between px-2">
+        <NuxtLink to="/" aria-label="Yumstash home" class="rounded-lg focus-visible:outline-2 focus-visible:outline-primary">
+          <AppLogo />
+        </NuxtLink>
+        <UColorModeButton />
       </div>
+      <slot />
+      <p class="mt-6 text-center text-xs text-muted">
+        A home for everything you love to cook.
+      </p>
     </div>
-  </div>
+  </main>
 </template>

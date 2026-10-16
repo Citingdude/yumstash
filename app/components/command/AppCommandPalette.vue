@@ -18,7 +18,7 @@ const groups: CommandPaletteGroup[] = [
     items: [
       {
         label: 'Dashboard',
-        icon: 'i-lucide-layout-dashboard',
+        icon: 'i-heroicons-squares-2x2',
         to: '/',
         onSelect: () => {
           open.value = false
@@ -32,7 +32,7 @@ const groups: CommandPaletteGroup[] = [
     items: [
       {
         label: 'System',
-        icon: 'i-lucide-layout-dashboard',
+        icon: 'i-heroicons-computer-desktop',
         onSelect: () => {
           colorMode.preference = 'system'
           open.value = false
@@ -40,7 +40,7 @@ const groups: CommandPaletteGroup[] = [
       },
       {
         label: 'Light',
-        icon: 'i-lucide-layout-dashboard',
+        icon: 'i-heroicons-sun',
         onSelect: () => {
           colorMode.preference = 'light'
           open.value = false
@@ -48,7 +48,7 @@ const groups: CommandPaletteGroup[] = [
       },
       {
         label: 'Dark',
-        icon: 'i-lucide-layout-dashboard',
+        icon: 'i-heroicons-moon',
         onSelect: () => {
           colorMode.preference = 'dark'
           open.value = false
@@ -60,13 +60,14 @@ const groups: CommandPaletteGroup[] = [
 </script>
 
 <template>
-  <UModal v-model:open="open">
+  <UModal v-model:open="open" title="Quick actions" description="Find a page or change your appearance." :ui="{ content: 'max-w-xl' }">
     <template #content>
       <UCommandPalette
         close
         :groups="groups"
-        placeholder="Search..."
+        placeholder="Where would you like to go?"
         class="h-80"
+        :ui="{ input: 'text-base' }"
         @update:open="open = $event"
       />
     </template>

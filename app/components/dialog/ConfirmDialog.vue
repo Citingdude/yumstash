@@ -36,18 +36,29 @@ function onCancel() {
   <UModal
     :title="props.title"
     :description="props.description"
-    :ui="{ footer: 'justify-end' }"
+    :ui="{ content: 'max-w-md', footer: 'flex-col-reverse sm:flex-row sm:justify-end' }"
+    @update:open="(open) => { if (!open) onCancel() }"
   >
+    <template #title>
+      <span class="mb-5 flex size-12 items-center justify-center rounded-2xl" :class="props.confirmColor === 'error' ? 'bg-error/10 text-error' : 'bg-primary/10 text-primary'">
+        <UIcon :name="props.icon" class="size-6" />
+      </span>
+      {{ props.title }}
+    </template>
     <template #footer>
       <AppButton
         color="neutral"
         variant="outline"
+        size="lg"
+        class="w-full justify-center rounded-xl sm:w-auto"
         @click="onCancel"
       >
         {{ props.cancelLabel }}
       </AppButton>
       <AppButton
         :color="props.confirmColor"
+        size="lg"
+        class="w-full justify-center rounded-xl sm:w-auto"
         @click="onConfirm"
       >
         {{ props.confirmLabel }}

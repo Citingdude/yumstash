@@ -4,6 +4,7 @@ import type { FormSubmitEvent } from '#ui/types'
 import { authLoginFormDataSchema } from '~~/shared/types/auth/login/authLogin.type'
 import { useApiError } from '~/composables/error/useApiError'
 import { useAppToast } from '~/composables/toast/useAppToast.composable'
+import AuthFormCard from '~/features/auth/components/AuthFormCard.vue'
 import { AuthService } from '~/features/auth/services/auth.service'
 
 const router = useRouter()
@@ -19,6 +20,9 @@ const state = reactive<LoginBody>({
 })
 
 async function onSubmit(event: FormSubmitEvent<LoginBody>): Promise<void> {
+  if (isSubmitting.value)
+    return
+
   isSubmitting.value = true
 
   try {
@@ -46,26 +50,12 @@ async function onSubmit(event: FormSubmitEvent<LoginBody>): Promise<void> {
 </script>
 
 <template>
-  <section
-    class="grid gap-10 rounded-3xl p-8 shadow-2xl shadow-stone-900/40 backdrop-blur xl:grid-cols-[1.1fr_0.9fr] xl:p-12"
+  <AuthFormCard
+    eyebrow="Welcome back"
+    title="Your kitchen awaits"
+    description="Sign in to pick up where you left off and find your next favorite meal."
+    icon="i-mdi-pot-steam-outline"
   >
-    <div class="flex flex-col justify-between border-b border-stone-200/60 pb-8 xl:border-b-0 xl:border-r xl:pb-0 xl:pr-12">
-      <div class="flex gap-4 items-start flex-col">
-        <UBadge
-          label="Welcome back"
-          variant="soft"
-          color="secondary"
-        />
-        <h1 class="text-4xl font-semibold lg:text-5xl leading-tight">
-          Log into your Yumstash kitchen
-        </h1>
-        <p class="text-base text-dimmed">
-          Keep tabs on your saved recipes, favorites, and cooking streak without missing a beat. Your curated
-          inspiration board is only a moment away.
-        </p>
-      </div>
-    </div>
-
     <UForm
       :schema="authLoginFormDataSchema"
       :state="state"
@@ -80,8 +70,10 @@ async function onSubmit(event: FormSubmitEvent<LoginBody>): Promise<void> {
         <UInput
           v-model="state.email"
           type="email"
+          autocomplete="email"
+          icon="i-heroicons-envelope"
           placeholder="you@example.com"
-          size="xl"
+          size="lg"
         />
       </UFormField>
 
@@ -91,15 +83,17 @@ async function onSubmit(event: FormSubmitEvent<LoginBody>): Promise<void> {
         required
       >
         <template #hint>
-          <NuxtLink class="text-sm font-medium text-red-600 hover:text-red-500" to="/forgot-password">
+          <NuxtLink class="text-sm font-medium text-primary hover:underline" to="/forgot-password">
             Forgot password?
           </NuxtLink>
         </template>
         <UInput
           v-model="state.password"
           type="password"
+          autocomplete="current-password"
+          icon="i-heroicons-lock-closed"
           placeholder="••••••••"
-          size="xl"
+          size="lg"
         />
       </UFormField>
 
@@ -113,20 +107,22 @@ async function onSubmit(event: FormSubmitEvent<LoginBody>): Promise<void> {
       <div class="space-y-4">
         <AppButton
           type="submit"
+          class="rounded-xl"
           :loading="isSubmitting"
+          :disabled="isSubmitting"
           block
-          size="xl"
-          color="error"
+          size="lg"
+          color="primary"
         >
           {{ isSubmitting ? 'Signing in…' : 'Sign in' }}
         </AppButton>
         <p class="text-center text-sm">
           New to Yumstash?
-          <NuxtLink class="font-semibold" to="/register">
+          <NuxtLink class="font-medium text-primary hover:underline" to="/register">
             Create an account
           </NuxtLink>
         </p>
       </div>
     </UForm>
-  </section>
+  </AuthFormCard>
 </template>

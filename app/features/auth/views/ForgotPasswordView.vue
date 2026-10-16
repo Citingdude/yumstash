@@ -4,6 +4,7 @@ import type { FormSubmitEvent } from '#ui/types'
 import { forgotPasswordBodySchema } from '#shared/types/auth/forgot-password/forgotPassword.type'
 import { useApiError } from '~/composables/error/useApiError'
 import { useAppToast } from '~/composables/toast/useAppToast.composable'
+import AuthFormCard from '~/features/auth/components/AuthFormCard.vue'
 import { AuthService } from '~/features/auth/services/auth.service'
 
 const router = useRouter()
@@ -20,6 +21,9 @@ const state = reactive<ForgotPasswordBody>({
 async function onSubmit(
   event: FormSubmitEvent<ForgotPasswordBody>,
 ): Promise<void> {
+  if (isSubmitting.value)
+    return
+
   isSubmitting.value = true
 
   try {
@@ -50,115 +54,37 @@ function backToLogin() {
 </script>
 
 <template>
-  <section class="grid gap-10 rounded-3xl p-8 shadow-2xl shadow-stone-900/40 backdrop-blur xl:grid-cols-[1.1fr_0.9fr] xl:p-12">
-    <div class="flex flex-col justify-between border-b border-muted pb-8 xl:border-b-0 xl:border-r xl:pb-0 xl:pr-12">
-      <div class="flex flex-col gap-4 items-start">
-        <UBadge variant="soft" color="secondary">
-          Password recovery
-        </UBadge>
-
-        <h1 class="text-4xl font-semibold lg:text-5xl">
-          Reset your password
-        </h1>
-
-        <p class="text-base text-toned">
-          Enter your email address and we'll send you a link to reset your password. Get back to your recipes in just a few clicks.
+  <AuthFormCard
+    :eyebrow="emailSent ? 'Check your inbox' : 'Let’s get you back in'"
+    :title="emailSent ? 'Check your email' : 'Forgot your password?'"
+    :description="emailSent ? 'If an account exists for this address, you’ll receive a password reset link shortly.' : 'Enter your email and we’ll send you a link to get back to your recipes.'"
+    :icon="emailSent ? 'i-heroicons-envelope-open' : 'i-heroicons-key'"
+  >
+    <UForm v-if="!emailSent" :schema="forgotPasswordBodySchema" :state="state" class="space-y-6" @submit="onSubmit">
+      <UFormField label="Email address" name="email" required>
+        <UInput v-model="state.email" type="email" placeholder="you@example.com" size="lg" autocomplete="email" icon="i-heroicons-envelope" />
+      </UFormField>
+      <AppButton type="submit" size="lg" block class="rounded-xl" :loading="isSubmitting" :disabled="isSubmitting">
+        {{ isSubmitting ? 'Sending…' : 'Send reset link' }}
+      </AppButton>
+    </UForm>
+    <div v-else role="status" class="space-y-5">
+      <div class="rounded-2xl border border-default bg-muted/40 p-5">
+        <p class="text-sm font-medium text-highlighted break-words">
+          {{ state.email }}
+        </p>
+        <p class="mt-2 text-sm leading-6 text-muted">
+          Can’t find it? Check your spam folder and make sure you entered the right email address.
         </p>
       </div>
-
-      <UAlert
-        class="mt-8"
-        title="Need help?"
-        icon="i-heroicons-information-circle"
-        description="If you don't receive the email within a few minutes, check your spam folder or contact support."
-        variant="soft"
-        color="info"
-      />
-    </div>
-
-    <div v-if="!emailSent">
-      <UForm
-        :schema="forgotPasswordBodySchema"
-        :state="state"
-        class="space-y-6"
-        @submit="onSubmit"
-      >
-        <UFormField
-          label="Email address"
-          name="email"
-          required
-        >
-          <UInput
-            v-model="state.email"
-            type="email"
-            placeholder="you@example.com"
-            size="lg"
-            autocomplete="email"
-          />
-        </UFormField>
-
-        <div class="space-y-4">
-          <AppButton
-            type="submit"
-            size="lg"
-            block
-            :loading="isSubmitting"
-            :disabled="isSubmitting"
-          >
-            Send reset link
-          </AppButton>
-
-          <AppButton
-            type="button"
-            size="lg"
-            block
-            variant="ghost"
-            color="neutral"
-            @click="backToLogin"
-          >
-            Back to login
-          </AppButton>
-        </div>
-      </UForm>
-
-      <div class="mt-8 text-center">
-        <p class="text-sm">
-          Don't have an account?
-          <NuxtLink
-            to="/register"
-            class="font-semibold"
-          >
-            Sign up
-          </NuxtLink>
-        </p>
-      </div>
-    </div>
-
-    <div
-      v-else
-      class="flex flex-col items-center justify-center text-center"
-    >
-      <div class="flex size-16 items-center justify-center rounded-full bg-green-500/20">
-        <UIcon
-          name="i-heroicons-check-circle"
-          class="size-8 text-green-600"
-        />
-      </div>
-      <h2 class="mt-4 text-2xl font-semibold text-stone-900">
-        Check your email
-      </h2>
-      <p class="mt-2 text-sm text-stone-600">
-        We've sent a password reset link to
-        <span class="font-medium text-stone-900">{{ state.email }}</span>
-      </p>
-      <AppButton
-        type="button"
-        size="lg"
-        class="mt-6"
-        @click="backToLogin"
-      >
-        Return to login
+      <AppButton color="neutral" variant="outline" block size="lg" class="rounded-xl" @click="emailSent = false">
+        Try another email
       </AppButton>
     </div>
-  </section>
+    <template #footer>
+      <AppButton icon="i-heroicons-arrow-left" color="neutral" variant="link" @click="backToLogin">
+        Back to sign in
+      </AppButton>
+    </template>
+  </AuthFormCard>
 </template>

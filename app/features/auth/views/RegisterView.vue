@@ -3,6 +3,7 @@ import type { RegisterFormData } from '~~/shared/types/auth/register/authRegiste
 import type { FormSubmitEvent } from '#ui/types'
 import { authRegisterFormDataSchema } from '~~/shared/types/auth/register/authRegister.type'
 import { useAppToast } from '~/composables/toast/useAppToast.composable'
+import AuthFormCard from '~/features/auth/components/AuthFormCard.vue'
 
 const router = useRouter()
 const toast = useAppToast()
@@ -18,6 +19,9 @@ const state = reactive<RegisterFormData>({
 })
 
 async function onSubmit(event: FormSubmitEvent<RegisterFormData>): Promise<void> {
+  if (isSubmitting.value)
+    return
+
   isSubmitting.value = true
 
   try {
@@ -52,24 +56,12 @@ async function onSubmit(event: FormSubmitEvent<RegisterFormData>): Promise<void>
 </script>
 
 <template>
-  <section class="grid gap-10 rounded-3xl p-8 shadow-2xl shadow-stone-900/40 backdrop-blur xl:grid-cols-[1.05fr_0.95fr] xl:p-12">
-    <div class="flex flex-col justify-between border-b border-muted pb-8 xl:border-b-0 xl:border-r xl:pb-0 xl:pr-12">
-      <div>
-        <UBadge
-          label="Join the community"
-          variant="soft"
-          color="secondary"
-        />
-        <h1 class="mt-6 text-4xl font-semibold lg:text-5xl">
-          Build your personal recipe universe
-        </h1>
-        <p class="mt-4 text-base text-muted">
-          Track your kitchen experiments, unlock curated collections, and share your cooking wins with fellow food
-          explorers.
-        </p>
-      </div>
-    </div>
-
+  <AuthFormCard
+    eyebrow="Make yourself at home"
+    title="Start your cookbook"
+    description="Keep your recipes together, find inspiration, and remember what you’ve cooked."
+    icon="i-heroicons-book-open"
+  >
     <UForm
       :schema="authRegisterFormDataSchema"
       :state="state"
@@ -84,8 +76,10 @@ async function onSubmit(event: FormSubmitEvent<RegisterFormData>): Promise<void>
         <UInput
           v-model="state.name"
           type="text"
+          autocomplete="name"
+          icon="i-heroicons-user"
           placeholder="Taylor Alvarez"
-          size="xl"
+          size="lg"
         />
       </UFormField>
 
@@ -97,12 +91,14 @@ async function onSubmit(event: FormSubmitEvent<RegisterFormData>): Promise<void>
         <UInput
           v-model="state.email"
           type="email"
+          autocomplete="email"
+          icon="i-heroicons-envelope"
           placeholder="you@example.com"
-          size="xl"
+          size="lg"
         />
       </UFormField>
 
-      <div class="grid gap-6 sm:grid-cols-2">
+      <div class="grid gap-5">
         <UFormField
           label="Password"
           name="password"
@@ -111,8 +107,10 @@ async function onSubmit(event: FormSubmitEvent<RegisterFormData>): Promise<void>
           <UInput
             v-model="state.password"
             type="password"
+            autocomplete="new-password"
+            icon="i-heroicons-lock-closed"
             placeholder="At least 8 characters"
-            size="xl"
+            size="lg"
           />
         </UFormField>
 
@@ -124,8 +122,10 @@ async function onSubmit(event: FormSubmitEvent<RegisterFormData>): Promise<void>
           <UInput
             v-model="state.confirmPassword"
             type="password"
+            autocomplete="new-password"
+            icon="i-heroicons-lock-closed"
             placeholder="Repeat password"
-            size="xl"
+            size="lg"
           />
         </UFormField>
       </div>
@@ -135,7 +135,7 @@ async function onSubmit(event: FormSubmitEvent<RegisterFormData>): Promise<void>
           <template #label>
             <span class="text-sm">
               I agree to the
-              <NuxtLink class="font-semibold text-" to="/legal/terms">
+              <NuxtLink class="font-medium text-primary hover:underline" to="/legal/terms">
                 Terms
               </NuxtLink>
               and
@@ -150,20 +150,22 @@ async function onSubmit(event: FormSubmitEvent<RegisterFormData>): Promise<void>
       <div class="space-y-4">
         <AppButton
           type="submit"
+          class="rounded-xl"
           :loading="isSubmitting"
+          :disabled="isSubmitting"
           block
-          size="xl"
-          color="neutral"
+          size="lg"
+          color="primary"
         >
           {{ isSubmitting ? 'Creating account…' : 'Create account' }}
         </AppButton>
         <p class="text-center text-sm">
           Already have an account?
-          <NuxtLink class="font-semibold" to="/login">
+          <NuxtLink class="font-medium text-primary hover:underline" to="/login">
             Sign in instead
           </NuxtLink>
         </p>
       </div>
     </UForm>
-  </section>
+  </AuthFormCard>
 </template>
