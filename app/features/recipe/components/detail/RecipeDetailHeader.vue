@@ -24,50 +24,65 @@ const formattedDate = computed<string>(() => {
 </script>
 
 <template>
-  <header class="bg-linear-to-br from-primary-500 to-primary-600 p-8 lg:p-12">
-    <div class="flex items-start justify-between gap-4 flex-wrap">
-      <div class="flex-1 min-w-0">
-        <div class="flex items-center gap-3 mb-4">
-          <div class="text-6xl lg:text-7xl">
-            {{ recipe.emoji || '🍽️' }}
-          </div>
-          <div>
-            <h1 class="text-3xl lg:text-4xl font-bold mb-2 text-neutral-50">
-              {{ recipe.name }}
-            </h1>
-            <p class="text-neutral-50 text-sm lg:text-base">
-              Created {{ formattedDate }}
-            </p>
-          </div>
-        </div>
+  <header class="relative overflow-hidden rounded-3xl border border-default bg-default">
+    <div class="absolute inset-x-0 top-0 h-1 bg-primary" />
+    <div class="flex flex-col gap-8 p-6 sm:p-8 lg:flex-row lg:items-center lg:gap-10 lg:p-10">
+      <div class="flex size-28 shrink-0 items-center justify-center rounded-3xl bg-primary/10 text-6xl sm:size-36 sm:text-7xl lg:size-44 lg:text-8xl" aria-hidden="true">
+        {{ recipe.emoji || '🍽️' }}
       </div>
 
-      <!-- Action Buttons -->
-      <div class="flex gap-2">
-        <AppButton
-          :icon="recipe.isFavorite ? 'i-heroicons-heart-solid' : 'i-heroicons-heart'"
-          :color="recipe.isFavorite ? 'secondary' : 'neutral'"
-          :variant="recipe.isFavorite ? 'solid' : 'outline'"
-          :loading="props.isTogglingFavorite"
-          size="lg"
-          @click="emit('toggleFavorite')"
-        />
-        <AppButton
-          :icon="recipe.isCooked ? 'i-mdi-pot-steam' : 'i-mdi-pot-steam-outline'"
-          :color="recipe.isCooked ? 'secondary' : 'neutral'"
-          :variant="recipe.isCooked ? 'solid' : 'outline'"
-          :loading="props.isTogglingCooked"
-          size="lg"
-          @click="emit('toggleCooked')"
-        />
-        <AppButton
-          icon="i-heroicons-trash"
-          color="neutral"
-          variant="solid"
-          :loading="isDeleting"
-          size="lg"
-          @click="emit('deleteRecipe')"
-        />
+      <div class="min-w-0 flex-1">
+        <div class="mb-4 flex flex-wrap items-center gap-2">
+          <UBadge v-if="recipe.category" color="primary" variant="subtle" class="rounded-full capitalize">
+            {{ recipe.category.name }}
+          </UBadge>
+          <UBadge v-if="recipe.isCooked" color="success" variant="subtle" icon="i-heroicons-check" class="rounded-full">
+            Cooked before
+          </UBadge>
+        </div>
+        <h1 class="text-3xl font-semibold tracking-tight text-highlighted break-words sm:text-4xl lg:text-5xl lg:leading-tight">
+          {{ recipe.name }}
+        </h1>
+        <p v-if="formattedDate" class="mt-3 text-sm text-muted">
+          In your collection since {{ formattedDate }}
+        </p>
+
+        <div class="mt-6 flex flex-wrap items-center gap-3">
+          <AppButton
+            :icon="recipe.isCooked ? 'i-heroicons-check' : 'i-mdi-pot-steam-outline'"
+            :color="recipe.isCooked ? 'success' : 'primary'"
+            :variant="recipe.isCooked ? 'soft' : 'solid'"
+            :loading="props.isTogglingCooked"
+            :aria-pressed="recipe.isCooked"
+            size="lg"
+            class="rounded-xl"
+            @click="emit('toggleCooked')"
+          >
+            {{ recipe.isCooked ? 'Cooked' : 'Mark as cooked' }}
+          </AppButton>
+          <AppButton
+            :icon="recipe.isFavorite ? 'i-heroicons-heart-solid' : 'i-heroicons-heart'"
+            :color="recipe.isFavorite ? 'primary' : 'neutral'"
+            :variant="recipe.isFavorite ? 'soft' : 'outline'"
+            :loading="props.isTogglingFavorite"
+            :aria-pressed="recipe.isFavorite"
+            size="lg"
+            class="rounded-xl"
+            @click="emit('toggleFavorite')"
+          >
+            {{ recipe.isFavorite ? 'Favorited' : 'Favorite' }}
+          </AppButton>
+          <AppButton
+            icon="i-heroicons-trash"
+            color="neutral"
+            variant="ghost"
+            aria-label="Delete recipe"
+            :loading="isDeleting"
+            size="lg"
+            class="ml-auto rounded-xl"
+            @click="emit('deleteRecipe')"
+          />
+        </div>
       </div>
     </div>
   </header>
