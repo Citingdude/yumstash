@@ -7,6 +7,7 @@ import type { StatCardProps } from '~/components/stats/StatsCard.vue'
 import type { RecipeCardProps } from '~/features/recipe/components/card/RecipeCard.vue'
 import { refDebounced } from '@vueuse/core'
 import { DEFAULT_RECIPE_PAGE_SIZE } from '~~/shared/constants/recipePagination.constant'
+import AppFadeSlideTransition from '~/components/app/transition/AppFadeSlideTransition.vue'
 import ConfirmDialog from '~/components/dialog/ConfirmDialog.vue'
 import { useAppToast } from '~/composables/toast/useAppToast.composable'
 import { QUERY_KEYS } from '~/constants/queryKey.constant'
@@ -54,6 +55,21 @@ const paginatedMeta = computed(() => recipeIndexQuery.data.value?.meta)
 
 const recipes = computed<RecipeWithRelations[]>(() => {
   return recipeIndexQuery.data.value?.items ?? []
+})
+
+const isRefreshing = computed(() => recipeIndexQuery.status.value === 'pending')
+const isInitialLoading = computed(() => isRefreshing.value && !recipeIndexQuery.data.value)
+
+// Keep the current results mounted during a refresh. Animate only when the
+// displayed recipes change, so updating a cooked status does not flash the grid.
+const resultsKey = computed(() => {
+  if (isInitialLoading.value)
+    return 'loading'
+  if (recipeIndexQuery.error.value && !isRefreshing.value)
+    return 'error'
+  return recipes.value.length
+    ? `recipes-${recipes.value.map(recipe => recipe.id).join('-')}`
+    : 'empty'
 })
 
 const totalPages = computed(() => paginatedMeta.value?.totalPages ?? 1)
@@ -231,8 +247,8 @@ function onAddRecipe() {
               Find a favorite. Try something new.
             </p>
           </div>
-          <span v-if="recipeIndexQuery.status.value === 'success'" role="status" class="rounded-full border border-default bg-default px-3 py-1 text-xs font-medium text-muted">
-            {{ totalFilteredRecipes }} {{ totalFilteredRecipes === 1 ? 'recipe' : 'recipes' }}{{ hasFilters ? ' found' : ' in your collection' }}
+          <span v-if="recipeIndexQuery.data.value" role="status" class="rounded-full border border-default bg-default px-3 py-1 text-xs font-medium text-muted">
+            {{ isRefreshing ? 'Updating recipes…' : `${totalFilteredRecipes} ${totalFilteredRecipes === 1 ? 'recipe' : 'recipes'}${hasFilters ? ' found' : ' in your collection'}` }}
           </span>
         </div>
 
@@ -243,48 +259,52 @@ function onAddRecipe() {
           class="mb-6"
         />
 
-        <div v-if="recipeIndexQuery.status.value === 'pending'" role="status" aria-label="Loading recipes">
-          <span class="sr-only">Loading recipes…</span>
-          <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            <USkeleton v-for="index in 6" :key="index" class="h-96 rounded-3xl" />
-          </div>
+        <div :aria-busy="isRefreshing">
+          <AppFadeSlideTransition :transition-key="resultsKey">
+            <div v-if="isInitialLoading" role="status" aria-label="Loading recipes">
+              <span class="sr-only">Loading recipes…</span>
+              <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <USkeleton v-for="index in 6" :key="index" class="h-96 rounded-3xl" />
+              </div>
+            </div>
+            <div v-else-if="recipeIndexQuery.error.value && !isRefreshing" role="alert" class="rounded-3xl border border-default bg-default px-6 py-16 text-center">
+              <UIcon name="i-heroicons-exclamation-circle" class="size-10 text-muted" />
+              <h3 class="mt-4 text-lg font-semibold text-highlighted">
+                Couldn’t load your recipes
+              </h3>
+              <p class="mt-2 text-sm text-muted">
+                Please try again to get back to your collection.
+              </p>
+              <AppButton class="mt-6 rounded-xl" @click="recipeIndexQuery.refresh()">
+                Try again
+              </AppButton>
+            </div>
+            <div v-else-if="!recipeCards.length" class="rounded-3xl border border-dashed border-default bg-default px-6 py-16 text-center">
+              <div aria-hidden="true" class="mb-5 text-5xl">
+                {{ hasFilters ? '🔎' : '🥣' }}
+              </div>
+              <h3 class="text-xl font-semibold text-highlighted">
+                {{ hasFilters ? 'No recipes on the menu' : 'Your cookbook starts here' }}
+              </h3>
+              <p class="mx-auto mt-2 max-w-sm text-sm leading-6 text-muted">
+                {{ hasFilters ? 'Try a different search or clear your filters to see the whole collection.' : 'Save your first recipe and make it easy to find the next time you’re hungry.' }}
+              </p>
+              <AppButton v-if="hasFilters" class="mt-6 rounded-xl" color="neutral" variant="outline" @click="clearFilters">
+                Clear filters
+              </AppButton>
+              <AppButton v-else icon="i-heroicons-plus" class="mt-6 rounded-xl" @click="onAddRecipe">
+                Add your first recipe
+              </AppButton>
+            </div>
+            <ul v-else class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <li v-for="recipe in recipeCards" :key="recipe.id" class="min-w-0">
+                <RecipeCard v-bind="recipe" @cooked="onCooked" @delete="onDelete" />
+              </li>
+            </ul>
+          </AppFadeSlideTransition>
         </div>
-        <div v-else-if="recipeIndexQuery.error.value" role="alert" class="rounded-3xl border border-default bg-default px-6 py-16 text-center">
-          <UIcon name="i-heroicons-exclamation-circle" class="size-10 text-muted" />
-          <h3 class="mt-4 text-lg font-semibold text-highlighted">
-            Couldn’t load your recipes
-          </h3>
-          <p class="mt-2 text-sm text-muted">
-            Please try again to get back to your collection.
-          </p>
-          <AppButton class="mt-6 rounded-xl" @click="recipeIndexQuery.refresh()">
-            Try again
-          </AppButton>
-        </div>
-        <div v-else-if="!recipeCards.length" class="rounded-3xl border border-dashed border-default bg-default px-6 py-16 text-center">
-          <div aria-hidden="true" class="mb-5 text-5xl">
-            {{ hasFilters ? '🔎' : '🥣' }}
-          </div>
-          <h3 class="text-xl font-semibold text-highlighted">
-            {{ hasFilters ? 'No recipes on the menu' : 'Your cookbook starts here' }}
-          </h3>
-          <p class="mx-auto mt-2 max-w-sm text-sm leading-6 text-muted">
-            {{ hasFilters ? 'Try a different search or clear your filters to see the whole collection.' : 'Save your first recipe and make it easy to find the next time you’re hungry.' }}
-          </p>
-          <AppButton v-if="hasFilters" class="mt-6 rounded-xl" color="neutral" variant="outline" @click="clearFilters">
-            Clear filters
-          </AppButton>
-          <AppButton v-else icon="i-heroicons-plus" class="mt-6 rounded-xl" @click="onAddRecipe">
-            Add your first recipe
-          </AppButton>
-        </div>
-        <ul v-else class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          <li v-for="recipe in recipeCards" :key="recipe.id" class="min-w-0">
-            <RecipeCard v-bind="recipe" @cooked="onCooked" @delete="onDelete" />
-          </li>
-        </ul>
 
-        <div v-if="totalFilteredRecipes > DEFAULT_RECIPE_PAGE_SIZE && recipeIndexQuery.status.value === 'success'" class="mt-8 flex flex-col items-center justify-between gap-4 border-t border-default pt-6 sm:flex-row">
+        <div v-if="totalFilteredRecipes > DEFAULT_RECIPE_PAGE_SIZE && !recipeIndexQuery.error.value" class="mt-8 flex flex-col items-center justify-between gap-4 border-t border-default pt-6 sm:flex-row">
           <p class="text-xs text-muted">
             Page {{ page }} of {{ totalPages }}
           </p>
