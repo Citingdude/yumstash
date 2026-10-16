@@ -21,6 +21,8 @@ export default defineEventHandler<Promise<RecipeWithRelations>>(async (event) =>
       id: params.recipeId,
     },
     with: {
+      favorites: { where: { userId } },
+      cooked: { where: { userId } },
       recipeDifficulty: true,
       recipeCategory: true,
       user: true,

@@ -49,7 +49,15 @@ export function useRecipeService() {
     })
   }
 
+  async function toggleFavorite(recipeId: RecipeUuid, isFavorite: boolean) {
+    return requestFetch(`/api/recipes/${recipeId}/favorite`, {
+      method: 'POST',
+      body: { isFavorite },
+    })
+  }
+
   return {
+    toggleFavorite,
     getRecipes,
     getRecipe,
     createRecipe,

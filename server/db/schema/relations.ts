@@ -9,6 +9,8 @@ export const relations = defineRelations(schema, r => ({
     }),
   },
   usersTable: {
+    favorites: r.many.recipeFavoritesTable(),
+    cooked: r.many.recipeCookedTable(),
     passwordResetTokens: r.many.passwordResetTokensTable(),
     recipesViaRecipeFavorites: r.many.recipesTable({
       alias: 'recipes_id_users_id_via_recipeFavorites',
@@ -19,6 +21,8 @@ export const relations = defineRelations(schema, r => ({
     sessions: r.many.sessionsTable(),
   },
   recipesTable: {
+    favorites: r.many.recipeFavoritesTable(),
+    cooked: r.many.recipeCookedTable(),
     users: r.many.usersTable({
       from: r.recipesTable.id.through(r.recipeFavoritesTable.recipeId),
       to: r.usersTable.id.through(r.recipeFavoritesTable.userId),
@@ -36,6 +40,26 @@ export const relations = defineRelations(schema, r => ({
     recipeDifficulty: r.one.recipeDifficultiesTable({
       from: r.recipesTable.difficultyId,
       to: r.recipeDifficultiesTable.id,
+    }),
+  },
+  recipeFavoritesTable: {
+    recipe: r.one.recipesTable({
+      from: r.recipeFavoritesTable.recipeId,
+      to: r.recipesTable.id,
+    }),
+    user: r.one.usersTable({
+      from: r.recipeFavoritesTable.userId,
+      to: r.usersTable.id,
+    }),
+  },
+  recipeCookedTable: {
+    recipe: r.one.recipesTable({
+      from: r.recipeCookedTable.recipeId,
+      to: r.recipesTable.id,
+    }),
+    user: r.one.usersTable({
+      from: r.recipeCookedTable.userId,
+      to: r.usersTable.id,
     }),
   },
   recipeCategoriesTable: {

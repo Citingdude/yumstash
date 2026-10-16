@@ -51,6 +51,8 @@ export default defineEventHandler<Promise<RecipeIndexResult>>(async (event) => {
       createdAt: 'desc',
     },
     with: {
+      favorites: { where: { userId } },
+      cooked: { where: { userId } },
       recipeDifficulty: true,
       recipeCategory: true,
       user: true,

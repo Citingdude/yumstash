@@ -36,8 +36,8 @@ export class RecipeWithRelationsTransformer {
       authorId: dbRecipe.authorId,
       categoryId: dbRecipe.categoryId,
       difficultyId: dbRecipe.difficultyId,
-      isFavorite: false,
-      isCooked: dbRecipe.isCooked,
+      isFavorite: dbRecipe.favorites.length > 0,
+      isCooked: dbRecipe.cooked.length > 0,
     }
   }
 }

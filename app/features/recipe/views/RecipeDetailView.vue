@@ -36,9 +36,11 @@ async function toggleFavorite() {
 
   isTogglingFavorite.value = true
   try {
+    const result = await recipeService.toggleFavorite(recipe.value.id, recipe.value.isFavorite)
     await recipeDetailQuery.refresh()
+    await refreshNuxtData('recipe-index')
     appToast.success({
-      title: recipe.value.isFavorite ? 'Removed from favorites' : 'Added to favorites',
+      title: result.isFavorite ? 'Added to favorites' : 'Removed from favorites',
     })
   }
   catch {
@@ -57,10 +59,11 @@ async function toggleCooked() {
 
   isTogglingCooked.value = true
   try {
-    await recipeService.toggleCooked(recipe.value.id, recipe.value.isCooked)
+    const result = await recipeService.toggleCooked(recipe.value.id, recipe.value.isCooked)
     await recipeDetailQuery.refresh()
+    await Promise.all([refreshNuxtData('recipe-index'), refreshNuxtData('recipe-cooked-count')])
     appToast.success({
-      title: recipe.value.isCooked ? 'Marked as not cooked' : 'Marked as cooked',
+      title: result.isCooked ? 'Marked as cooked' : 'Marked as not cooked',
     })
   }
   catch {

@@ -57,7 +57,7 @@ export default defineEventHandler(async (event) => {
       servings: recipe.servings,
       emoji: recipe.emoji,
       isFavorite: false,
-      isCooked: recipe.isCooked,
+      isCooked: false,
       difficulty: recipe.recipeDifficulty
         ? {
             id: recipe.recipeDifficulty.id,

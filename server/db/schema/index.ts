@@ -1,5 +1,6 @@
 export * from './password-reset-tokens'
 export * from './recipe-categories'
+export * from './recipe-cooked'
 export * from './recipe-difficulties'
 export * from './recipe-favorites'
 export * from './recipes'

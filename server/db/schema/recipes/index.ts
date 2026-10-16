@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm'
-import { boolean, integer, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core'
+import { integer, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core'
 
 import { recipeCategoriesTable } from '../recipe-categories'
 import { recipeDifficultiesTable } from '../recipe-difficulties'
@@ -12,8 +12,6 @@ export const recipesTable = pgTable('recipes', {
   time: integer().notNull(),
   servings: varchar({ length: 50 }).notNull(),
   emoji: varchar({ length: 10 }),
-  isFavorite: boolean().default(false).notNull(),
-  isCooked: boolean().default(false).notNull(),
   difficultyId: uuid().notNull().references(() => recipeDifficultiesTable.id),
   categoryId: uuid().notNull().references(() => recipeCategoriesTable.id),
   authorId: uuid().notNull().references(() => usersTable.id),
@@ -25,6 +23,8 @@ export type RecipeSelect = typeof recipesTable.$inferSelect
 export type RecipeInsert = typeof recipesTable.$inferInsert
 
 export type RecipeSelectWithRelations = RecipeSelect & {
+  favorites: { userId: string }[]
+  cooked: { userId: string }[]
   recipeDifficulty: {
     id: string
     name: 'easy' | 'medium' | 'hard'
