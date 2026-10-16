@@ -1,9 +1,9 @@
 <template>
-  <img
-    src="/logo.svg"
-    alt="Yumstash"
-    width="40"
-    height="40"
-    class="size-10 shrink-0"
-  >
+  <span class="inline-flex shrink-0 items-center gap-2">
+    <img
+      src="/logo-chef-wordmark.svg"
+      alt=""
+      class="shrink-0 max-h-10"
+    >
+  </span>
 </template>

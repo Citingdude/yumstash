@@ -37,12 +37,9 @@ const userMenuItems = [
   <header class="bg-default border-b border-default sticky top-0 z-10 py-4">
     <AppContainer>
       <div class="flex items-center justify-between">
-        <div class="flex items-center gap-3">
+        <h1 class="flex items-center">
           <AppLogo />
-          <h1 class="text-2xl font-bold">
-            Yumstash
-          </h1>
-        </div>
+        </h1>
 
         <div class="flex items-center gap-3">
           <UColorModeButton />

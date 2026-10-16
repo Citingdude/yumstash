@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none" role="img" aria-labelledby="logo-title logo-description">
+  <title id="logo-title">Yumstash</title>
+  <desc id="logo-description">An asymmetric warm orange chef's hat and curled moustache on a transparent background.</desc>
+  <path d="M40 70L38 55C27 53 21 46 23 37C25 27 35 23 44 27C44 16 52 10 62 12C72 13 78 21 77 30C86 23 99 27 103 36C108 47 101 56 89 57L88 64Z" fill="#F16034"/>
+  <path d="M41 76L89 70" stroke="#F16034" stroke-width="6" stroke-linecap="round"/>
+  <path d="M64 91C59 83 52 82 46 88C39 95 31 94 26 85C24 99 33 109 45 107C53 106 60 101 64 97C68 101 75 106 83 107C95 109 104 99 102 85C97 94 89 95 82 88C76 82 69 83 64 91Z" fill="#F16034"/>
+</svg>
