@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" fill="none" role="img" aria-labelledby="title">
+  <title id="title">Yumstash — chef's hat and moustache</title>
+  <g stroke="#F16034" stroke-linecap="round" stroke-linejoin="round" stroke-width="5">
+    <path d="M27 53v-9a16 16 0 0 1-2-31 18 18 0 0 1 9 2 17 17 0 0 1 28 0 16 16 0 1 1 7 29v9"/>
+    <path d="M27 44h42v13a4 4 0 0 1-4 4H31a4 4 0 0 1-4-4V44Z"/>
+    <path d="M39 31v5m18-5v5"/>
+  </g>
+  <path fill="#F16034" d="M48 73c-5-8-12-8-18-2-5 5-10 5-16 0 1 12 10 18 20 15 6-1 10-5 14-9 4 4 8 8 14 9 10 3 19-3 20-15-6 5-11 5-16 0-6-6-13-6-18 2Z"/>
+</svg>
