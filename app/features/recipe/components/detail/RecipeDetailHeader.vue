@@ -13,6 +13,7 @@ const emit = defineEmits<{
   toggleFavorite: []
   toggleCooked: []
   deleteRecipe: []
+  printRecipe: []
 }>()
 
 const formattedDate = computed<string>(() => {
@@ -47,7 +48,7 @@ const formattedDate = computed<string>(() => {
           In your collection since {{ formattedDate }}
         </p>
 
-        <div class="mt-6 flex flex-wrap items-center gap-3">
+        <div class="mt-6 flex flex-wrap items-center gap-3 print:hidden">
           <AppButton
             :icon="recipe.isCooked ? 'i-heroicons-check' : 'i-mdi-pot-steam-outline'"
             :color="recipe.isCooked ? 'success' : 'primary'"
@@ -71,6 +72,16 @@ const formattedDate = computed<string>(() => {
             @click="emit('toggleFavorite')"
           >
             {{ recipe.isFavorite ? 'Favorited' : 'Favorite' }}
+          </AppButton>
+          <AppButton
+            icon="i-heroicons-printer"
+            color="neutral"
+            variant="outline"
+            size="lg"
+            class="rounded-xl"
+            @click="emit('printRecipe')"
+          >
+            Print recipe
           </AppButton>
           <AppButton
             icon="i-heroicons-trash"

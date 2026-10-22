@@ -35,7 +35,7 @@ const props = defineProps<{
         </div>
       </div>
     </dl>
-    <div class="mt-6 rounded-xl bg-primary/5 p-4">
+    <div class="mt-6 rounded-xl bg-primary/5 p-4 print:hidden">
       <UIcon name="i-mdi-chef-hat" class="mb-2 size-6 text-primary" />
       <p class="text-sm font-medium text-highlighted">
         {{ recipe.isCooked ? 'One to make again' : 'Ready when you are' }}

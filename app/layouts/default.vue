@@ -23,6 +23,7 @@ function onAddRecipe(): void {
 <template>
   <div>
     <AppHeader
+      class="print:hidden"
       @add-recipe="onAddRecipe"
     />
     <slot />

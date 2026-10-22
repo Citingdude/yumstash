@@ -30,6 +30,10 @@ const recipe = computed<RecipeWithRelations | null>(() => {
   return recipeDetailQuery.data.value ?? null
 })
 
+function printRecipe(): void {
+  window.print()
+}
+
 async function toggleFavorite() {
   if (!recipe.value || isTogglingFavorite.value)
     return
@@ -112,9 +116,9 @@ async function deleteRecipe() {
 </script>
 
 <template>
-  <main class="min-h-screen bg-muted/40">
+  <main class="recipe-print-view min-h-screen bg-muted/40">
     <div class="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:py-10">
-      <AppButton to="/" variant="ghost" color="neutral" icon="i-heroicons-arrow-left" class="mb-6 -ml-2">
+      <AppButton to="/" variant="ghost" color="neutral" icon="i-heroicons-arrow-left" class="mb-6 -ml-2 print:hidden">
         All recipes
       </AppButton>
 
@@ -125,11 +129,12 @@ async function deleteRecipe() {
           :is-toggling-cooked="isTogglingCooked"
           :is-toggling-favorite="isTogglingFavorite"
           @delete-recipe="deleteRecipe"
+          @print-recipe="printRecipe"
           @toggle-cooked="toggleCooked"
           @toggle-favorite="toggleFavorite"
         />
         <RecipeDetailMeta :recipe="recipe" />
-        <div class="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_280px]">
+        <div class="recipe-print-content grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_280px]">
           <RecipeDetailContent :recipe="recipe" />
           <RecipeDetailInfo :recipe="recipe" />
         </div>

@@ -10,6 +10,7 @@ Yumstash is a modern web application designed to help you store and manage your 
 
 - 📝 **Recipe Storage** - Save and organize all your favorite recipes
 - 🔍 **Easy Search** - Quickly find recipes when you need them
+- 🖨️ **Print Recipes** - Print a clean recipe copy or save it as PDF from the recipe detail page
 - 📱 **Responsive Design** - Access your recipes from any device
 - 🎨 **Modern UI** - Clean and intuitive user interface built with Nuxt UI
 - ⚡ **Fast Performance** - Built with Nuxt 4 for optimal speed

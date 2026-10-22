@@ -80,3 +80,58 @@ body {
   font-family: var(--font-sans);
   color: var(--text-color-default);
 }
+
+@media print {
+  body:has(.recipe-print-view) {
+    background: white !important;
+  }
+
+  .recipe-print-view,
+  .recipe-print-view * {
+    color: black !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    border-color: #ccc !important;
+  }
+
+  .recipe-print-view {
+    min-height: auto;
+  }
+
+  .recipe-print-view > div {
+    max-width: none;
+    padding: 0;
+  }
+
+  .recipe-print-content {
+    display: block;
+  }
+
+  .recipe-print-content > * {
+    position: static;
+    margin-top: 1rem;
+    padding: 1rem;
+  }
+
+  .recipe-print-view header {
+    break-inside: avoid;
+  }
+
+  .recipe-print-view h1,
+  .recipe-print-view h2,
+  .recipe-print-view h3 {
+    break-after: avoid;
+  }
+
+  .recipe-print-view p,
+  .recipe-print-view li {
+    orphans: 3;
+    widows: 3;
+  }
+
+  .recipe-print-view pre {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+}
