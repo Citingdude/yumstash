@@ -58,7 +58,7 @@ describe('recipe updates', () => {
       createdAt: 'yesterday',
     }))
     await expect(invoke()).resolves.toEqual({ success: true, id: recipeId })
-    expect(set).toHaveBeenCalledWith({ ...body, updatedAt: expect.any(Date) })
+    expect(set).toHaveBeenCalledWith({ ...body, description: '<p>Mix and cook.</p>', updatedAt: expect.any(Date) })
   })
 
   it('rejects another user’s recipe', async () => {

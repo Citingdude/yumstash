@@ -5,8 +5,10 @@ import type { RecipeWithRelations } from '~~/shared/types/recipe/recipe.type'
 import type { FormSubmitEvent, SelectItem } from '#ui/types'
 import { recipeCategoryUuidSchema } from '~~/shared/types/recipe-category/recipeCategoryUuid.type'
 import { createRecipeFormSchema } from '~~/shared/types/recipe/createRecipeForm.type'
+import { sanitizeRecipeContent } from '~~/shared/utils/recipeContent'
 import { useAppToast } from '~/composables/toast/useAppToast.composable'
 import { QUERY_KEYS } from '~/constants/queryKey.constant'
+import RecipeContentEditor from '~/features/recipe/components/form/RecipeContentEditor.vue'
 import { useRecipeService } from '~/features/recipe/services/recipe.service'
 
 const props = defineProps<{
@@ -34,7 +36,7 @@ watch(() => props.recipe, resetForm, { immediate: true })
 
 function resetForm() {
   state.name = props.recipe?.name ?? ''
-  state.description = props.recipe?.description ?? ''
+  state.description = props.recipe ? sanitizeRecipeContent(props.recipe.description) : ''
   state.emoji = props.recipe?.emoji ?? '🍽️'
   state.time = props.recipe?.time ?? 0
   state.servings = props.recipe?.servings ?? ''
@@ -144,7 +146,7 @@ async function onSubmit(event: FormSubmitEvent<CreateRecipeForm>) {
 
         <div class="border-t border-default pt-6">
           <UFormField label="The recipe" name="description" description="Include ingredients, steps, and any notes you want to remember." required>
-            <UTextarea v-model="state.description" placeholder="Start with your ingredients, then walk through the steps…" :rows="6" size="lg" class="mt-2" />
+            <RecipeContentEditor v-model="state.description" :disabled="isSubmitting" />
           </UFormField>
         </div>
       </UForm>

@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import type { RecipeWithRelations } from '~~/shared/types/recipe/recipe.type'
+import { hasRecipeContent, sanitizeRecipeContent } from '~~/shared/utils/recipeContent'
 
 const props = defineProps<{
   recipe: RecipeWithRelations
 }>()
+const content = computed(() => sanitizeRecipeContent(props.recipe.description))
 </script>
 
 <template>
@@ -16,7 +18,7 @@ const props = defineProps<{
         The recipe
       </h2>
     </div>
-    <div v-if="props.recipe.description.trim()" class="recipe-description text-base leading-8 text-toned" v-html="props.recipe.description" />
+    <div v-if="hasRecipeContent(content)" class="recipe-description text-base leading-8 text-toned" v-html="content" />
     <p v-else class="py-6 text-sm text-muted">
       No recipe notes have been added yet.
     </p>
