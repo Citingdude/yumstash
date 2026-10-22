@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import type { z } from 'zod'
 import type { RecipeCategorySelectItem } from '~~/shared/types/recipe-category/recipeCategorySelectItem.type'
+import type { RecipeWithRelations } from '~~/shared/types/recipe/recipe.type'
 import type { FormSubmitEvent, SelectItem } from '#ui/types'
+import { recipeCategoryUuidSchema } from '~~/shared/types/recipe-category/recipeCategoryUuid.type'
 import { createRecipeFormSchema } from '~~/shared/types/recipe/createRecipeForm.type'
 import { useAppToast } from '~/composables/toast/useAppToast.composable'
 import { QUERY_KEYS } from '~/constants/queryKey.constant'
 import { useRecipeService } from '~/features/recipe/services/recipe.service'
-import { invalidateQuery } from '~/utils/query/query.util'
 
 const props = defineProps<{
+  recipe?: RecipeWithRelations
   categoryOptions: RecipeCategorySelectItem[]
   difficultyOptions: SelectItem[]
 }>()
@@ -26,23 +28,18 @@ const recipeService = useRecipeService()
 const isSubmitting = ref(false)
 const formId = useId()
 
-const state = reactive<Partial<CreateRecipeForm>>({
-  name: '',
-  description: '',
-  emoji: '🍽️',
-  time: 0,
-  servings: '',
-  difficultyId: '',
-})
+const state = reactive<Partial<CreateRecipeForm>>({})
+
+watch(() => props.recipe, resetForm, { immediate: true })
 
 function resetForm() {
-  state.name = ''
-  state.description = ''
-  state.emoji = '🍽️'
-  state.time = 0
-  state.servings = ''
-  state.difficultyId = ''
-  state.categoryId = undefined
+  state.name = props.recipe?.name ?? ''
+  state.description = props.recipe?.description ?? ''
+  state.emoji = props.recipe?.emoji ?? '🍽️'
+  state.time = props.recipe?.time ?? 0
+  state.servings = props.recipe?.servings ?? ''
+  state.difficultyId = props.recipe?.difficultyId ?? ''
+  state.categoryId = props.recipe ? recipeCategoryUuidSchema.parse(props.recipe.categoryId) : undefined
 }
 
 function onCancel() {
@@ -60,11 +57,16 @@ async function onSubmit(event: FormSubmitEvent<CreateRecipeForm>) {
   isSubmitting.value = true
 
   try {
-    await recipeService.createRecipe(event.data)
+    if (props.recipe)
+      await recipeService.updateRecipe(props.recipe.id, event.data)
+    else
+      await recipeService.createRecipe(event.data)
 
     await Promise.all([
-      invalidateQuery(QUERY_KEYS.RECIPE_INDEX),
-      invalidateQuery(QUERY_KEYS.RECIPE_COUNT),
+      refreshNuxtData(QUERY_KEYS.RECIPE_INDEX),
+      refreshNuxtData(QUERY_KEYS.RECIPE_COUNT),
+      refreshNuxtData(QUERY_KEYS.RECIPE_CATEGORY_COUNT),
+      ...(props.recipe ? [refreshNuxtData(`${QUERY_KEYS.RECIPE_INDEX}-${props.recipe.id}`)] : []),
     ])
 
     emit('close')
@@ -72,13 +74,13 @@ async function onSubmit(event: FormSubmitEvent<CreateRecipeForm>) {
 
     toast.success({
       title: 'Success',
-      description: 'Recipe created',
+      description: props.recipe ? 'Recipe updated' : 'Recipe created',
     })
   }
   catch {
     toast.error({
       title: 'Error',
-      errorMessage: 'Recipe creation failed',
+      errorMessage: props.recipe ? 'Recipe update failed' : 'Recipe creation failed',
     })
   }
   finally {
@@ -89,8 +91,8 @@ async function onSubmit(event: FormSubmitEvent<CreateRecipeForm>) {
 
 <template>
   <UModal
-    title="Add a recipe"
-    description="Save something delicious to your personal cookbook."
+    :title="props.recipe ? 'Edit recipe' : 'Add a recipe'"
+    :description="props.recipe ? 'Update the details in your personal cookbook.' : 'Save something delicious to your personal cookbook.'"
     :dismissible="!isSubmitting"
     :close="!isSubmitting"
     :ui="{ content: 'max-w-2xl', footer: 'flex-col-reverse sm:flex-row sm:justify-between' }"
@@ -98,7 +100,7 @@ async function onSubmit(event: FormSubmitEvent<CreateRecipeForm>) {
   >
     <template #title>
       <span class="mb-4 flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-2xl" aria-hidden="true">{{ state.emoji || '🍽️' }}</span>
-      Add a recipe
+      {{ props.recipe ? 'Edit recipe' : 'Add a recipe' }}
     </template>
     <template #body>
       <UForm :id="formId" :schema="createRecipeFormSchema" :state="state" :disabled="isSubmitting" class="space-y-7" @submit="onSubmit">
@@ -155,8 +157,8 @@ async function onSubmit(event: FormSubmitEvent<CreateRecipeForm>) {
         <AppButton type="button" color="neutral" variant="outline" size="lg" class="flex-1 justify-center rounded-xl sm:flex-none" :disabled="isSubmitting" @click="onCancel">
           Cancel
         </AppButton>
-        <AppButton type="submit" :form="formId" icon="i-heroicons-plus" size="lg" class="flex-1 justify-center rounded-xl sm:flex-none" :loading="isSubmitting" :disabled="isSubmitting">
-          {{ isSubmitting ? 'Saving…' : 'Save recipe' }}
+        <AppButton type="submit" :form="formId" :icon="props.recipe ? 'i-heroicons-check' : 'i-heroicons-plus'" size="lg" class="flex-1 justify-center rounded-xl sm:flex-none" :loading="isSubmitting" :disabled="isSubmitting">
+          {{ isSubmitting ? 'Saving…' : props.recipe ? 'Save changes' : 'Save recipe' }}
         </AppButton>
       </div>
     </template>

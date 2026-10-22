@@ -14,7 +14,7 @@ import { QUERY_KEYS } from '~/constants/queryKey.constant'
 import DashboardSearch from '~/features/dashboard/components/DashboardSearch.vue'
 import DashboardStats from '~/features/dashboard/components/DashboardStats.vue'
 import RecipeCard from '~/features/recipe/components/card/RecipeCard.vue'
-import RecipeCreateModal from '~/features/recipe/components/modal/RecipeCreateModal.vue'
+import RecipeFormModal from '~/features/recipe/components/modal/RecipeFormModal.vue'
 import { useRecipeCategoryCountQuery } from '~/features/recipe/queries/recipeCategoryCount.query'
 import { useRecipeCategoryIndexQuery } from '~/features/recipe/queries/recipeCategoryIndex.query'
 import { useRecipeCookedCountQuery } from '~/features/recipe/queries/recipeCookedCount.query'
@@ -221,7 +221,7 @@ async function onDelete(recipeId: RecipeUuid): Promise<void> {
   }
 }
 const recipeDifficultyQuery = useRecipeDifficultyQuery()
-const createRecipeModal = overlay.create(RecipeCreateModal)
+const createRecipeModal = overlay.create(RecipeFormModal)
 const hasFilters = computed(() => Boolean(searchQuery.value || categoryId.value))
 
 function clearFilters() {

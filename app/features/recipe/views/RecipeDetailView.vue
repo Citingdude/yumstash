@@ -8,7 +8,10 @@ import RecipeDetailContent from '~/features/recipe/components/detail/RecipeDetai
 import RecipeDetailHeader from '~/features/recipe/components/detail/RecipeDetailHeader.vue'
 import RecipeDetailInfo from '~/features/recipe/components/detail/RecipeDetailInfo.vue'
 import RecipeDetailMeta from '~/features/recipe/components/detail/RecipeDetailMeta.vue'
+import RecipeFormModal from '~/features/recipe/components/modal/RecipeFormModal.vue'
+import { useRecipeCategoryIndexQuery } from '~/features/recipe/queries/recipeCategoryIndex.query'
 import { useRecipeDetailQuery } from '~/features/recipe/queries/recipeDetail.query'
+import { useRecipeDifficultyQuery } from '~/features/recipe/queries/recipeDifficulty.query'
 import { useRecipeService } from '~/features/recipe/services/recipe.service'
 
 const route = useRoute('recipes-id')
@@ -20,6 +23,10 @@ const recipeService = useRecipeService()
 const recipeId = computed(() => route.params.id as RecipeUuid)
 const recipeDetailQuery = useRecipeDetailQuery(recipeId)
 
+const categoryQuery = useRecipeCategoryIndexQuery()
+const difficultyQuery = useRecipeDifficultyQuery()
+const editModal = overlay.create(RecipeFormModal)
+
 const confirmDialog = overlay.create(ConfirmDialog)
 
 const isTogglingFavorite = ref<boolean>(false)
@@ -29,6 +36,26 @@ const isDeleting = ref<boolean>(false)
 const recipe = computed<RecipeWithRelations | null>(() => {
   return recipeDetailQuery.data.value ?? null
 })
+
+async function editRecipe() {
+  if (!recipe.value || isDeleting.value)
+    return
+
+  try {
+    await Promise.all([categoryQuery.refresh(), difficultyQuery.refresh()])
+    if (categoryQuery.error.value || difficultyQuery.error.value)
+      throw new Error('Failed to load recipe options')
+
+    editModal.open({
+      recipe: recipe.value,
+      categoryOptions: categoryQuery.selectItems.value,
+      difficultyOptions: difficultyQuery.selectItems.value,
+    })
+  }
+  catch {
+    appToast.error({ title: 'Could not open recipe editor', errorMessage: 'Please try again.' })
+  }
+}
 
 function printRecipe(): void {
   window.print()
@@ -128,6 +155,7 @@ async function deleteRecipe() {
           :is-deleting="isDeleting"
           :is-toggling-cooked="isTogglingCooked"
           :is-toggling-favorite="isTogglingFavorite"
+          @edit-recipe="editRecipe"
           @delete-recipe="deleteRecipe"
           @print-recipe="printRecipe"
           @toggle-cooked="toggleCooked"

@@ -21,7 +21,7 @@
     "db:seed": "tsx server/db/seed.ts",
     "test": "vitest",
     "test:watch": "vitest --watch",
-    "test:unit": "vitest --project unit",
+    "test:unit": "vitest --config vitest.unit.config.ts",
     "test:nuxt": "vitest --project nuxt"
   },
   "dependencies": {

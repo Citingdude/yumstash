@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import AppHeader from '~/components/header/AppHeader.vue'
 
-import RecipeCreateModal from '~/features/recipe/components/modal/RecipeCreateModal.vue'
+import RecipeFormModal from '~/features/recipe/components/modal/RecipeFormModal.vue'
 import { useRecipeCategoryIndexQuery } from '~/features/recipe/queries/recipeCategoryIndex.query'
 import { useRecipeDifficultyQuery } from '~/features/recipe/queries/recipeDifficulty.query'
 
 const overlay = useOverlay()
 
-const createRecipeModal = overlay.create(RecipeCreateModal)
+const createRecipeModal = overlay.create(RecipeFormModal)
 
 const recipeCategoryIndexQuery = useRecipeCategoryIndexQuery()
 const recipeDifficultyQuery = useRecipeDifficultyQuery()

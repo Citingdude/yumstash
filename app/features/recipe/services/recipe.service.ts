@@ -36,6 +36,13 @@ export function useRecipeService() {
     })
   }
 
+  async function updateRecipe(recipeId: RecipeUuid, body: CreateRecipeForm) {
+    await requestFetch(`/api/recipes/${recipeId}`, {
+      method: 'PUT',
+      body,
+    })
+  }
+
   async function deleteRecipe(recipeId: RecipeUuid) {
     await requestFetch(`/api/recipes/${recipeId}`, {
       method: 'DELETE',
@@ -61,6 +68,7 @@ export function useRecipeService() {
     getRecipes,
     getRecipe,
     createRecipe,
+    updateRecipe,
     deleteRecipe,
     toggleCooked,
   }
