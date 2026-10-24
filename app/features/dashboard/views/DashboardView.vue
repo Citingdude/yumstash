@@ -34,16 +34,17 @@ const selectedCategory = ref<RecipeCategoryFilterItem | undefined>(undefined)
 const searchQuery = ref<string | undefined>()
 const debouncedSearchQuery = refDebounced(searchQuery, 300)
 const page = ref<number>(1)
+const favoritesOnly = shallowRef(false)
 
 const categoryId = computed(() => selectedCategory.value?.value)
 
-const recipeIndexQuery = useRecipeIndexQuery(debouncedSearchQuery, categoryId, page)
+const recipeIndexQuery = useRecipeIndexQuery(debouncedSearchQuery, categoryId, page, favoritesOnly)
 const recipeCountQuery = useRecipeCountQuery()
 const recipeCategoryIndexQuery = useRecipeCategoryIndexQuery()
 const recipeCategoryCountQuery = useRecipeCategoryCountQuery()
 const recipeCookedCountQuery = useRecipeCookedCountQuery()
 
-watch([debouncedSearchQuery, categoryId], () => {
+watch([debouncedSearchQuery, categoryId, favoritesOnly], () => {
   page.value = 1
 })
 
@@ -219,9 +220,10 @@ async function onDelete(recipeId: RecipeUuid): Promise<void> {
 }
 const recipeDifficultyQuery = useRecipeDifficultyQuery()
 const createRecipeModal = overlay.create(RecipeFormModal)
-const hasFilters = computed(() => Boolean(searchQuery.value || categoryId.value))
+const hasFilters = computed(() => Boolean(searchQuery.value || categoryId.value || favoritesOnly.value))
 
 function clearFilters() {
+  favoritesOnly.value = false
   searchQuery.value = ''
   selectedCategory.value = undefined
   page.value = 1
@@ -281,6 +283,7 @@ function onAddRecipe() {
         <DashboardSearch
           v-model:query="searchQuery"
           v-model:category="selectedCategory"
+          v-model:favorites-only="favoritesOnly"
           :category-items="recipeCategoryItems"
           class="mb-6"
         />

@@ -7,6 +7,7 @@ import { DEFAULT_RECIPE_PAGE_SIZE } from '~~/shared/constants/recipePagination.c
 interface GetRecipesParams {
   search?: string
   categoryId?: string
+  favoritesOnly?: boolean
   page: number
   pageSize?: number
 }
@@ -19,6 +20,7 @@ export function useRecipeService() {
       query: {
         search: params.search,
         categoryId: params.categoryId,
+        favoritesOnly: params.favoritesOnly,
         page: params.page,
         pageSize: params.pageSize ?? DEFAULT_RECIPE_PAGE_SIZE,
       },

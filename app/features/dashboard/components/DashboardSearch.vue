@@ -6,7 +6,20 @@ const props = defineProps<{
 }>()
 
 const query = defineModel<string>('query')
+const favoritesOnly = defineModel<boolean>('favoritesOnly', { required: true })
 const category = defineModel<RecipeCategoryFilterItem>('category')
+
+function onClearSearch() {
+  query.value = ''
+}
+
+function onToggleFavorites() {
+  favoritesOnly.value = !favoritesOnly.value
+}
+
+function onClearCategory() {
+  category.value = undefined
+}
 </script>
 
 <template>
@@ -22,7 +35,7 @@ const category = defineModel<RecipeCategoryFilterItem>('category')
       :ui="{ trailing: 'pe-1' }"
     >
       <template v-if="query" #trailing>
-        <AppButton icon="i-heroicons-x-mark" color="neutral" variant="ghost" size="sm" aria-label="Clear search" @click="query = ''" />
+        <AppButton icon="i-heroicons-x-mark" color="neutral" variant="ghost" size="sm" aria-label="Clear search" @click="onClearSearch" />
       </template>
     </UInput>
     <USelectMenu
@@ -37,6 +50,17 @@ const category = defineModel<RecipeCategoryFilterItem>('category')
       variant="soft"
       :ui="{ base: 'rounded-xl' }"
     />
-    <AppButton v-if="category?.value" icon="i-heroicons-x-mark" color="neutral" variant="ghost" aria-label="Clear category filter" class="justify-center rounded-xl" @click="category = undefined" />
+    <AppButton
+      icon="i-heroicons-heart"
+      :color="favoritesOnly ? 'primary' : 'neutral'"
+      :variant="favoritesOnly ? 'solid' : 'soft'"
+      :aria-pressed="favoritesOnly"
+      size="lg"
+      class="justify-center rounded-xl"
+      @click="onToggleFavorites"
+    >
+      Favorites
+    </AppButton>
+    <AppButton v-if="category?.value" icon="i-heroicons-x-mark" color="neutral" variant="ghost" aria-label="Clear category filter" class="justify-center rounded-xl" @click="onClearCategory" />
   </div>
 </template>

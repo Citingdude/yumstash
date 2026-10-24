@@ -4,6 +4,7 @@ import { recipeCategoryUuidSchema } from '~~/shared/types/recipe-category/recipe
 
 export const recipeIndexQuerySchema = z.object({
   search: z.string().optional(),
+  favoritesOnly: z.enum(['true', 'false']).transform(value => value === 'true').optional(),
   categoryId: recipeCategoryUuidSchema.optional(),
   page: z.coerce.number().int().min(1).optional(),
   pageSize: z.coerce.number().int().min(1).max(MAX_RECIPE_PAGE_SIZE).optional(),

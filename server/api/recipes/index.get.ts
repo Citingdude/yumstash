@@ -2,9 +2,9 @@ import type { SQL } from 'drizzle-orm'
 import type { RecipeSelectWithRelations } from '~~/server/db/schema/index'
 import type { RecipeWithRelations } from '~~/shared/types/recipe/recipe.type'
 import type { RecipeIndexResult } from '~~/shared/types/recipe/recipeIndexResult.type'
-import { and, count, eq, ilike, or } from 'drizzle-orm'
+import { and, count, eq, ilike, inArray, or } from 'drizzle-orm'
 import { useDB } from '~~/server/db'
-import { recipesTable } from '~~/server/db/schema/index'
+import { recipeFavoritesTable, recipesTable } from '~~/server/db/schema/index'
 import { RecipeWithRelationsTransformer } from '~~/server/transformers/recipeWithRelations.transformer'
 import { requireAuth } from '~~/server/utils/auth/auth.util'
 import { DEFAULT_RECIPE_PAGE_SIZE } from '~~/shared/constants/recipePagination.constant'
@@ -17,6 +17,7 @@ export default defineEventHandler<Promise<RecipeIndexResult>>(async (event) => {
   const {
     search,
     categoryId,
+    favoritesOnly,
     page: rawPage,
     pageSize: rawPageSize,
   } = await getValidatedQuery(event, recipeIndexQuerySchema.parse)
@@ -24,7 +25,11 @@ export default defineEventHandler<Promise<RecipeIndexResult>>(async (event) => {
   const pageSize = rawPageSize ?? DEFAULT_RECIPE_PAGE_SIZE
   const requestedPage = rawPage ?? 1
 
-  const countWhereClause = buildSqlWhere(search, categoryId, userId)
+  const countWhereClause = buildSqlWhere(search, categoryId, userId, favoritesOnly
+    ? inArray(recipesTable.id, db.select({ recipeId: recipeFavoritesTable.recipeId })
+        .from(recipeFavoritesTable)
+        .where(eq(recipeFavoritesTable.userId, userId)))
+    : undefined)
 
   const totalResult = await db
     .select({ value: count() })
@@ -40,6 +45,7 @@ export default defineEventHandler<Promise<RecipeIndexResult>>(async (event) => {
     where: {
       categoryId,
       authorId: userId,
+      favorites: favoritesOnly ? { userId } : undefined,
       OR: search
         ? [
             { name: { ilike: `%${search}%` } },
@@ -78,9 +84,11 @@ function buildSqlWhere(
   search: string | undefined,
   categoryId: string | undefined,
   userId: string,
+  favoriteFilter: SQL | undefined,
 ): SQL {
   return and(
     eq(recipesTable.authorId, userId),
+    favoriteFilter,
     search
       ? or(
           ilike(recipesTable.name, `%${search}%`),

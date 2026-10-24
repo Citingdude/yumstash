@@ -8,6 +8,7 @@ export function useRecipeIndexQuery(
   search: Ref<string | undefined>,
   categoryId: Ref<string | undefined>,
   page: Ref<number>,
+  favoritesOnly?: Ref<boolean>,
   pageSize = DEFAULT_RECIPE_PAGE_SIZE,
 ) {
   return useAsyncData<RecipeIndexResult>(
@@ -18,6 +19,7 @@ export function useRecipeIndexQuery(
       return recipeService.getRecipes({
         search: search.value,
         categoryId: categoryId.value,
+        favoritesOnly: favoritesOnly?.value,
         page: page.value,
         pageSize,
       })
@@ -27,6 +29,7 @@ export function useRecipeIndexQuery(
         search,
         categoryId,
         page,
+        ...(favoritesOnly ? [favoritesOnly] : []),
       ],
     },
   )
