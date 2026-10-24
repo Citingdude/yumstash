@@ -110,16 +110,19 @@ const coverClass = computed(() => {
       </div>
     </NuxtLink>
     <AppButton
-      :icon="props.isFavorite ? 'i-heroicons-heart-solid' : 'i-heroicons-heart'"
       :color="props.isFavorite ? 'primary' : 'neutral'"
       variant="outline"
-      class="absolute top-6 right-6 size-11 justify-center rounded-full bg-default"
-      :loading="props.isTogglingFavorite"
-      :disabled="props.isTogglingFavorite"
+      class="group/favorite absolute top-6 right-6 size-11 justify-center rounded-full bg-default motion-safe:transition-transform motion-safe:duration-160 motion-safe:ease-[cubic-bezier(0.23,1,0.32,1)] motion-safe:active:enabled:scale-[0.97]"
+      :aria-busy="props.isTogglingFavorite"
       :aria-pressed="props.isFavorite"
       :aria-label="`${props.isFavorite ? 'Remove from favorites' : 'Add to favorites'}: ${props.name}`"
       @click="onFavorite"
-    />
+    >
+      <span aria-hidden="true" class="relative grid size-5 motion-safe:transition-transform motion-safe:duration-160 motion-safe:ease-[cubic-bezier(0.23,1,0.32,1)] motion-safe:group-aria-pressed/favorite:scale-110 motion-safe:[@media(hover:hover)_and_(pointer:fine)]:group-hover/favorite:group-enabled/favorite:scale-110">
+        <UIcon name="i-heroicons-heart" class="col-start-1 row-start-1 size-5" />
+        <UIcon name="i-heroicons-heart-solid" class="col-start-1 row-start-1 size-5 opacity-0 transition-opacity duration-160 ease-[cubic-bezier(0.23,1,0.32,1)] group-aria-pressed/favorite:opacity-100" />
+      </span>
+    </AppButton>
     <div class="mx-5 flex items-center justify-between gap-2 border-t border-default py-3">
       <AppButton
         :icon="props.isCooked ? 'i-heroicons-check-circle' : 'i-mdi-pot-steam-outline'"

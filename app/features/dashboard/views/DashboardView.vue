@@ -131,14 +131,11 @@ async function onFavorite(recipeId: RecipeUuid, isFavorite: boolean): Promise<vo
 
   togglingFavoriteIds.value.add(recipeId)
   try {
-    const result = await recipeService.toggleFavorite(recipeId, isFavorite)
+    await recipeService.toggleFavorite(recipeId, isFavorite)
     await Promise.all([
       refreshNuxtData(QUERY_KEYS.RECIPE_INDEX),
       refreshNuxtData(`${QUERY_KEYS.RECIPE_INDEX}-${recipeId}`),
     ])
-    toast.success({
-      title: result.isFavorite ? 'Added to favorites' : 'Removed from favorites',
-    })
   }
   catch {
     toast.error({
